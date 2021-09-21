@@ -17,7 +17,7 @@ public class User {
     private String email;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name="blogId")
+    @JoinColumn(name="blog_id")
     private Blog blog;
 
 

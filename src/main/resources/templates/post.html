@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adding new post</title>
+</head>
+<body>
+    <form th:action="@{/addPost}" method="post">
+        <div><label> Header : <input type="text" name="header"/> </label></div>
+        <div><label> Content: <input type="text" name="content"/> </label></div>
+        <div><input type="submit" value="Submit"/></div>
+    </form>
+</body>
+</html>
