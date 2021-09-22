@@ -6,9 +6,11 @@ import com.example.repos.PostRepository;
 import com.example.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.Map;
+import java.util.*;
 
 @Controller // This means that this class is a Controller
 public class MainController {
@@ -63,17 +65,21 @@ public class MainController {
     }
 
     @PostMapping("/addPost")
-    public String addPost(@RequestParam String header, @RequestParam String content){
+    public RedirectView addPost(@RequestParam String header, @RequestParam String content){
         Post post = new Post();
         post.setHeader(header);
         post.setContent(content);
 
         postRepository.save(post);
-        return "blogPage";
+        return new RedirectView("/allPosts");
     }
 
-    @RequestMapping("/allPosts")
-    public @ResponseBody Iterable<Post> getAllPosts(){
-        return postRepository.findAll();
+    @GetMapping("/allPosts")
+    public String getAllPosts(Model model){
+        List<Post> posts = new ArrayList<>();
+        Iterable<Post> it = postRepository.findAll();
+        it.forEach(posts::add);
+        model.addAttribute("posts", posts);
+        return "blogPage";
     }
 }

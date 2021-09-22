@@ -6,5 +6,14 @@
 </head>
 <body>
     <h1> There would be placed all posts soon! </h1>
+
+<!--    <tr th:if="${posts.empty}">-->
+<!--        <td colspan="2"> No posts Available </td>-->
+<!--    </tr>-->
+
+    <tr th:each="post : ${posts}">
+        <td><span th:text="${post.header}"> Header </span></td>
+        <td><span th:text="${post.content}"> Content </span></td>
+    </tr>
 </body>
 </html>
