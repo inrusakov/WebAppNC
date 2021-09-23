@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Adding new post</title>
+    <link th:href="@{/styles/css/post.css}" rel="stylesheet" />
 </head>
 <body>
-    <form th:action="@{/addPost}" method="post">
-        <div><label> Header : <input type="text" name="header"/> </label></div>
-        <div><label> Content: <input type="text" name="content"/> </label></div>
-        <div><input type="submit" value="Submit"/></div>
-    </form>
+    <div class="container">
+        <div class="post">
+            <form th:action="@{/addPost}" method="post">
+            <div class="post-header">
+                <div class="post-image">
+                    <img src="https://html5book.ru/wp-content/uploads/2019/03/postimage4.jpg">
+                </div>
+                <div class="label-header"><label> Header : <input type="text" name="header"/> </label></div>
+            </div>
+            <div class="post-content">
+                <div><label> Content: <textarea rows="10" cols="45" name="content"></textarea> </label></div>
+            </div>
+                <div><input type="submit" value="Submit"/></div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

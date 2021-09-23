@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post overview</title>
+    <link th:href="@{/styles/css/post.css}" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <a th:href="@{/editPost/{postId}(postId=${post.postId})}">Edit</a>
+        <a th:href="@{/deletePost/{postId}(postId=${post.postId})}">Delete</a>
+    </div>
+    <div class="container">
+        <div class="post">
+            <div class="post-header">
+                <h2><span th:text="${post.header}"> Content </span></h2>
+            </div>
+            <div class="post-content">
+                <p>
+                    <span th:text="${post.content}"> Content </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

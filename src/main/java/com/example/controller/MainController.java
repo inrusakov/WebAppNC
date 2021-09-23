@@ -74,6 +74,31 @@ public class MainController {
         return new RedirectView("/allPosts");
     }
 
+//    @PostMapping("/postObserver/{postId}")
+//    public RedirectView observePost(@PathVariable("postId") int postId){
+//        return new RedirectView("/postObserver/{postId}");
+//    }
+
+    @GetMapping("/postObserver/{postId}")
+    public String observePost(@PathVariable("postId") int postId, String submit, Model model){
+        model.addAttribute("post", (Post)postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId)));
+        return "postObserver";
+    }
+
+    @GetMapping("/deletePost/{postId}")
+    public RedirectView deletePost(@PathVariable("postId") int postId){
+        postRepository.deleteById(postId);
+        return new RedirectView("/allPosts");
+    }
+
+    @GetMapping("/editPost/{postId}")
+    public String editPost(@PathVariable("postId") int postId, Model model){
+        model.addAttribute("post", (Post)postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId)));
+        return "editPost";
+    }
+
     @GetMapping("/allPosts")
     public String getAllPosts(Model model){
         List<Post> posts = new ArrayList<>();

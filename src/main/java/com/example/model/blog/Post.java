@@ -5,6 +5,7 @@ import javax.persistence.*;
 @Entity
 public class Post {
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int postId;
 //    @ManyToOne(optional = false, cascade = CascadeType.ALL)
 //    @JoinColumn(name = "post_id")
