@@ -10,13 +10,10 @@
         <div class="post">
             <form th:action="@{/addPost}" method="post">
             <div class="post-header">
-                <div class="post-image">
-                    <img src="https://html5book.ru/wp-content/uploads/2019/03/postimage4.jpg">
-                </div>
                 <div class="label-header"><label> Header : <input type="text" name="header"/> </label></div>
             </div>
             <div class="post-content">
-                <div><label> Content: <textarea rows="10" cols="45" name="content"></textarea> </label></div>
+                <div><label>  <div class="content-tag">Content:</div> <textarea rows="10" cols="45" name="content"></textarea> </label></div>
             </div>
                 <div><input class="edit-delete" type="submit" value="Submit"/></div>
             </form>
