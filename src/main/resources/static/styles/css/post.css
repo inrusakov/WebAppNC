@@ -79,4 +79,18 @@ p {
         position: absolute;
         z-index: 2;
     }
+
+    .edit-delete{
+        background: #111;
+        padding: 15px 20px;
+        color: #fff;
+        border: none;
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    .edit-delete:hover{
+        opacity: 0.9;
+    }
+
 }

@@ -37,11 +37,4 @@ public class Post {
         this.postId = postId;
     }
 
-//    public Blog getBlog() {
-//        return blog;
-//    }
-//
-//    public void setBlog(Blog blog) {
-//        this.blog = blog;
-//    }
 }
