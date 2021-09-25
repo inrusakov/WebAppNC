@@ -12,4 +12,34 @@ public class Position {
     private Integer id;
     public double latitude;
     public double longtitude;
+
+    public Position(Integer id, double latitude, double longtitude) {
+        this.id = id;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
+    }
+
+    public Position() {
+
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongtitude() {
+        return longtitude;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongtitude(double longtitude) {
+        this.longtitude = longtitude;
+    }
 }
