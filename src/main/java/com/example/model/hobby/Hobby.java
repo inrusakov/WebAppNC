@@ -9,10 +9,19 @@ import javax.persistence.Id;
 public class Hobby {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    private int id;
     private String type;
     private String name;
 
     public Hobby(){}
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getType() {
         return type;

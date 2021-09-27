@@ -1,6 +1,7 @@
 package com.example.model;
 
 import com.example.model.hobby.Hobby;
+//import com.example.model.Address;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,13 +16,13 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-    private String name; //as login
+    private String name; //as login !!!delete
     private String email;
     private String password;
     private String firstName;
     private String lastName;
-    private Role role;
-    private List<Hobby> hobby;
+    private Role role; //enum
+    private List<Hobby> hobby; //enum hobby
     //private Address userAddress;
 
     public User(){}
@@ -109,6 +110,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", hobby='" + hobby.toString() + '\'' +
                 ", role=" + role + //role.toString() + ", address=" + userAddress.toString()+
                 '}';
     }
