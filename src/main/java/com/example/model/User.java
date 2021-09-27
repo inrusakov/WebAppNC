@@ -1,9 +1,12 @@
 package com.example.model;
 
+import com.example.model.hobby.Hobby;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.List;
 
 
 @Entity
@@ -18,6 +21,10 @@ public class User {
     private String firstName;
     private String lastName;
     private Role role;
+    private List<Hobby> hobby;
+    //private Address userAddress;
+
+    public User(){}
 
     public Integer getId() {
         return id;
@@ -75,6 +82,24 @@ public class User {
         return role;
     }
 
+    public List<Hobby> getHobby() {
+        return hobby;
+    }
+
+    public void setHobby(List<Hobby> hobby) {
+        this.hobby = hobby;
+    }
+
+    /*
+    public Address getUserAddress(){
+        return userAddress;
+    }
+
+    public void setUserAddress(userAddress){
+        this.userAddress = userAddress;
+    }
+     */
+
     @Override
     public String toString() {
         return "User{" +
@@ -84,7 +109,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", role=" + role +
+                ", role=" + role + //role.toString() + ", address=" + userAddress.toString()+
                 '}';
     }
 }
