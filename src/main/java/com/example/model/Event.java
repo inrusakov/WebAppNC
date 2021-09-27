@@ -1,11 +1,17 @@
-package com.example;
+package com.example.model;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+
 public class Event {
+
     @Override
     public String toString() {
         return "Event{" +
@@ -13,24 +19,48 @@ public class Event {
                 ", description='" + description + '\'' +
                 ", type='" + type + '\'' +
                 ", uRL='" + uRL + '\'' +
-                ", companyName='" + companyName + '\'' +
+                ", companyID='" + companyID + '\'' +
                 ", date=" + date +
                 ", images=" + images +
                 ", isPaid=" + isPaid +
                 ", price=" + price +
                 '}';
     }
-
+    private int eventID;
+    @NotEmpty(message = "Name should not be empty")
+    @Size(min = 2, max = 30, message = "Name shoud be between 2 and 30 characters")
     private String name;
     private String description;
     private String type;
     private String uRL;
-    private String companyName;
+    private int companyID;
+    @Future(message = "Date must be in the future")
     private Date date;
     private List<File> images;
     private boolean isPaid = false;
+    @PositiveOrZero(message = "Price can't be a negative integer")
     private int price = 0;
 
+    public Event(){}
+
+    public Event(int eventID, String name, String description, String type,
+                 String uRL, int companyID, Date date, boolean isPaid, int price){
+        this.eventID = eventID;
+        this.name = name;
+        this.description = description;
+        this.uRL = uRL;
+        this.companyID = companyID;
+        this.date = date;
+        this.isPaid = isPaid;
+        this.price = price;
+    }
+
+    public void setEventID(int eventID){
+        this.eventID = eventID;
+    }
+    public int getEventID(){
+        return eventID;
+    }
     public int getPrice() {
         return price;
     }
@@ -44,7 +74,7 @@ public class Event {
         }
     }
 
-    public boolean isPaid() {
+    public boolean getIsPaid() {
         return isPaid;
     }
 
@@ -68,12 +98,12 @@ public class Event {
         this.date = date;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public int getCompanyID() {
+        return companyID;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setCompanyID(int companyID) {
+        this.companyID = companyID;
     }
 
     public String getuRL() {
