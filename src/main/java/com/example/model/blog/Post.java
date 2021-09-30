@@ -17,6 +17,8 @@ public class Post {
     private Integer views;
 //  private ? date;
     private String header;
+
+    @Column(columnDefinition="TEXT")
     private String content;
 
     public String getHeader() {
@@ -50,5 +52,13 @@ public class Post {
 
     public void setViews(Integer views) {
         this.views = views;
+    }
+
+    public Integer getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Integer postId) {
+        this.postId = postId;
     }
 }
