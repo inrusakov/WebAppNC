@@ -15,14 +15,13 @@ public class MainController {
     private UserRepository userRepository;
 
     @PostMapping(path="/add") // Map ONLY POST Requests
-    public @ResponseBody String addNewUser (@RequestParam String name
-            , @RequestParam String email) {
+    public @ResponseBody String addNewUser (@RequestParam String email, @RequestParam String password) {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
 
         User n = new User();
-        n.setName(name);
         n.setEmail(email);
+        n.setPassword(password);
         userRepository.save(n);
         return "Saved";
     }
@@ -36,7 +35,7 @@ public class MainController {
     @GetMapping("/generate")
     public String generate() {
         User n = new User();
-        n.setName("random");
+        n.setPassword("random");
         n.setEmail("random@mail.ru");
         userRepository.save(n);
         return "hello";
