@@ -1,9 +1,8 @@
 package com.example.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.example.model.blog.Blog;
+
+import javax.persistence.*;
 
 
 @Entity
@@ -16,6 +15,11 @@ public class User {
     private String name;
 
     private String email;
+
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name="blog_id")
+    private Blog blog;
+
 
     public Integer getId() {
         return id;
