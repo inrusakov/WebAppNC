@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller // This means that this class is a Controller
@@ -70,6 +71,7 @@ public class MainController {
         Post post = new Post();
         post.setHeader(header);
         post.setContent(content);
+        post.setPublicationDate(LocalDateTime.now());
 
         postRepository.save(post);
         return new RedirectView("/allPosts");
@@ -102,8 +104,9 @@ public class MainController {
 
     @PostMapping("/editPost/{postId}")
     public RedirectView editPost(@PathVariable("postId") Integer postId, @ModelAttribute Post post){
+        post.setPublicationDate(LocalDateTime.now());
         postRepository.save(post);
-        return new RedirectView("/allPosts");
+        return new RedirectView("/postObserver/{postId}");
     }
 
     @GetMapping("/allPosts")

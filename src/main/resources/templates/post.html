@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>-->
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
@@ -18,13 +18,11 @@
 
                     <input name="content" type="hidden">
                     <div id="editor">
-                        <p>Type here...</p>
+                        <p>Tell your story...</p>
                     </div>
 
-<!--                    <div id="editor">-->
-<!--                    <textarea  name="content">Type here...</textarea>-->
-<!--                </div>-->
                 </label></div>
+
             </div>
                 <div><input class="edit-delete" type="submit" value="Submit"/></div>
             </form>
@@ -33,10 +31,33 @@
 
         <!-- Include the Quill library -->
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-
-        <!-- Initialize Quill editor -->
+       <!-- Initialize Quill editor -->
         <script>
+            var toolbarOptions = [
+                ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                ['blockquote', 'code-block'],
+
+                [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+                [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+                [{ 'direction': 'rtl' }],                         // text direction
+
+                // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+                [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+                [{ 'font': [] }],
+                [{ 'align': [] }],
+
+                [ 'link', 'image', 'video'],
+                ['clean']                                         // remove formatting button
+            ];
+
             var quill = new Quill('#editor', {
+                modules: {
+                    toolbar: toolbarOptions
+                },
                 theme: 'snow'
             });
         </script>
