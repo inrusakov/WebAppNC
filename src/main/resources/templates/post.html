@@ -11,17 +11,16 @@
         <div class="post">
             <form th:action="@{/addPost}" method="post">
             <div class="post-header">
-                <div class="label-header"><label> Header : <input type="text" name="header"/> </label></div>
+                <div class="label-header"> <input type="text" name="header"/> </div>
             </div>
             <div class="post-content" >
-                <div><label>  <div class="content-tag">Content:</div>
-
+                <div>
                     <input name="content" type="hidden">
                     <div id="editor">
                         <p>Tell your story...</p>
                     </div>
 
-                </label></div>
+                </div>
 
             </div>
                 <div><input class="edit-delete" type="submit" value="Submit"/></div>
