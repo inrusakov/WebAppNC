@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All posts</title>
+    <link th:href="@{/styles/css/blogPage.css}" rel="stylesheet" />
+</head>
+<body>
+        <div class="position">
+        </div>
+
+        <div class="container">
+            <div class="post">
+                <div class="post-header">
+                    <h2> All Posts </h2>
+                </div>
+
+                <div class="post-content">
+                    <table class="table">
+                        <thead>
+                            <tr class="tr-head">
+                                <td><span> Header </span></td>
+                                <td><span> Content </span></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="post : ${posts}">
+                                <td>
+                                <form method="get" th:action="@{/postObserver/{postId}(postId=${post.postId})}">
+                                    <input type="hidden" name="postId" id="postId" th:value="${post.postId}" />
+                                    <button type="submit" name="submit" value="value" class="link-button"><span th:text="${post.header}"> Header </span></button>
+                                </form>
+                                </td>
+<!--                                <td><a href="/addPost"></a></td>-->
+                                <td><span th:text="${post.content}"> Content </span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="add-contener">
+            <div class="add-btn">
+                <a th:href="@{/addPost}">+</a>
+            </div>
+        </div>
+</body>
+</html>

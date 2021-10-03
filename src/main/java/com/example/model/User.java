@@ -19,8 +19,8 @@ public class User {
     private String lastName;
     private Role role;
     private File pic;
-    //@OneToMany(targetEntity=Tag.class,  fetch=FetchType.EAGER)
-    //private List<Tag> tag; //enum hobby
+    @OneToMany(targetEntity=Tag.class,  fetch=FetchType.EAGER)
+    private List<Tag> tag; //enum hobby
     //private Address userAddress;
 
     public User(){}
@@ -81,7 +81,7 @@ public class User {
         return pic;
     }
 
-    /*
+
     public List<Tag> getTag() {
         return tag;
     }
@@ -89,6 +89,7 @@ public class User {
     public void setHobby(List<Tag> tag) {
         this.tag = tag;
     }
+    /*
 
 
     public Address getUserAddress(){

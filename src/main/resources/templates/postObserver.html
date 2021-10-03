@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post overview</title>
+    <link th:href="@{/styles/css/postObserver.css}" rel="stylesheet" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+<body>
+    <div class="edit-delete">
+        <div class="position">
+            <a th:href="@{/editPost/{postId}(postId=${post.postId})}">Edit</a>
+            <a th:href="@{/deletePost/{postId}(postId=${post.postId})}">Delete</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="post">
+            <div class="post-header">
+                <h2><span th:text="${post.header}"> Content </span></h2>
+            </div>
+            <div class="post-content" id="post_content">
+                <p class="editor" id="p-content">
+<!--                   <span th:text="${post.content}"> Content </span>-->
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the Quill library -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script th:inline="javascript">
+        var editor = document.getElementById('post_content');
+        var quill = new Quill(editor);
+
+        /*<![CDATA[*/
+        var page = /*[[${post.content}]]*/ 'default';
+        /*]]>*/
+        quill.setContents(JSON.parse(page));
+
+        var content = document.getElementById('p-content');
+        content.innerHTML = quill.root.innerHTML;
+    </script>
+</body>
+</html>
