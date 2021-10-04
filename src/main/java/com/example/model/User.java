@@ -2,7 +2,10 @@ package com.example.model;
 
 //import com.example.model.Address;
 
+import com.example.model.blog.Blog;
+
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.File;
 import java.util.List;
 
@@ -13,7 +16,9 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
+    @Size(min=5, message = "At least 5 characters")
     private String email;
+    @Size(min=8, message = "At least 8 characters")
     private String password;
     private String firstName;
     private String lastName;
@@ -22,6 +27,9 @@ public class User {
     @OneToMany(targetEntity=Tag.class,  fetch=FetchType.EAGER)
     private List<Tag> tag; //enum hobby
     //private Address userAddress;
+    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "USER_ID")
+    private Blog blog;
 
     public User(){}
 
@@ -86,9 +94,18 @@ public class User {
         return tag;
     }
 
-    public void setHobby(List<Tag> tag) {
+    public void setTag(List<Tag> tag) {
         this.tag = tag;
     }
+
+    public Blog getBlog() {
+        return blog;
+    }
+
+    public void setBlog(Blog blog) {
+        this.blog = blog;
+    }
+
     /*
 
 
