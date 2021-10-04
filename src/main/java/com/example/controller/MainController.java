@@ -46,22 +46,6 @@ public class MainController {
         return "hello";
     }
 
-    @GetMapping("/registration")
-    public String registration() {
-        return "registration";
-    }
-
-    @PostMapping("/registration")
-    public RedirectView registration (@RequestParam String email, @RequestParam String password) {
-        // @ResponseBody means the returned String is the response, not a view name
-        // @RequestParam means it is a parameter from the GET or POST request
-        User n = new User();
-        n.setEmail(email);
-        n.setPassword(password);
-        userRepository.save(n);
-        return new RedirectView("/allPosts");
-    }
-
     @GetMapping("/addPost")
     public String addPost(){
         return "post";

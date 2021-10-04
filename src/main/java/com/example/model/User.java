@@ -16,6 +16,7 @@ public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
+    @Column(unique=true)
     @Size(min=5, message = "At least 5 characters")
     private String email;
     @Size(min=8, message = "At least 8 characters")
@@ -25,7 +26,7 @@ public class User {
     private Role role;
     private File pic;
     @OneToMany(targetEntity=Tag.class,  fetch=FetchType.EAGER)
-    private List<Tag> tag; //enum hobby
+    private List<Tag> tag;
     //private Address userAddress;
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
@@ -131,4 +132,3 @@ public class User {
     }
 }
 
-enum Role {USER, COMPANY, ADMIN}

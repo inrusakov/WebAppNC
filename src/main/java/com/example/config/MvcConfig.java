@@ -16,6 +16,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/post").setViewName("post");
         registry.addViewController("/postObserver").setViewName("postObserver");
         registry.addViewController("/editPost").setViewName("editPost");
+        registry.addViewController("/profile").setViewName("profile");
     }
 
     @Override
