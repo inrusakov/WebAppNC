@@ -15,16 +15,43 @@
                     <h2> All Posts </h2>
                 </div>
 
+
+                <div th:if="${page.totalPages > 0}" class="pagination">
+                    <li> <a th:text="Count"
+                            th:class="disabled"></a> </li>
+                    <ul th:each="elemNumber : ${elemNumbers}">
+                        <li>
+                            <a th:href="@{/allPosts(size=${elemNumber}, page=${num})}"
+                               th:text=${elemNumber}
+                               th:class="${num==page.number + 1} ? active"></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <hr color="#124f0c">
+
+                <div th:if="${page.totalPages > 0}" class="pagination">
+                    <li><a th:text="Pages "
+                           th:class="disabled"></a> </li>
+                    <ul th:each="pageNumber : ${pageNumbers}">
+                        <li>
+                        <a th:href="@{/allPosts(size=${page.size}, page=${pageNumber-1})}"
+                           th:text=${pageNumber}
+                           th:class="${pageNumber==page.number + 1} ? active"></a>
+                        </li>
+                    </ul>
+                </div>
+                <br>
                 <div class="post-content">
                     <table class="table">
                         <thead>
                             <tr class="tr-head">
                                 <td><span> Header </span></td>
-                                <td><span> Content </span></td>
+                                <td><span> Publication </span></td>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="post : ${posts}">
+                            <tr th:each="post, iPost : ${page.content}">
                                 <td>
                                 <form method="get" th:action="@{/postObserver/{postId}(postId=${post.postId})}">
                                     <input type="hidden" name="postId" id="postId" th:value="${post.postId}" />
@@ -32,7 +59,7 @@
                                 </form>
                                 </td>
 <!--                                <td><a href="/addPost"></a></td>-->
-                                <td><span th:text="${post.content}"> Content </span></td>
+                                <td><span th:text="${post.publicationDate}"> Content </span></td>
                             </tr>
                         </tbody>
                     </table>

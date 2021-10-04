@@ -19,10 +19,9 @@
                 <h2><span th:text="${post.header}"> Content </span></h2>
             </div>
             <div class="post-content" id="post_content">
-                <p class="editor" id="p-content">
-<!--                   <span th:text="${post.content}"> Content </span>-->
-                </p>
             </div>
+            <p class="editor" id="p-content">
+            </p>
         </div>
     </div>
 
@@ -40,6 +39,7 @@
 
         var content = document.getElementById('p-content');
         content.innerHTML = quill.root.innerHTML;
+        quill.setContents(null);
     </script>
 </body>
 </html>

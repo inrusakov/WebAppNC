@@ -27,7 +27,7 @@ public class Comment {
     // Unidirectional link, т.к. у пользователя нет необходимости в просмотре всех своих комментраиев
     // Hibernate создаст таблицу соединений между user и comment
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(
+    @JoinColumn(
             name = "user_id",
             nullable = false
     )

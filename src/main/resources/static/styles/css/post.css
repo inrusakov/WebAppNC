@@ -2,10 +2,18 @@
     box-sizing: border-box;
     margin: 0;
 }
+html, body {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 90%;
+}
 body {
     font-family: 'Montserrat', sans-serif;
     color: #606060;
     font-size: 14px;
+    padding: 25px;
 }
 .container {
     max-width: 960px;
@@ -18,12 +26,12 @@ body {
     position: relative;
 }
 
-.post h1 {
-    color: #222;
-    font-weight: 500;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-}
+/*.post h1 {*/
+/*    color: #222;*/
+/*    font-weight: 500;*/
+/*    margin-bottom: 15px;*/
+/*    font-size: 1.5em;*/
+/*}*/
 p {
     line-height: 1.5;
     margin-bottom: 1em;
@@ -110,4 +118,10 @@ p {
         opacity: 0.9;
     }
 
+}
+#editor-container {
+    display: block;
+    font-family: 'Open Sans', Helvetica, sans-serif;
+    font-size: 1.2em;
+    margin: 0 auto;
 }
