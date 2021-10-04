@@ -20,6 +20,27 @@ async function locationSuccess(position) {
     } else {
         alert("ERROR HTTP: " + response.status);
     }
+
+    var geoRequest = {
+        //"user" : user,
+        "latitude" : latitude,
+        "longitude" :longitude
+    }
+
+    $.ajax({
+        type: "POST",
+        contentType : 'application/json; charset=utf-8',
+        dataType : 'json',
+        url: "/sendGeo",
+        data: JSON.stringify(geoRequest),
+        success : function(data) {
+            console.log("SUCCESS: ", data);
+        },
+        error : function(e) {
+            console.log("ERROR: ", e);
+        },
+        headers: {"X-CSRF-TOKEN": $("input[name='_csrf']").val()}
+    });
 }
 
 function locationError(error) {
