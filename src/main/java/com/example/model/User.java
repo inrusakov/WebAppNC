@@ -29,7 +29,7 @@ public class User {
     private List<Tag> tag;
     //private Address userAddress;
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "blog_id")
     private Blog blog;
 
     public User(){}
