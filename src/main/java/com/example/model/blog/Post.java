@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Post {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY) //GenerationType.AUTO)
     private Integer postId;
 //    @ManyToOne(optional = false, cascade = CascadeType.ALL)
 //    @JoinColumn(name = "post_id")

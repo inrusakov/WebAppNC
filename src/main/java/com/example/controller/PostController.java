@@ -3,14 +3,20 @@ package com.example.controller;
 import com.example.model.blog.Post;
 import com.example.repos.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class PostController {
@@ -66,11 +72,22 @@ public class PostController {
 
     // SHOWING ALL POSTS
     @GetMapping("/allPosts")
-    public String getAllPosts(Model model){
-        List<Post> posts = new ArrayList<>();
-        Iterable<Post> it = postRepository.findAll();
-        it.forEach(posts::add);
-        model.addAttribute("posts", posts);
+    public String getAllPosts(Model model, @PageableDefault(sort = {"postId"}, direction = Sort.Direction.DESC) Pageable pageable){
+        //List<Post> posts = new ArrayList<>();
+        Page<Post> page = postRepository.findAll(pageable);
+        //it.forEach(posts::add);
+        model.addAttribute("page", page);
+
+        int totalPages = page.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+            List<Integer> elemNumbers = Arrays.asList(5, 10, 15, 20);
+            model.addAttribute("elemNumbers", elemNumbers);
+            model.addAttribute("num", pageable.getPageNumber());
+        }
         return "blogPage";
     }
 }
