@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <title>Profile</title>
+</head>
+<body>
+Edit your profile
+<form th:action="@{/profile}" method="post">
+  <div><label> Email: <input type="text" name="email" /> </label></div>
+  <div><label> First name: <input type="text" name="firstName" /> </label></div>
+  <div><label> Last name: <input type="text" name="lastName" /> </label></div>
+<!--  <div><label> Photo: <input type="image" name="pic" /> </label></div>-->
+  <div><input type="submit" name="send" value="Add"/></div>
+</form>
+</body>
+</html>

@@ -1,4 +1,3 @@
 package com.example.model;
 
-public class Role {
-}
+public enum Role {USER, COMPANY, ADMIN}
