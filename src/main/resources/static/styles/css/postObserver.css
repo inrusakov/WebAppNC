@@ -1,0 +1,87 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+body {
+    font-family: "Lucida Calligraphy", sans-serif;
+    color: #3a3939;
+    font-size: 14px;
+}
+.container {
+    max-width: 960px;
+    margin: 50px auto;
+    padding: 0 15px;
+    background: white;
+}
+.post {
+    padding: 30px 0 15px;
+    position: relative;
+    font-size: 18px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+}
+
+.post-header{
+    background: #d3e4db;
+    margin-bottom: 20px;
+    color: rgb(29, 29, 31);
+    font-style: bold;
+    text-align: center;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+/*.post-content{*/
+/*    border-left: 1px solid #111;*/
+/*    padding-left: 20px;*/
+/*}*/
+
+p {
+    line-height: 1.5;
+    margin-bottom: 1em;
+    text-align: justify;
+}
+
+
+.post h1 {
+    width: 70%;
+    padding: 10px 20px;
+    margin: 0;
+    color: white;
+    top: 50px;
+    right: 0;
+    background: #021422;
+    position: absolute;
+    z-index: 2;
+}
+
+
+.position a{
+    position: relative;
+    top: 10px;
+    text-decoration: none;
+    background: #111;
+    padding: 15px 15px 5px 20px;
+    color: #fff;
+    border: none;
+    font-family: inherit;
+    font-style: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.edit-delete a:hover{
+    opacity: 0.9;
+}
+
+.position{
+    text-align: end;
+    position: fixed;
+    top: 0;
+    left: 0px;
+
+    /* left: 20px; */
+    width: 100%;
+    height: 40px;
+    background: #0a1f01;
+}
