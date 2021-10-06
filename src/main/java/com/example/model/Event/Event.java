@@ -1,9 +1,10 @@
-package com.example.model;
+package com.example.model.Event;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.*;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.Date;
@@ -15,31 +16,37 @@ public class Event {
     @Override
     public String toString() {
         return "Event{" +
+                "EventID=" + eventID +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", type='" + type + '\'' +
                 ", uRL='" + uRL + '\'' +
                 ", companyID='" + companyID + '\'' +
                 ", date=" + date +
-                ", images=" + images +
+                ", imagePath=" + imagePath +
                 ", isPaid=" + isPaid +
                 ", price=" + price +
                 '}';
     }
     private int eventID;
     @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 30, message = "Name shoud be between 2 and 30 characters")
+    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
     private String name;
+    @Size(min = 10, max = 300, message = "Description should be between 10 and 300 characters")
     private String description;
+    @NotEmpty
     private String type;
     private String uRL;
     private int companyID;
+    @NotNull
+    @Temporal(TemporalType.DATE)
     @Future(message = "Date must be in the future")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date date;
-    private List<File> images;
+    private String imagePath;
     private boolean isPaid = false;
     @PositiveOrZero(message = "Price can't be a negative integer")
-    private int price = 0;
+    private int price;
 
     public Event(){}
 
@@ -65,12 +72,10 @@ public class Event {
         return price;
     }
 
-    public void setPrice(int price) throws IllegalArgumentException{
+    public void setPrice(int price) {
         if(price != 0 && price >=0) {
             isPaid = true;
             this.price = price;
-        }else{
-            throw new IllegalArgumentException();
         }
     }
 
@@ -82,12 +87,12 @@ public class Event {
         isPaid = paid;
     }
 
-    public List<File> getImages() {
-        return images;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImages(List<File> images) {
-        this.images = images;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public Date getDate() {

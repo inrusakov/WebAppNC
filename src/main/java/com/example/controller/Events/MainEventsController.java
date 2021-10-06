@@ -1,8 +1,8 @@
-package com.example.controller;
+package com.example.controller.Events;
 
 
 import com.example.dao.EventDAO;
-import com.example.model.Event;
+import com.example.model.Event.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +13,20 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/events")
-public class EventsController {
+public class MainEventsController {
 
     private final EventDAO eventDAO;
 
     @Autowired
-    public EventsController(EventDAO eventDAO) {
+    public MainEventsController(EventDAO eventDAO) {
         this.eventDAO = eventDAO;
     }
+
+    /**
+     * Main page with all events.
+     * @param model
+     * @return
+     */
 
     @GetMapping()
     public String index(Model model){
@@ -28,16 +34,36 @@ public class EventsController {
         return "events/index";
     }
 
+    /**
+     * Page for event with id equals {id}.
+     * @param id
+     * @param model
+     * @return
+     */
+
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
         model.addAttribute("event", eventDAO.show(id));
         return "events/show";
     }
 
+    /**
+     * Page for adding a new event.
+     * @param event
+     * @return
+     */
+
     @GetMapping("/new")
     public String newEvent(@ModelAttribute("event") Event event){
         return  "events/new";
     }
+
+    /**
+     * Post query from user to server with information about new event
+     * @param event
+     * @param bindingResult - Checks if there was errors with binding Event fields with inserted values.
+     * @return
+     */
 
     @PostMapping()
     public String create(@ModelAttribute("event") @Valid Event event, BindingResult bindingResult){

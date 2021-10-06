@@ -1,9 +1,10 @@
 package com.example.dao;
 
-import com.example.model.Event;
+import com.example.model.Event.Event;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
+import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,34 +12,119 @@ import java.util.List;
 @Component
 public class EventDAO {
     private static int EVENTS_COUNT;
-    private List<Event> events;
 
-    {
-        events = new ArrayList<>();
+    private static final String URL = "jdbc:mysql://localhost:3306/db_example";
+    private static final String USERNAME = "springuser";
+    private static final String PASSWORD = "ThePassword";
 
-        events.add(new Event(++EVENTS_COUNT,"FirstEvent", "FirstDesc", "Type1", "1.com",
-                1, new Date(10L), true, 1000));
-        events.add(new Event(++EVENTS_COUNT, "SecondEvent", "SecondDesc", "Type2", "2.com",
-                2, new Date(20L), true, 2000));
-        events.add(new Event(++EVENTS_COUNT, "ThirdEvent", "ThirdDesc", "Type1", "3.com",
-                2, new Date(30L), true, 3000));
-        events.add(new Event(++EVENTS_COUNT,"ForthEvent", "ForthDesc", "Type4", "4.com",
-                1, new Date(40L), true, 4000));
+    private static Connection connection;
+
+    private List<Event> events = new ArrayList<>();
+
+    /**
+     * Initializing the connection to database using JDBC.
+     */
+
+    static {
+        try{
+            Class.forName("java.sql.Driver");
+        } catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        } catch (SQLException throwables){
+            throwables.printStackTrace();
+        }
     }
+
+    /**
+     * Get all events from database.
+     * @return List of Events
+     */
 
     public List<Event> index() {
+
+        List<Event> events = new ArrayList<>();
+
+        try{
+            Statement statement = connection.createStatement();
+            String SQL = "SELECT * FROM Events";
+            ResultSet resultSet = statement.executeQuery(SQL);
+
+            while(resultSet.next()){
+                Event event = new Event();
+
+                event.setName(resultSet.getString("Name"));
+                event.setEventID(resultSet.getInt("EventID"));
+                if(resultSet.getObject(9) == null)
+                    event.setPrice(0);
+                else
+                    event.setPrice(resultSet.getInt("Price"));
+                event.setDate(resultSet.getDate("Date"));
+                event.setuRL(resultSet.getString("Url"));
+                event.setType(resultSet.getString("Type"));
+                event.setCompanyID(resultSet.getInt("CompanyID"));
+                event.setDescription(resultSet.getString("Description"));
+                event.setImagePath(resultSet.getString("Image"));
+
+                events.add(event);
+            }
+
+            statement.close();
+        } catch (SQLException throwables){
+            throwables.printStackTrace();
+        }
+        this.events = events;
+
         return events;
     }
+
+    /**
+     * Shows event from database by its id.
+     * @param id
+     * @return
+     */
 
     public Event show(int id) {
         return events.stream().filter(event -> event.getEventID() == id).findAny().orElse(null);
     }
 
-    public void save(Event event) {
-        event.setEventID(++EVENTS_COUNT);
-        events.add(event);
-    }
+    /**
+     * Saves a new event in a db.
+     * @param event
+     */
 
+    public void save(Event event) {
+        event.setEventID(events.size() + 1);
+        event.setCompanyID(2); //temp
+        events.add(event);
+        Date date = event.getDate();
+        String dateStr = new SimpleDateFormat("yyyy/MM/dd").format(date);
+        try{
+            Statement statement = connection.createStatement();
+            String SQL = "INSERT INTO events values (" +
+                    event.getEventID()+ ", " +
+                    event.getCompanyID()+ ", " + // Correlated with userID in table Users
+                    "'" + event.getName() + "', " +
+                    "'" + event.getType() + "', " +
+                    "'" + event.getDescription() + "', " +
+                    "'" + dateStr + "', " +
+                    "'" + event.getImagePath() + "', " +
+                    "'" + event.getuRL() + "', " +
+                    event.getPrice() + ");";
+
+            statement.execute(SQL);
+
+            statement.close();
+
+        } catch (SQLException throwables){
+            throwables.printStackTrace();
+        }
+
+    }
+    //Need to be done
+/*
     public void update(int id, Event updatedEvent) {
         Event eventToBeUpdated = show(id);
 
@@ -56,4 +142,7 @@ public class EventDAO {
     public void delete(int id) {
         events.removeIf(p -> p.getCompanyID() == id);
     }
+
+*/
+
 }
