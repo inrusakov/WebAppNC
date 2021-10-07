@@ -3,6 +3,8 @@ package com.example.model;
 //import com.example.model.Address;
 
 import com.example.model.blog.Blog;
+import com.example.model.geoposition.Address;
+import com.example.model.org.Organisation;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -10,7 +12,8 @@ import java.io.File;
 import java.util.List;
 
 
-@Entity
+
+@Entity(name = "appUser")
 // This tells Hibernate to make a table out of this class
 @Table(name = "App_Users")
 public class User {
@@ -28,10 +31,11 @@ public class User {
     private File pic;
     @OneToMany(targetEntity=Tag.class,  fetch=FetchType.EAGER)
     private List<Tag> tag;
-    //private Address userAddress;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Address userAddress;
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "blog_id")
     private Blog blog;
+
 
     public User(){}
 
@@ -108,17 +112,15 @@ public class User {
         this.blog = blog;
     }
 
-    /*
-
 
     public Address getUserAddress(){
         return userAddress;
     }
 
-    public void setUserAddress(userAddress){
+    public void setUserAddress(Address userAddress){
         this.userAddress = userAddress;
     }
-     */
+
 
     @Override
     public String toString() {
@@ -128,7 +130,8 @@ public class User {
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", role=" + role + // ", address=" + userAddress.toString()+
+                ", role=" + role +
+                ", address=" + userAddress.toString() +
                 '}';
     }
 }
