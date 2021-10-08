@@ -10,7 +10,7 @@ $ heroku local:start
 ```
 или запустить через класс <b> com/example/Application </b> 
 
-Приложение должно быть поднято на [localhost:5000](http://localhost:5000/).
+Приложение должно быть поднято на [localhost:8080](http://localhost:8080/).
 
 ## Запуск в облаке Heroku
 
