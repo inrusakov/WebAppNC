@@ -16,6 +16,8 @@ $ heroku local:start
 
 ```sh
 cmd:
+$ heroku git:remote some-little-project
+$ git commit -m "some message"
 $ git push heroku main
 $ heroku open
 ```
