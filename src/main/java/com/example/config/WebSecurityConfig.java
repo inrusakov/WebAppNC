@@ -17,10 +17,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/registration").not().fullyAuthenticated()
-                .antMatchers("/", "/addPost", "/allPosts", "/styles/css/*", "/postObserver/*",
-                        "/deletePost/*", "/editPost/*", "/profile").permitAll()
-                .anyRequest().authenticated()
+//                .antMatchers("/registration").not().fullyAuthenticated()
+//                .antMatchers("/", "/addPost", "/allPosts", "/styles/css/*", "/postObserver/*",
+//                        "/deletePost/*", "/editPost/*", "/profile").permitAll()
+                .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")
