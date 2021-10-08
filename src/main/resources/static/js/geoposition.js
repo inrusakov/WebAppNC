@@ -72,6 +72,4 @@ function locationError(error) {
     // read the code and message and decide how you want to handle this!
 }
 
-
-
 navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
