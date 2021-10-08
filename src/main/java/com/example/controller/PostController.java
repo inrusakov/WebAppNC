@@ -10,6 +10,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
@@ -30,11 +32,14 @@ public class PostController {
     }
 
     @PostMapping("/addPost")
-    public RedirectView addPost(@RequestParam String header, @RequestParam String content){
+    public RedirectView addPost(@RequestParam String header, @RequestParam String content, @RequestParam("file") MultipartFile file, RedirectAttributes attributes){
         Post post = new Post();
         post.setHeader(header);
         post.setContent(content);
         post.setPublicationDate(LocalDateTime.now());
+
+        MultipartFile f = file;
+        System.out.println(f.getContentType());
 
         postRepository.save(post);
         return new RedirectView("/allPosts");
