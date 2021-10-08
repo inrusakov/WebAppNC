@@ -1,11 +1,12 @@
 package com.example.model.blog;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class Post {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY) //GenerationType.AUTO)
     private Integer postId;
 //    @ManyToOne(optional = false, cascade = CascadeType.ALL)
 //    @JoinColumn(name = "post_id")
@@ -15,7 +16,7 @@ public class Post {
 //    private Place place;
     private Integer rating;
     private Integer views;
-//  private ? date;
+    private LocalDateTime publicationDate;
     private String header;
 
     @Column(columnDefinition="TEXT")
@@ -60,5 +61,13 @@ public class Post {
 
     public void setPostId(Integer postId) {
         this.postId = postId;
+    }
+
+    public LocalDateTime getPublicationDate() {
+        return publicationDate;
+    }
+
+    public void setPublicationDate(LocalDateTime publicationDate) {
+        this.publicationDate = publicationDate;
     }
 }
