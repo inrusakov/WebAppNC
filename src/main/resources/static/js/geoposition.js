@@ -1,12 +1,21 @@
+let latitude;
+let longitude;
+let altitude;
+let accuracy;
+let altitudeAccuracy;
+let heading;
+let speed;
+let timestamp;
+
 async function locationSuccess(position) {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    const altitude = position.coords.altitude;
-    const accuracy = position.coords.accuracy;
-    const altitudeAccuracy = position.coords.altitudeAccuracy;
-    const heading = position.coords.height;
-    const speed = position.coords.speed;
-    const timestamp = position.timestamp;
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+    altitude = position.coords.altitude;
+    accuracy = position.coords.accuracy;
+    altitudeAccuracy = position.coords.altitudeAccuracy;
+    heading = position.coords.height;
+    speed = position.coords.speed;
+    timestamp = position.timestamp;
 
     // Console output.
     console.debug("Location:   latitude: "+ latitude + "   longitude: "+ longitude)
@@ -62,5 +71,7 @@ function locationError(error) {
 
     // read the code and message and decide how you want to handle this!
 }
+
+
 
 navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
