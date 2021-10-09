@@ -1,9 +1,14 @@
 package com.example.model.blog;
 
 import com.example.model.User;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+
+@Getter
+@Setter
 
 @Entity
 public class Blog {
