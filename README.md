@@ -14,5 +14,5 @@ $ heroku local:start
 
 ## Удалённый запуск
 
-В облаке Heroku автоматически запускается [последняя версия приложения](https://some-little-project.herokuapp.com/), находяшаяся в ветке <b>origin:main</b>
+В облаке Heroku автоматически запускается [последняя версия приложения](https://some-little-project.herokuapp.com/) из ветки <b>origin:main</b>
 
