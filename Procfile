@@ -1,1 +1,0 @@
-web: java -jar target/launcher-1.0.jar
