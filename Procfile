@@ -1,1 +1,1 @@
-web: java -jar target/demo-0.0.1-SNAPSHOT.jar
+web: Java $Java_OPTS -jar target/dependency/demo-0.0.1-SNAPSHOT.jar -port $PORT target/*.war
