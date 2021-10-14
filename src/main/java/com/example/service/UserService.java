@@ -18,7 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService{/*} implements UserDetailsService {
 
     @Autowired
     private UserController userController;
@@ -65,5 +65,5 @@ public class UserService implements UserDetailsService {
             return true;
         }
         return false;
-    }
+    }*/
 }
