@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/", "/addPost", "/allPosts", "/styles/css/*", "/postObserver/*",
-                        "/deletePost/*", "/editPost/*", "/profile").permitAll()
+                        "/deletePost/*", "/editPost/*", "/profile", "/userList").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

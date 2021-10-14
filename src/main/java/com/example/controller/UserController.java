@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -52,10 +53,13 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public String profile(){
+    public String profile(Model model){
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("user", userRepository.findByEmail(user.getUsername()));
         return "profile";
     }
 
+/*
     @GetMapping("/profile/allUsers")
     public List<User> getAllEmployees() {
         return (List<User>) userRepository.findAll();
@@ -83,6 +87,16 @@ public class UserController {
     */
 
     @PostMapping("/profile")
+    public RedirectView profile(@RequestParam String firstName, @RequestParam String lastName){
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User u = userRepository.findByEmail(user.getUsername());
+        u.setFirstName(firstName);
+        u.setLastName(lastName);
+        userRepository.save(u);
+        return new RedirectView("/profile");
+    }
+
+   /* @PostMapping("/profile")
     public RedirectView profile(@RequestParam String email, @RequestParam String firstName, @RequestParam String lastName){
         Iterable<User> user = userRepository.findAll();
         for(User u : user){
@@ -94,6 +108,12 @@ public class UserController {
             }
         }
         return new RedirectView("/profile");
+    }*/
+
+    @GetMapping("/userList")
+    public String userList(Model model){
+        model.addAttribute("user", userRepository.findAll());
+        return "userList";
     }
 
 }
