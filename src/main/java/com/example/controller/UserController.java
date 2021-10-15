@@ -5,7 +5,6 @@ import com.example.model.User;
 import com.example.repos.CommentRepository;
 import com.example.repos.UserRepository;
 import lombok.AllArgsConstructor;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
