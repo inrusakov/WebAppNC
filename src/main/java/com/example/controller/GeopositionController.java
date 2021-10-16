@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.model.ajax.AjaxResponse;
 import com.example.model.ajax.Views;
 import com.example.model.geoposition.GeoRequest;
+import com.example.model.geoposition.Route;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,18 @@ public class GeopositionController {
             response.setCode("400");
             response.setMsg("Fields are not correct");
         }
+
+        return response;
+    }
+
+    @JsonView(Views.Public.class)
+    @RequestMapping(value="/sendRoute",method=RequestMethod.POST)
+    public AjaxResponse getUserRoute(@RequestBody Route route, HttpServletRequest request) {
+        AjaxResponse response = new AjaxResponse();
+        //String user = geoRequest.getUser();
+        response.setCode("200");
+        response.setMsg("Correct");
+
 
         return response;
     }

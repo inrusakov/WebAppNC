@@ -35,7 +35,7 @@ async function locationSuccess(position) {
     }
 
     // Creating the object passing to geo controller.
-    var geoRequest = {
+    let geoRequest = {
         //"user" : user,
         "latitude" : latitude,
         "longitude" :longitude

@@ -1,7 +1,17 @@
-var mymap;
+let mymap;
+let markerCounter = 0;
+let markers = [];
+const deleteM = document.querySelector('#deleteMarkers')
+deleteM.addEventListener('click', () => deleteMarkers())
 
-function addMarker(){
-    var marker = L.marker([55.8585138, 37.6575657]).addTo(mymap);
+function addMarker(lat, lng){
+    let newMarker = L.marker([lat,lng]).addTo(mymap);
+}
+
+function deleteMarkers(){
+    markers.forEach(element => mymap.removeLayer(element));
+    markerCounter = 0;
+    markers = [];
 }
 
 function printMap() {
@@ -15,7 +25,52 @@ function printMap() {
         tileSize: 512,
         zoomOffset: -1
     }).addTo(mymap);
+    mymap.on('click', onMapClick);
+}
+
+function onMapClick(e) {
+    marker = new L.Marker(e.latlng, {draggable:true});
+    mymap.addLayer(marker);
+    marker.bindPopup("<b>Hello!</b>");
+    marker.bindTooltip(markerCounter.toString(),
+        {
+            permanent: true,
+            direction: 'right'
+        }
+    );
+    markerCounter++;
+    markers.push(marker);
+};
+
+function sendRoute(){
+    let route = {
+        markers
+    };
+
+    $.ajax({
+        // Request type.
+        type: "POST",
+        contentType : 'application/json; charset=utf-8',
+        // Request data type.
+        dataType : 'json',
+        // Request link.
+        url: "/sendRoute",
+        // Converting request object.
+        data: JSON.stringify(route),
+        success : function(data) {
+            // Success log.
+            console.log("SUCCESS: ", data);
+        },
+        error : function(e) {
+            // Error log.
+            console.log("ERROR: ", e);
+        },
+        // Passing the csrf token.
+        headers: {"X-CSRF-TOKEN": $("input[name='_csrf']").val()}
+    });
 }
 
 printMap();
-addMarker();
+
+
+
