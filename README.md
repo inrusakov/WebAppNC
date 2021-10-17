@@ -5,19 +5,14 @@
 
 ```sh
 cmd:
-$ mvnw package
+$ mvnw clean install
 $ heroku local:start
 ```
-или запустить через класс <b> com/example/Application </b> 
+или запустить через класс <b> com/example/Application </b>
 
-Приложение должно быть поднято на [localhost:8080](http://localhost:8080/).
+Приложение должно подняться на [localhost:5000](http://localhost:5000/).
 
-## Запуск в облаке Heroku
+## Удалённый запуск
 
-```sh
-cmd:
-$ heroku git:remote some-little-project
-$ git commit -m "some message"
-$ git push heroku main
-$ heroku open
-```
+В облаке Heroku автоматически запускается [последняя версия приложения](https://some-little-project.herokuapp.com/) из ветки <b>origin:main</b>
+
