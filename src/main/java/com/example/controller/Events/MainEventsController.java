@@ -54,7 +54,8 @@ public class MainEventsController {
      */
 
     @GetMapping("/new")
-    public String newEvent(@ModelAttribute("event") Event event){
+    public String newEvent(@ModelAttribute("event") Event event, Model model){
+        model.addAttribute("orgName", eventDAO.getOrganization());
         return  "events/new";
     }
 

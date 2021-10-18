@@ -47,11 +47,12 @@ public class Event {
     private boolean isPaid = false;
     @PositiveOrZero(message = "Price can't be a negative integer")
     private int price;
+    private int admin_id;
 
     public Event(){}
 
     public Event(int eventID, String name, String description, String type,
-                 String uRL, int companyID, Date date, boolean isPaid, int price){
+                 String uRL, int companyID, Date date, boolean isPaid, int price, int admin_id){
         this.eventID = eventID;
         this.name = name;
         this.description = description;
@@ -60,6 +61,15 @@ public class Event {
         this.date = date;
         this.isPaid = isPaid;
         this.price = price;
+        this.admin_id = admin_id;
+    }
+
+    public void setAdmin_id(int admin_id){
+        this.admin_id = admin_id;
+    }
+
+    public int getAdmin_id(){
+        return admin_id;
     }
 
     public void setEventID(int eventID){
