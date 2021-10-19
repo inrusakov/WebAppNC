@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-//@Entity
+@Entity
 public class Marker {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -13,8 +13,7 @@ public class Marker {
     public double latitude;
     public double longtitude;
 
-    public Marker(Integer id, double latitude, double longtitude) {
-        this.id = id;
+    public Marker(double latitude, double longtitude) {
         this.latitude = latitude;
         this.longtitude = longtitude;
     }

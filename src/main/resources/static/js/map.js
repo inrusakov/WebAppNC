@@ -2,7 +2,10 @@ let mymap;
 let markerCounter = 0;
 let markers = [];
 const deleteM = document.querySelector('#deleteMarkers')
+const sendRouteM = document.querySelector('#sendRoute')
 deleteM.addEventListener('click', () => deleteMarkers())
+sendRouteM.addEventListener('click', () => sendRoute())
+
 
 function addMarker(lat, lng){
     let newMarker = L.marker([lat,lng]).addTo(mymap);
@@ -43,9 +46,8 @@ function onMapClick(e) {
 };
 
 function sendRoute(){
-    let route = {
-        markers
-    };
+    let route = [];
+    markers.forEach(element => route.push(element._latlng.toString().split("(")[1].split(")")[0]));
 
     $.ajax({
         // Request type.
