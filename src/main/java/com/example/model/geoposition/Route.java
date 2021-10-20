@@ -13,6 +13,10 @@ public class Route {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Marker> markers = new LinkedList<Marker>();
 
+    public Route() {
+
+    }
+
     public Integer getId() {
         return id;
     }
