@@ -1,8 +1,8 @@
-package com.example.model.ajax;
+package com.example.model.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-public class AjaxResponse {
+public class Response {
     @JsonView(Views.Public.class)
     String msg;
 
