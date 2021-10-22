@@ -1,7 +1,11 @@
 package com.example.controller;
 
+import com.example.model.User;
 import com.example.model.blog.Post;
+import com.example.model.blog.PostComment;
+import com.example.repos.PostCommentRepository;
 import com.example.repos.PostRepository;
+import com.example.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,14 +20,20 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-public class PostController {
+public class PostController{
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private PostCommentRepository postCommentRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     // ADDING NEW POST
     @GetMapping("/addPost")
@@ -47,7 +57,19 @@ public class PostController {
 
     // OBSERVING POST
     @GetMapping("/postObserver/{postId}")
-    public String observePost(@PathVariable("postId") Integer postId, String submit, Model model){
+    public String observePost(@PathVariable("postId") Integer postId, Model model){
+        User mainUser = (User)userRepository.findById(2).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + postId));
+        model.addAttribute("mainUser", mainUser);
+
+        PostComment c = new PostComment();
+        c.setId(0);
+        model.addAttribute("newComment", c);
+
+        List<PostComment> comments = postCommentRepository.findAllRootComments(postId);
+        comments.sort(Comparator.comparing(PostComment::getTotalRating));
+        Collections.reverse(comments);
+        model.addAttribute("comments", comments);
+
         model.addAttribute("post", (Post)postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId)));
         return "postObserver";

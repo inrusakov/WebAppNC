@@ -17,6 +17,12 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/postObserver").setViewName("postObserver");
         registry.addViewController("/editPost").setViewName("editPost");
         registry.addViewController("/profile").setViewName("profile");
+        registry.addViewController("/comment").setViewName("comment");
+        registry.addViewController("/likeComment").setViewName("likeComment");
+        registry.addViewController("/addComment").setViewName("addComment");
+        registry.addViewController("/editComment").setViewName("editComment");
+        registry.addViewController("/reply").setViewName("reply");
+        registry.addViewController("/replyToComment").setViewName("replyToComment");
     }
 
     @Override
