@@ -3,14 +3,17 @@ package com.example.model;
 //import com.example.model.Address;
 
 import com.example.model.blog.Blog;
+import com.example.model.geoposition.Address;
+import com.example.model.org.Organisation;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 
-@Entity
+@Entity(name = "app_User")
 // This tells Hibernate to make a table out of this class
 @Table(name = "users")
 public class User {
@@ -24,14 +27,19 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
-    private Role role;
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
+    private boolean active;
     private File pic;
     @OneToMany(targetEntity=Tag.class,  fetch=FetchType.EAGER)
     private List<Tag> tag;
-    //private Address userAddress;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Address userAddress;
     @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "blog_id")
     private Blog blog;
+
 
     public User(){}
 
@@ -75,12 +83,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(Set<Role> role) {
+        this.roles = role;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRole() {
+        return roles;
     }
 
     public void setPic(File pic) {
@@ -91,6 +99,13 @@ public class User {
         return pic;
     }
 
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
 
     public List<Tag> getTag() {
         return tag;
@@ -108,17 +123,15 @@ public class User {
         this.blog = blog;
     }
 
-    /*
-
 
     public Address getUserAddress(){
         return userAddress;
     }
 
-    public void setUserAddress(userAddress){
+    public void setUserAddress(Address userAddress){
         this.userAddress = userAddress;
     }
-     */
+
 
     @Override
     public String toString() {
@@ -128,7 +141,8 @@ public class User {
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", role=" + role + // ", address=" + userAddress.toString()+
+                ", roles=" + roles +
+                ", address=" + userAddress.toString() +
                 '}';
     }
 }

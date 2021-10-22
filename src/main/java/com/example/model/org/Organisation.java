@@ -3,25 +3,27 @@ package com.example.model.org;
 import com.example.model.User;
 import com.example.model.geoposition.Address;
 import com.example.model.geoposition.Position;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
+import javax.persistence.*;
+
+@Entity
 public class Organisation {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private int orgID;
 
-    @OneToOne(optional = false, mappedBy = "org")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "position_id", referencedColumnName = "id")
     private Position position;
 
     private String name;
 
-    @OneToOne(optional = false, mappedBy = "org")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User admin;
 
-    @OneToOne(optional = false, mappedBy = "org")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
     public int getOrgID() {

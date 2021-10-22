@@ -2,15 +2,46 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
   <title>Profile</title>
+
+  <style>
+  h1 {
+  color: black;
+  font-family: "Times New Roman", Georgia, Serif;
+  line-height: 1.3em;
+  }
+  label {
+  margin:0 auto;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1c87c9;
+  }
+  input {
+  margin:0 auto;
+  width: 50%;
+  height: 28px;
+  padding: 4px 10px;
+  border: 1px solid #666;
+  background: #cce6ff;
+  color: #1c87c9;
+  font-size: 16px;
+  border-radius: 10px;
+  margin: 0 auto;
+  }
+  </style>
 </head>
-<body>
-Edit your profile
+<body bgcolor="#ccffcc">
+<h1>Edit your profile, [[${#httpServletRequest.remoteUser}]]</h1>
 <form th:action="@{/profile}" method="post">
-  <div><label> Email: <input type="text" name="email" /> </label></div>
-  <div><label> First name: <input type="text" name="firstName" /> </label></div>
-  <div><label> Last name: <input type="text" name="lastName" /> </label></div>
+  <div><label> First name: <br><input type="text" name="firstName" th:value="${user.firstName}"/> </label></div>
+  <div><label> Last name: <br><input type="text" name="lastName" th:value="${user.lastName}"/> </label></div><br>
 <!--  <div><label> Photo: <input type="image" name="pic" /> </label></div>-->
   <div><input type="submit" name="send" value="Add"/></div>
 </form>
+<tr>
+  <td th:text="${user.email}">Email</td>
+  <td th:text="${user.firstName}">First Name</td>
+  <td th:text="${user.lastName}">Last Name</td>
+  <td th:text="${user.active}">Is Active</td>
+</tr>
 </body>
 </html>
