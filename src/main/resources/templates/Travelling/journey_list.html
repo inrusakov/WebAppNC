@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<body>
+
+<div th:if="${!#authorization.expression('isAuthenticated()')}">
+    <table border="1">
+        <tr>
+            <td>
+                <div>
+                    <form method="get" th:action="@{/login}">
+                        <button>
+                            Login In
+                        </button>
+                    </form>
+                </div>
+            </td>
+            <td>
+                <form method="get" th:action="@{/registration}">
+                    <button>
+                        Register
+                    </button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <table border="1">
+        <tr>
+            <td>
+                <span sec:authentication="principal.Username">Username</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<table border="1">
+    <tr>
+        <td>
+            <form method="get" th:action="@{/travel/journey/list}">
+                <button type="submit">
+                    <input name="req" type="hidden" value="opn"/>
+                    <b>Открытые</b>
+                </button>
+            </form>
+        </td>
+
+        <td th:if="${#authorization.expression('isAuthenticated()')}">
+            <form method="get" th:action="@{/travel/journey/list}">
+                <button type="submit">
+                    <input name="req" type="hidden" value="prt"/>
+                    <b>Участвую</b>
+                </button>
+            </form>
+        </td>
+
+        <td>
+            <form method="get" th:action="@{/travel/journey/list}">
+                <div>
+                    <input name="req" type="hidden" value="ttl"/>
+                    <input name="ttl" type="text" value placeholder="Поиск:" />
+                    <button type="submit"> @ </button>
+                </div>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<table border="1">
+    <tr th:each="journey : ${journey_list}">
+        <td>
+            <form method="get" th:action="@{/travel/journey/{journeyId}(journeyId=${journey.id})}">
+                <button type="submit">
+                    <div>
+                        <p th:text="${journey.title}"/>
+                        <p th:text="${journey.description}"/>
+                    </div>
+                </button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
