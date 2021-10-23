@@ -23,6 +23,7 @@ public class EventDAO {
     private static Connection connection;
 
     private List<Event> events = new ArrayList<>();
+    private List<Event> userEvents = new ArrayList<>();
 
     private int userId;
     private String userLogin;
@@ -103,9 +104,7 @@ public class EventDAO {
             Statement statement = connection.createStatement();
 
 
-            String SQL = "SELECT * FROM events " +
-                    "WHERE admin_id = (SELECT id FROM app_user " +
-                    "WHERE email = '" + userLogin + "');";
+            String SQL = "SELECT * FROM events";
 
             ResultSet resultSet = statement.executeQuery(SQL);
 
@@ -137,6 +136,50 @@ public class EventDAO {
         return events;
     }
 
+    public List<Event> edit() {
+
+        List<Event> events = new ArrayList<>();
+
+        this.setUserInfo();
+
+        try{
+            Statement statement = connection.createStatement();
+
+
+            String SQL = "SELECT * FROM events " +
+                    "WHERE admin_id = (SELECT id FROM app_user " +
+                    "WHERE email = '" + userLogin + "');";
+
+            ResultSet resultSet = statement.executeQuery(SQL);
+
+            while(resultSet.next()){
+                Event event = new Event();
+
+                event.setName(resultSet.getString("name"));
+                event.setEventID(resultSet.getInt("event_id"));
+                if(resultSet.getObject(9) == null)
+                    event.setPrice(0);
+                else
+                    event.setPrice(resultSet.getInt("price"));
+                event.setDate(resultSet.getDate("event_date"));
+                event.setuRL(resultSet.getString("url"));
+                event.setType(resultSet.getString("type"));
+                event.setCompanyID(resultSet.getInt("org_id"));
+                event.setDescription(resultSet.getString("description"));
+                event.setImagePath(resultSet.getString("image_url"));
+
+                events.add(event);
+            }
+
+            statement.close();
+        } catch (SQLException throwables){
+            throwables.printStackTrace();
+        }
+        this.userEvents = events;
+
+        return events;
+    }
+
     /**
      * Shows event from database by its id.
      * @param id
@@ -145,6 +188,10 @@ public class EventDAO {
 
     public Event show(int id) {
         return events.stream().filter(event -> event.getEventID() == id).findAny().orElse(null);
+    }
+
+    public Event showUserEvent(int id) {
+        return userEvents.stream().filter(event -> event.getEventID() == id).findAny().orElse(null);
     }
 
     /**
@@ -184,22 +231,42 @@ public class EventDAO {
         }
 
     }
-    //Need to be done
-/*
-    public void update(int id, Event updatedEvent) {
-        Event eventToBeUpdated = show(id);
+
+    public void update(Event updatedEvent) {
+        Event eventToBeUpdated = showUserEvent(updatedEvent.getEventID());
+
+        System.out.println(eventToBeUpdated.toString());
+
+        System.out.println(updatedEvent.toString());
 
         eventToBeUpdated.setName(updatedEvent.getName());
         eventToBeUpdated.setDescription(updatedEvent.getDescription());
         eventToBeUpdated.setType(updatedEvent.getType());
         eventToBeUpdated.setuRL(updatedEvent.getuRL());
-        eventToBeUpdated.setCompanyID(updatedEvent.getCompanyID());
         eventToBeUpdated.setDate(updatedEvent.getDate());
-        eventToBeUpdated.setPaid(updatedEvent.getIsPaid());
         eventToBeUpdated.setPrice(updatedEvent.getPrice());
+        eventToBeUpdated.setImagePath(updatedEvent.getImagePath());
 
+        try{
+            Statement statement = connection.createStatement();
+            String SQL = "UPDATE events " +
+                    "SET name = '" + updatedEvent.getName() + "', " +
+                    "description = '" + updatedEvent.getDescription() + "', " +
+                    "type = '" + updatedEvent.getType() + "', " +
+                    "url = '" + updatedEvent.getuRL() + "', " +
+                    "event_date = '" + updatedEvent.getDate() + "', " +
+                    "price = " + updatedEvent.getPrice() + ", " +
+                    "image_url = '" + updatedEvent.getImagePath() + "' " +
+                    "WHERE event_id = " + updatedEvent.getEventID();
+            statement.execute(SQL);
+
+            statement.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
-
+    //Need to be done
+/*
     public void delete(int id) {
         events.removeIf(p -> p.getCompanyID() == id);
     }

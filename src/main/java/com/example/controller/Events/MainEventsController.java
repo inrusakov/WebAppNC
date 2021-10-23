@@ -62,17 +62,39 @@ public class MainEventsController {
     /**
      * Post query from user to server with information about new event
      * @param event
-     * @param bindingResult - Checks if there was errors with binding Event fields with inserted values.
+     * @param bindingResult - Checks if there were errors with binding Event fields with inserted values.
      * @return
      */
 
     @PostMapping()
-    public String create(@ModelAttribute("event") @Valid Event event, BindingResult bindingResult){
+    public String create(@ModelAttribute("updatedEvent") @Valid Event event, BindingResult bindingResult){
         if(bindingResult.hasErrors())
             return "events/new";
 
         eventDAO.save(event);
 
+        return "redirect:/events";
+    }
+
+    @GetMapping("/edit/edit")
+    public String edit(Model model){
+        model.addAttribute("events", eventDAO.edit());
+        return "events/edit/edit";
+    }
+
+    @GetMapping("/edit/modify/{id}")
+    public String modify(@PathVariable("id") int id, Model model, @ModelAttribute("updatedEvent") Event updatedEvent){
+        model.addAttribute("orgName", eventDAO.getOrganization());
+        model.addAttribute("event", eventDAO.show(id));
+        return "/events/edit/modify";
+    }
+
+    @PostMapping("/edit/edit")
+    public String modifyEvent(@ModelAttribute("updatedEvent") @Valid Event event, BindingResult bindingResult){
+        if(bindingResult.hasErrors())
+            return "events/new";
+
+        eventDAO.update(event);
         return "redirect:/events";
     }
 }
