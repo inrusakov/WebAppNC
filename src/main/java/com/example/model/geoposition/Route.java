@@ -13,6 +13,10 @@ public class Route {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Marker> markers = new LinkedList<Marker>();
 
+    public Route() {
+
+    }
+
     public Integer getId() {
         return id;
     }
@@ -29,7 +33,7 @@ public class Route {
         this.markers = markers;
     }
 
-    public void addMarker(double lat, double lon){
-        markers.add(new Marker(lat, lon));
+    public void addMarker(double lat, double lon, String desc){
+        markers.add(new Marker(lat, lon, desc));
     }
 }
