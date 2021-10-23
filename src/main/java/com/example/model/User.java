@@ -15,7 +15,6 @@ import java.util.Set;
 
 @Entity(name = "app_User")
 // This tells Hibernate to make a table out of this class
-@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

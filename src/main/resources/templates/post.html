@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <div class="post">
-            <form th:action="@{/addPost}" method="post" enctype="multipart/form-data">
+            <form th:action="@{/addPost}" method="post">
             <div class="post-header">
                 <div class="label-header"> <input type="text" name="header"/> </div>
             </div>
@@ -19,6 +19,7 @@
                     <div id="editor">
                         <p>Tell your story...</p>
                     </div>
+
                 </div>
 
             </div>
@@ -30,60 +31,7 @@
         <!-- Include the Quill library -->
         <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
        <!-- Initialize Quill editor -->
-
-
-    <script>
-        let count = 0;
-        function imageHandler() {
-            let fileInput = editor.querySelector('input.ql-image[type=file]');
-
-            if (fileInput == null) {
-                fileInput = document.createElement('input');
-                fileInput.setAttribute('name', 'file');
-                fileInput.setAttribute('type', 'file');
-                fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
-                fileInput.classList.add('ql-image');
-                fileInput.addEventListener('change', () => {
-                    const files = fileInput.files;
-
-                    if (!files || !files.length) {
-                        console.log('No files selected');
-                        return;
-                    }
-
-                    const formData = new FormData();
-                    formData.append('file', files[0]);
-                    count++;
-
-                    var url = 'https://cdn-blog.scalablepath.com/uploads/2017/12/blog.image_.Quill_.js.editor.view_.-.png';
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('POST', 'http://localhost:8080/upload-file', true);
-                    xhr.onload = () => {
-                        console.log(xhr.status);
-                        console.log(xhr);
-                        console.log(xhr.responseText);
-                        if (xhr.status === 200) {
-                            // this is callback data: url
-                            alert(xhr.responseText);
-                            url = JSON.parse(xhr.responseText).uri;
-                            console.log(url);
-                            insertImage(url);
-                        }
-                    };
-                    xhr.send(formData);
-                });
-                editor.appendChild(fileInput);
-            }
-            fileInput.click();
-        }
-
-        function insertImage(url){
-            const range = quill.getSelection(true);
-            quill.insertEmbed(range.index, 'image', url);
-        }
-    </script>
-
-    <script>
+        <script>
             var toolbarOptions = [
                 ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
                 ['blockquote', 'code-block'],
@@ -107,12 +55,9 @@
 
             var quill = new Quill('#editor', {
                 modules: {
-                    toolbar: {
-                        container: toolbarOptions,
-                        handlers: { image: imageHandler }
-                    }
+                    toolbar: toolbarOptions
                 },
-                theme: 'snow',
+                theme: 'snow'
             });
         </script>
 
@@ -121,7 +66,6 @@
             form.onsubmit = function() {
                 // Populate hidden form on submit
                 var content = document.querySelector('input[name=content]');
-               // alert(JSON.stringify(quill.getContents()));
                 content.value = JSON.stringify(quill.getContents());
                 return true;
             };

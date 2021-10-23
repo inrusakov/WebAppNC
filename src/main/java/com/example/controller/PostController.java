@@ -1,11 +1,7 @@
 package com.example.controller;
 
-import com.example.model.User;
 import com.example.model.blog.Post;
-import com.example.model.blog.PostComment;
-import com.example.repos.PostCommentRepository;
 import com.example.repos.PostRepository;
-import com.example.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,26 +10,18 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
-public class PostController{
+public class PostController {
     @Autowired
     private PostRepository postRepository;
-    @Autowired
-    private PostCommentRepository postCommentRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     // ADDING NEW POST
     @GetMapping("/addPost")
@@ -42,14 +30,11 @@ public class PostController{
     }
 
     @PostMapping("/addPost")
-    public RedirectView addPost(@RequestParam String header, @RequestParam String content, @RequestParam("file") MultipartFile file, RedirectAttributes attributes){
+    public RedirectView addPost(@RequestParam String header, @RequestParam String content){
         Post post = new Post();
         post.setHeader(header);
         post.setContent(content);
         post.setPublicationDate(LocalDateTime.now());
-
-        MultipartFile f = file;
-        System.out.println(f.getContentType());
 
         postRepository.save(post);
         return new RedirectView("/allPosts");
@@ -57,19 +42,7 @@ public class PostController{
 
     // OBSERVING POST
     @GetMapping("/postObserver/{postId}")
-    public String observePost(@PathVariable("postId") Integer postId, Model model){
-        User mainUser = (User)userRepository.findById(2).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + postId));
-        model.addAttribute("mainUser", mainUser);
-
-        PostComment c = new PostComment();
-        c.setId(0);
-        model.addAttribute("newComment", c);
-
-        List<PostComment> comments = postCommentRepository.findAllRootComments(postId);
-        comments.sort(Comparator.comparing(PostComment::getTotalRating));
-        Collections.reverse(comments);
-        model.addAttribute("comments", comments);
-
+    public String observePost(@PathVariable("postId") Integer postId, String submit, Model model){
         model.addAttribute("post", (Post)postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId)));
         return "postObserver";
