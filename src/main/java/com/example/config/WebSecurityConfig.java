@@ -19,7 +19,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable(); // !!! УДАЛИТЬ ЭТО ПОТОМ
         http
                 .authorizeRequests()
 //                .antMatchers("/registration").not().fullyAuthenticated()

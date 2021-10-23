@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <title>Post overview</title>
     <link th:href="@{/styles/css/postObserver.css}" rel="stylesheet" />
-    <link th:href="@{/styles/css/comment.css}" rel="stylesheet" />
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body>
@@ -25,55 +22,8 @@
             </div>
             <p class="editor" id="p-content">
             </p>
-
-            <!--<div th:each="comment : ${comments}">-->
-                <!--<div th:insert="comment.html :: div.fragment(comment=${comment}, user=${comment.user}, post=${comment.post}, mainUser=${mainUser})"></div>-->
-            <!--</div>-->
-
-
-            <div th:each="comment : ${comments}">
-                <ul id="myUL">
-                    <li>
-                        <div th:insert="comment.html :: div.fragment(comment=${comment}, user=${comment.user}, post=${comment.post}, mainUser=${mainUser})"></div>
-                        <span th:if="${not #lists.isEmpty(comment.subComments)}" class="caret">...</span>
-                        <ul class="nested">
-                            <div th:fragment="fragment_node(comment)" th:unless="${#lists.isEmpty(comment.subComments)}" >
-                                <div th:each="childComm : ${comment.subComments}">
-                                    <li>
-                                        <div th:insert="comment.html :: div.fragment(comment=${childComm}, user=${childComm.user}, post=${childComm.post}, mainUser=${mainUser})"></div>
-                                        <span th:if="${not #lists.isEmpty(childComm.subComments)}" class="caret">...</span>
-                                        <ul class="nested">
-                                            <div th:replace="this::fragment_node(${childComm})"></div>
-                                        </ul>
-                                    </li>
-                                </div>
-                            </div>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-
-
-            <div th:insert="addComment.html :: form.new_comm_form(comment=${newComment}, user=${mainUser}, post=${post})"></div>
-
-
         </div>
     </div>
-
-    <script>
-                var toggler = document.getElementsByClassName("caret"),
-                len = toggler.length;
-                var i;
-                <!--console.log(toggler);-->
-                <!--console.log(toggler[0]);-->
-                for (i = 0; i < toggler.length; i++) {
-
-                    toggler[i].addEventListener("click", function() {
-                    this.parentElement.querySelector(".nested").classList.toggle("active");
-                    this.classList.toggle("caret-down");
-                  });
-                }
-    </script>
 
     <!-- Include the Quill library -->
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
