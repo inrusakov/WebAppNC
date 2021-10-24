@@ -96,9 +96,13 @@ public class EventDAO {
 
     public List<Event> index() {
 
+        if(userLogin == null) {
+            this.setUserInfo();
+        }
+
         List<Event> events = new ArrayList<>();
 
-        this.setUserInfo();
+        //this.setUserInfo();
 
         try{
             Statement statement = connection.createStatement();
@@ -138,9 +142,11 @@ public class EventDAO {
 
     public List<Event> edit() {
 
-        List<Event> events = new ArrayList<>();
+        if(userLogin == null) {
+            this.setUserInfo();
+        }
 
-        this.setUserInfo();
+        List<Event> events = new ArrayList<>();
 
         try{
             Statement statement = connection.createStatement();
@@ -201,7 +207,9 @@ public class EventDAO {
 
     public void save(Event event) {
 
-        this.setUserInfo();
+        if(userLogin == null) {
+            this.setUserInfo();
+        }
 
         event.setEventID(events.size() + 1);
         event.setCompanyID(orgId); //temp
@@ -210,8 +218,7 @@ public class EventDAO {
         String dateStr = new SimpleDateFormat("yyyy/MM/dd").format(date);
         try{
             Statement statement = connection.createStatement();
-            String SQL = "INSERT INTO events (event_id, org_id, name, type, description, event_date, image_url, url, price, admin_id) values (" +
-                    event.getEventID()+ ", " +
+            String SQL = "INSERT INTO events (org_id, name, type, description, event_date, image_url, url, price, admin_id) values (" +
                     event.getCompanyID()+ ", " + // Correlated with userID in table Users
                     "'" + event.getName() + "', " +
                     "'" + event.getType() + "', " +
@@ -233,11 +240,12 @@ public class EventDAO {
     }
 
     public void update(Event updatedEvent) {
+
+        if(userLogin == null) {
+            this.setUserInfo();
+        }
+
         Event eventToBeUpdated = showUserEvent(updatedEvent.getEventID());
-
-        System.out.println(eventToBeUpdated.toString());
-
-        System.out.println(updatedEvent.toString());
 
         eventToBeUpdated.setName(updatedEvent.getName());
         eventToBeUpdated.setDescription(updatedEvent.getDescription());
@@ -265,12 +273,18 @@ public class EventDAO {
             e.printStackTrace();
         }
     }
-    //Need to be done
-/*
+
     public void delete(int id) {
-        events.removeIf(p -> p.getCompanyID() == id);
+        try{
+            Statement statement = connection.createStatement();
+
+            String SQL = "DELETE FROM events WHERE event_id = " + id ;
+
+            statement.execute(SQL);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
-*/
 
 }
