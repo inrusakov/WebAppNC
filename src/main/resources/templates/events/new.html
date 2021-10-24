@@ -19,6 +19,7 @@
     <div class="w3-bar w3-red w3-card w3-left-align w3-large">
         <a href="/events" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
         <a href="/events/new " class="w3-bar-item w3-button w3-padding-large">Добавить событие</a>
+        <a href="/events/edit/edit " class="w3-bar-item w3-button w3-padding-large">Редактировать событие</a>
     </div>
 </div>
 <br/>
@@ -31,7 +32,7 @@
     <div class="w3-container w3-brown">
         <h1>
 
-            Добавление нового события для организации<div th:text="${orgName}"></div>
+            Добавление нового события для организации "<span th:text="${orgName}"></span>"
 
         </h1>
     </div>

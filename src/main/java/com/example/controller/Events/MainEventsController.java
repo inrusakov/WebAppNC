@@ -67,7 +67,7 @@ public class MainEventsController {
      */
 
     @PostMapping()
-    public String create(@ModelAttribute("updatedEvent") @Valid Event event, BindingResult bindingResult){
+    public String create(@ModelAttribute("event") @Valid Event event, BindingResult bindingResult){
         if(bindingResult.hasErrors())
             return "events/new";
 
@@ -76,25 +76,4 @@ public class MainEventsController {
         return "redirect:/events";
     }
 
-    @GetMapping("/edit/edit")
-    public String edit(Model model){
-        model.addAttribute("events", eventDAO.edit());
-        return "events/edit/edit";
-    }
-
-    @GetMapping("/edit/modify/{id}")
-    public String modify(@PathVariable("id") int id, Model model, @ModelAttribute("updatedEvent") Event updatedEvent){
-        model.addAttribute("orgName", eventDAO.getOrganization());
-        model.addAttribute("event", eventDAO.show(id));
-        return "/events/edit/modify";
-    }
-
-    @PostMapping("/edit/edit")
-    public String modifyEvent(@ModelAttribute("updatedEvent") @Valid Event event, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return "events/new";
-
-        eventDAO.update(event);
-        return "redirect:/events";
-    }
 }
