@@ -22,7 +22,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 
-@Controller // Веб-логика
+@Controller
 public class CommentController {
 
     @Autowired

@@ -65,7 +65,7 @@ public class PostController{
         c.setId(0);
         model.addAttribute("newComment", c);
 
-        List<PostComment> comments = postCommentRepository.findAllRootComments(postId);
+        List<PostComment> comments = postCommentRepository.findAllRootComments(postId); // найти все комментарии 0-го уровня
         comments.sort(Comparator.comparing(PostComment::getTotalRating));
         Collections.reverse(comments);
         model.addAttribute("comments", comments);

@@ -22,6 +22,4 @@ public interface PostCommentRepository extends JpaRepository<PostComment, Intege
         @Query(value = "SELECT * FROM post_comment WHERE post_id = ?1 AND layer=0 ORDER BY rating DESC",
                 nativeQuery = true)
         List<PostComment> findAllRootComments(Integer postId);
-
-
 }

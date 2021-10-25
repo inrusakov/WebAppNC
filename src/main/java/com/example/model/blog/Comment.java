@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-@NoArgsConstructor  // POJO class
+@NoArgsConstructor
 @MappedSuperclass
 //@Entity
 //@Table(name = "Comment")

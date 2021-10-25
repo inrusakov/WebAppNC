@@ -8,7 +8,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 </head>
 <body>
-
 <form class="new_comm_form" th:id="${comment.id + '_' + user.id}" th:action="@{/addComment/{postId}(postId=${post.postId})}" method="get" th:object = "${comment}">
     <div class="container d-flex justify-content-center mt-100 mb-100 ">
         <div class="row">

@@ -14,6 +14,7 @@ public class Post {
 //    private Tag tag;
 //    private Comment comment;
 //    private Place place;
+
     private Integer rating;
     private Integer views;
     private LocalDateTime publicationDate;
