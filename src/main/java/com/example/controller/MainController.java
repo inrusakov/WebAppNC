@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
 @Controller // This means that this class is a Controller
 public class MainController {
     @Autowired // This means to get the bean called userRepository
@@ -37,7 +35,7 @@ public class MainController {
         n.setPassword("random");
         n.setEmail("random@mail.ru");
         userRepository.save(n);
-        return "hello";
+        return "map";
     }
 
 }

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Show</title>
+</head>
+<body>
+<p th:text="${event.getName() + ', ' + event.getDescription() + ', '
+       + event.getDate() + ', ' + event.getType() + ', ' + event.getPrice() + ', '
+       + event.getuRL()}">VALUE</p>
+<p th:text="${event.getEventID()}">VALUE</p>
+
+</form>
+</body>
+</html>

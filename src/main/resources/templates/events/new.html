@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" content="width=device-width, initial-scale=1">
+    <title>Новое событие</title>
+</head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-dark-grey.css">
+
+<body>
+<div class="w3-container w3-gray">
+<div class="w3-top">
+    <div class="w3-bar w3-red w3-card w3-left-align w3-large">
+        <a href="/events" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+        <a href="/events/new " class="w3-bar-item w3-button w3-padding-large">Добавить событие</a>
+        <a href="/events/edit/edit " class="w3-bar-item w3-button w3-padding-large">Редактировать событие</a>
+    </div>
+</div>
+<br/>
+<div class="w3-card-4">
+    <div class="w3-row-padding w3-padding-64 w3-container">
+<form class="w3-container w3-theme-d1" th:method="POST" th:action="@{/events}" th:object="${event}">
+
+
+
+    <div class="w3-container w3-brown">
+        <h1>
+
+            Добавление нового события для организации "<span th:text="${orgName}"></span>"
+
+        </h1>
+    </div>
+    <br>
+    <br>
+
+    <label for="name">Название события: </label><br>
+    <input style='width: 250px' class="w3-select w3-border w3-sand" type="text" th:field="*{name}" id="name"/>
+    <div  th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</div>
+    <br/>
+    <br/>
+
+    <label for="description">Описание: </label><br>
+    <p><textarea class="w3-select w3-border w3-sand" type="text" th:field="*{description}" id="description" rows="10" cols="45"></textarea></p>
+    <div  th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description Error</div>
+
+    <br/>
+    <label for="Type">Тип: </label><br>
+    <input style='width: 250px' class="w3-select w3-border w3-sand" type="text" th:field="*{type}" id="Type"/>
+    <div  th:if="${#fields.hasErrors('type')}" th:errors="*{type}">Type Error</div>
+    <br/>
+
+    <br/>
+    <label for="Price">Цена: </label><br>
+    <input style='width: 250px' class="w3-select w3-border w3-sand" type="text" th:field="*{price}" id="Price"/>
+    <div  th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Price Error</div>
+    <br/>
+
+    <br/>
+    <label for="ImagePath">Ссылка на изображение для события: </label><br>
+    <input style='width: 250px' class="w3-select w3-border w3-sand" type="text" th:field="*{imagePath}" id="ImagePath"/>
+    <br/>
+
+    <br/>
+    <label for="Date">Дата в формате 'DD/MM/YYYY': </label><br>
+    <input style='width: 250px' class="w3-select w3-border w3-sand" type="text" th:field="*{date}" id="Date"/>
+    <div  th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Date Error</div>
+    <br/>
+
+    <br/>
+    <label for="URL">Ссылка на источник: </label><br>
+    <input style='width: 250px' class="w3-select w3-border w3-sand" type="text" th:field="*{uRL}" id="URL"/>
+    <br/>
+
+    <br/>
+    <input style='width: 250px' class="w3-select w3-border w3-sand" type="submit" value="Create!"/>
+    <br/>
+
+    <br/><br/>
+    <br/><br/>
+    <br/>
+
+
+</form>
+    </div>
+</div>
+</div>
+</body>
+</html>

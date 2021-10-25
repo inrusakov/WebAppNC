@@ -1,4 +1,3 @@
-
 insert into post(post_id, content, header) values (1 ,'{"ops":[{"attributes":{"font":"serif"},"insert":"1"},{"attributes":{"align":"center","header":3},"insert":"\n"}]}', 'Reykjavik')
 ON CONFLICT (post_id) DO UPDATE SET content = EXCLUDED.content, header = EXCLUDED.header;
 

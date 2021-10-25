@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <style>
+    h1 {
+    color: black;
+    font-family: "Times New Roman", Georgia, Serif;
+    line-height: 1.3em;
+    }
+    table {
+    width: 50%;
+    padding: 4px 10px;
+    border: 1px solid #666;
+    background: #cce6ff;
+    color: #1c87c9;
+    font-size: 16px;
+    border-radius: 10px;
+    margin: 0 auto;
+    }
+    </style>
+</head>
+<body bgcolor="#ccffcc">
+<h1 align="center">List of users</h1>
+<table>
+    <thead>
+    <tr>
+        <td>Email</td>
+        <td>First Name</td>
+        <td>Last Name</td>
+        <td>Is Active</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${user}">
+        <td th:text="${user.email}">Email</td>
+        <td th:text="${user.firstName}">First Name</td>
+        <td th:text="${user.lastName}">Last Name</td>
+        <td th:text="${user.active}">Is Active</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
