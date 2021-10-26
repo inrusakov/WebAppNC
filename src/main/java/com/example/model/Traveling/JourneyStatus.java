@@ -4,7 +4,6 @@ public enum JourneyStatus {
     UPCOMING,
     UNDER_WAY,
     OVER,
-    ARCHIVED,
     NONE,
     STATIC
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Journey editor</title>
+</head>
+<body>
+
+<b th:text="(${isNew}? 'New' : 'Update') + ' form'"/>
+
+<form th:action="@{/travel/journey/profile}" th:object="${journey_form}" method="post">
+    <input type="hidden" name="act" th:value="${isNew}? 'add' : 'upd'"/>
+    <input type="hidden" name="id" th:if="${!isNew}" th:value="${journey_form.id}">
+
+    <div>
+        <div>
+            <input type="text" th:field="*{title}" value placeholder="Title"
+                   required
+                   minlength="1"/>
+<!--                   th:attr="minlength=${T(com.example.util.constants.JourneyConst).title_length_min},-->
+<!--                            maxlength=${T(com.example.util.constants.JourneyConst).title_length_max}"-->
+<!--                   th:pattern="${T(com.example.util.constants.JourneyConst).title_validator_regEx}"/>-->
+        </div>
+        <div>
+            <input type="text" th:field="*{description}" required value placeholder="Description"/>
+        </div>
+        <div>
+            Private
+            <input type="checkbox" th:field="*{isPrivate}"/>
+        </div>
+<!--        <div>-->
+<!--            <input type="radio" th:field="*{status}"> -->
+<!--        </div>-->
+        <div>
+            <button type="submit">Confirm</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
