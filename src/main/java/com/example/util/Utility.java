@@ -1,8 +1,5 @@
 package com.example.util;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-
 public class Utility {
 
     /**
@@ -24,14 +21,5 @@ public class Utility {
         float dist = (float) (earthRadius * c);
 
         return dist;
-    }
-
-    /**
-     * Выполняет проверку авторизованности пользователя
-     * @return true - если авторизован, false - если не авторизован.
-     */
-    public static boolean isAuthenticated(){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return (principal instanceof UserDetails);
     }
 }

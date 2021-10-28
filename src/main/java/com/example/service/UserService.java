@@ -1,20 +1,16 @@
 package com.example.service;
 
-import com.example.controller.CommentController;
 import com.example.controller.UserController;
 import com.example.model.CustomUserDetails;
 import com.example.model.User;
 import com.example.repos.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 

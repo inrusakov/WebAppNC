@@ -1,17 +1,18 @@
 package com.example.model.Traveling;
 
 import com.example.model.User;
-import com.example.util.constants.JourneyConst;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.example.service.traveling.JourneyService.isValidJourneyTitle;
+import static com.example.service.traveling.JourneyService.journeyTitleCorrector;
 
 @ToString(onlyExplicitlyIncluded = true)
 @Setter
@@ -79,47 +80,9 @@ public class Journey {
         this.participants.addAll(Set.of(users));
     }
 
-    public static boolean isValidJourneyId(@NotNull String string){
-        try{
-            Integer.parseInt(string);
-        }catch (NumberFormatException e){
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean isValidTitle(@NotNull String title){
-        return title.length() >= JourneyConst.title_length_min &&
-                title.length() <= JourneyConst.title_length_max &&
-                title.matches(JourneyConst.title_validator_regEx);
-    }
-
-    public static boolean isValidTitleSearch(@NotNull String title){
-        return  title.length() >= 1 &&
-                title.length() <= JourneyConst.title_length_max &&
-                title.matches(JourneyConst.title_search_validator_regEx);
-    }
-
-    public boolean isParticipant(User user){
-        for (User participant : this.participants){
-            if(participant.equals(user)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static String title_BlankCorrector(@NotNull String title){
-        String new_title = title.strip().replaceAll("[\\s]{2,}"," ");
-        if(Journey.isValidTitle(new_title)){
-            return new_title;
-        }
-        return null;
-    }
-
-    public boolean optimize_and_validate(){
-        String new_title = Journey.title_BlankCorrector(this.title);
-        if(new_title != null){
+    public boolean optimize(){
+        String new_title = journeyTitleCorrector(this.title);
+        if(isValidJourneyTitle(new_title)){
             this.title = new_title;
             return true;
         }

@@ -1,25 +1,34 @@
 package com.example.controller;
 
-import com.example.model.CustomUserDetails;
 import com.example.model.Traveling.Journey;
+import com.example.model.Traveling.JourneyRole;
 import com.example.model.User;
 import com.example.repos.TravelRepository;
-import com.example.repos.UserRepository;
+import com.example.service.AuthenticationService;
+import com.example.service.traveling.JourneyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.service.traveling.JourneyService.isValidJourneyId;
+import static com.example.service.traveling.JourneyService.isValidJourneySearchTitle;
 
 // TODO: [TRAVELING] Добавить выпадающее меню поиска с возможностью выбора параметров запроса к БД.
 // TODO: [TRAVELING] Реализовать зависимость функционала от статуса путешествия ( планируется / проходит / закончилось ) (визуальное изменение стиля оформления)
 // TODO: [TRAVELING] Убрать возможность находить в поиске путешествия, недоступные пользователю.
 @Controller
 public class TravellingController {
+
+    @Autowired
+    private JourneyServiceImpl journeyService;
 
     @Autowired
     private TravelRepository travelRepository;
@@ -30,6 +39,8 @@ public class TravellingController {
             @RequestParam(name = "req", defaultValue = "opn", required = false) String req,
             @RequestParam(name = "ttl", defaultValue = "", required = false) String title
     ) {
+        String response = "Travelling/journey_list.html";
+
         switch (req){
             default:
             case "opn":
@@ -42,7 +53,7 @@ public class TravellingController {
                 journey_list_option_ttl(model,title);
                 break;
             }
-        return "Travelling/journey_list.html";
+        return response;
     }
 
     @PostMapping("/travel/journey/profile")
@@ -51,47 +62,31 @@ public class TravellingController {
             @RequestParam(name = "id", defaultValue = "", required = false) Journey journey_fromDB,
             @RequestParam(name = "act", defaultValue = "", required = false) String action)
     {
-            switch (action) {
-                case "add":
-                    if(journey.optimize_and_validate()){
-                        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                        if (principal instanceof CustomUserDetails){
-                            // Add Owner to participants // TODO: [TRAVELING] Учасники путешествия - учасники группы
-                            User owner = ((CustomUserDetails) principal).getUser();
-                            journey.addParticipants(owner);
-                            // Saving
-                            journey.setCreation_time(new Timestamp(Calendar.getInstance().getTime().getTime()));
-                            travelRepository.save(journey);
-                            return "redirect:/travel/journey/profile?id="+ journey.getId() +"&act=obs";
-                        }
-                    }
-                    // TODO: [TRAVELING] ErrorHandler ?
-                    break;
-                case "upd":
-                    if(journey.optimize_and_validate()) {
-                        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                        if (
-                                principal instanceof CustomUserDetails &&
-                                journey_fromDB.isParticipant(((CustomUserDetails) principal).getUser())
-                        ){
-                            // FIXME: [SHITCODE] нужно получать из формы Journey.class-объект с полями, инициализированными с помощью передаваемого Journey.class-объекта через get-контроллер
-                            journey_fromDB.setTitle(journey.getTitle());
-                            journey_fromDB.setDescription(journey.getDescription());
-                            journey_fromDB.setIsPrivate(journey.getIsPrivate());
+        String response = "redirect:/travel/journey/list";
 
-                            // FIXME: [SHITCODE] исправить код ниже. Функционал: обновлять, если есть в базе данных. Не допустить создания дубликата после удаления.
-                            if(travelRepository.findById(journey_fromDB.getId()).isPresent()) {
-                                travelRepository.save(journey_fromDB);
-                            }
-                            return "redirect:/travel/journey/profile?id="+ journey.getId() +"&act=obs";
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-            // TODO: [TRAVELING] ErrorHandler ?
-        return "redirect:/travel/journey/list";
+        if(!journey.optimize()){
+            return response;
+        }
+        switch (action) {
+            case "add":
+                if(journeyService.create(journey)) {
+                    response = "redirect:/travel/journey/profile?id=" + journey.getId() + "&act=obs";
+                }
+                break;
+            case "upd":
+               // FIXME: [SHITCODE] нужно получать из формы Journey.class-объект с полями, инициализированными с помощью передаваемого Journey.class-объекта через get-контроллер
+                journey_fromDB.setTitle(journey.getTitle());
+                journey_fromDB.setDescription(journey.getDescription());
+                journey_fromDB.setIsPrivate(journey.getIsPrivate());
+
+                if(journeyService.edit(journey_fromDB)){
+                    response = "redirect:/travel/journey/profile?id="+ journey.getId() + "&act=obs";
+                }
+                break;
+            default:
+                break;
+        }
+        return response;
 
         /* TODO: [TRAVELING] функционал кода сверху сводится к сохранению в бд путешествия
             если его название содержит больше букв/цифр, чем title_length_min
@@ -105,45 +100,52 @@ public class TravellingController {
             @RequestParam(name = "id", required = false) Journey journey,
             @RequestParam(name = "act", required = false) String action
     ){
+        String response = "redirect:/travel/journey/list";
+
         switch (action){
             case "obs":
-                if(journey != null) {
-                    if(journey.getIsPrivate()){
-                        if(!(isRedactorOfJourney(journey))){
+                /*
+                Если путешествие приватное то делаем проверку(является ли пользователь участником этого путешествия)
+                В случае, если пользователь НЕ является участником или НЕ авторизован - break;
+                 */
+                if(journey.getIsPrivate()){
+                        if(!(journeyService.hasJourneyRole(journey, JourneyRole.participant))){
                             break;
                         }
-                    }
-                    model.addAttribute("journey_form", journey);
-                    return "Travelling/journey_profile.html";
                 }
+                model.addAttribute("journey_form", journey);
+                response = "Travelling/journey_profile.html";
                 break;
             case "add":
-                model.addAttribute("isNew", true);
-                model.addAttribute("journey_form", new Journey());
-                return "Travelling/journey_profile_editor.html";
+                if(AuthenticationService.isAuthenticated()){
+                    model.addAttribute("isNew", true);
+                    model.addAttribute("journey_form", new Journey());
+                    response = "Travelling/journey_profile_editor.html";
+                }
+                break;
             case "edt":
-                if(journey != null && isRedactorOfJourney(journey))
+                if(journeyService.hasJourneyRole(journey,JourneyRole.editor))
                 {
                     model.addAttribute("isNew", false);
                     model.addAttribute("journey_form", journey);
-                    return "Travelling/journey_profile_editor.html";
+                    response = "Travelling/journey_profile_editor.html";
                 }
                 break;
             case "dlt":
-                if(journey != null && isRedactorOfJourney(journey)){
-                    travelRepository.delete(journey);
+                if(journeyService.delete(journey)) {
+                    response = "redirect:/travel/journey/list";
                 }
                 break;
             default:
                 break;
         }
-        return "redirect:/travel/journey/list";
+        return response;
     }
 
     private void journey_list_option_prt(Model model){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof CustomUserDetails) {
-            Integer id = ((CustomUserDetails) principal).getUserId();
+        User user = AuthenticationService.getCurrentUser();
+        if (user != null) {
+            Integer id = user.getId();
             model.addAttribute("journey_list", travelRepository.findWhereUserIsParticipant(id));
             return;
         }
@@ -151,11 +153,11 @@ public class TravellingController {
     }
 
     private void journey_list_option_ttl(Model model,@NotNull String title){
-        if(Journey.isValidTitleSearch(title)) {
-            if (Journey.isValidJourneyId(title)) {
-                Optional<Journey> ret = travelRepository.findById(Integer.parseInt(title));
-                if (ret.isPresent()) {
-                    model.addAttribute("journey_list", List.of(ret.get()));
+        if(isValidJourneySearchTitle(title)) {
+            if (isValidJourneyId(title)) {
+                Journey ret = journeyService.findById(Integer.parseInt(title));
+                if (ret != null) {
+                    model.addAttribute("journey_list", List.of(ret));
                     return;
                 }
             }
@@ -163,15 +165,5 @@ public class TravellingController {
             return;
         }
         model.addAttribute("journey_list", new ArrayList<Journey>());
-    }
-
-    private boolean isRedactorOfJourney(@NotNull Journey journey){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(
-                principal instanceof CustomUserDetails && journey.isParticipant(((CustomUserDetails) principal).getUser())
-        ){
-            return true;
-        }
-        return false;
     }
 }
