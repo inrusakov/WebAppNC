@@ -1,9 +1,9 @@
 package com.example.service.traveling;
 
 import com.example.model.Traveling.Journey;
-import com.example.model.Traveling.JourneyRequestForm;
 import com.example.model.Traveling.JourneyRole;
 import com.example.model.User;
+import com.example.repos.CriteriaBuilder.JourneyRequestForm;
 import com.example.repos.TravelRepository;
 import com.example.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;

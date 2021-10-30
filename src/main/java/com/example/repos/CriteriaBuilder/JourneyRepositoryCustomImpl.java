@@ -1,6 +1,9 @@
-package com.example.model.Traveling.SQL_Query;
+package com.example.repos.CriteriaBuilder;
 
-import com.example.model.Traveling.*;
+import com.example.model.Traveling.Journey;
+import com.example.model.Traveling.JourneyAccess;
+import com.example.model.Traveling.JourneyRole;
+import com.example.model.Traveling.JourneyStatus;
 import com.example.model.User;
 import com.example.service.traveling.JourneyService;
 import org.springframework.stereotype.Repository;

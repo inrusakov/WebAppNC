@@ -1,9 +1,9 @@
 package com.example.controller;
 
 import com.example.model.Traveling.Journey;
-import com.example.model.Traveling.JourneyRequestForm;
 import com.example.model.Traveling.JourneyRole;
 import com.example.model.User;
+import com.example.repos.CriteriaBuilder.JourneyRequestForm;
 import com.example.repos.TravelRepository;
 import com.example.service.AuthenticationService;
 import com.example.service.traveling.JourneyServiceImpl;

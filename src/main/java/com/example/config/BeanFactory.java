@@ -1,6 +1,6 @@
 package com.example.config;
 
-import com.example.model.Traveling.JourneyRequestForm;
+import com.example.repos.CriteriaBuilder.JourneyRequestForm;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
