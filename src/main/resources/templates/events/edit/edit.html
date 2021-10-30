@@ -25,12 +25,17 @@
         <a href="/events/edit/edit " class="w3-bar-item w3-button w3-padding-large">Редактировать событие</a>
     </div>
 </div>
+<div class="w3-row-padding w3-padding-64 w3-container w3-brown">
+<h1 style="display: inline; text-align: center"> Редактирование событий компании "<span th:text="${orgName}"></span>"</h1>
+</div>
 <div class ="content">
+
     <th:block th:each="event : ${events}">
         <div class="w3-card-4">
 
             <div class="w3-row-padding w3-padding-64 w3-container">
                 <div class="w3-content">
+
                     <div class="w3-twothird" >
                         <h1>
                             <a th:href="@{/events/{id}(id=${event.getEventID()})}" th:text="${event.getName()}" >Event name</a>
@@ -49,6 +54,18 @@
                         <a th:href="${event.getuRL()}" >Ссылка на событие</a>
                         <br>
                         <br>
+                        <a th:href="@{modify/{id}(id=${event.getEventID()})}" >Редактировать событие</a>
+                        <br>
+
+                        <br>
+
+                        <form th:method="POST" th:action="@{edit}">
+
+                        <input type="hidden" name="eventId" th:value="${event.getEventID()}" >
+
+                        <input type="submit" name="action" value="Delete" >
+                        <br>
+                        </form>
                     </div>
                 </div>
             </div>

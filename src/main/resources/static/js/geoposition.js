@@ -49,7 +49,7 @@ async function locationSuccess(position) {
         // Request data type.
         dataType : 'json',
         // Request link.
-        url: "/sendGeo",
+        url: "/sendCoords",
         // Converting request object.
         data: JSON.stringify(geoRequest),
         success : function(data) {
@@ -72,4 +72,4 @@ function locationError(error) {
     // read the code and message and decide how you want to handle this!
 }
 
-navigator.geolocation.getCurrentPosition(locationSuccess, locationError);
+//navigator.geolocation.getCurrentPosition(locationSuccess, locationError);

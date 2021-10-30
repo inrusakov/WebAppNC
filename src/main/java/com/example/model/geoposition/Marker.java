@@ -12,10 +12,12 @@ public class Marker {
     private Integer id;
     public double latitude;
     public double longtitude;
+    private String description;
 
-    public Marker(double latitude, double longtitude) {
+    public Marker(double latitude, double longtitude, String desc) {
         this.latitude = latitude;
         this.longtitude = longtitude;
+        this.description = desc;
     }
 
     public Marker() {
@@ -40,5 +42,13 @@ public class Marker {
 
     public void setLongtitude(double longtitude) {
         this.longtitude = longtitude;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

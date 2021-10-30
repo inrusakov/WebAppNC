@@ -23,6 +23,7 @@ public class EventDAO {
     private static Connection connection;
 
     private List<Event> events = new ArrayList<>();
+    private List<Event> userEvents = new ArrayList<>();
 
     private int userId;
     private String userLogin;
@@ -95,9 +96,57 @@ public class EventDAO {
 
     public List<Event> index() {
 
+        if(userLogin == null) {
+            this.setUserInfo();
+        }
+
         List<Event> events = new ArrayList<>();
 
-        this.setUserInfo();
+        //this.setUserInfo();
+
+        try{
+            Statement statement = connection.createStatement();
+
+
+            String SQL = "SELECT * FROM events";
+
+            ResultSet resultSet = statement.executeQuery(SQL);
+
+            while(resultSet.next()){
+                Event event = new Event();
+
+                event.setName(resultSet.getString("name"));
+                event.setEventID(resultSet.getInt("event_id"));
+                if(resultSet.getObject(9) == null)
+                    event.setPrice(0);
+                else
+                    event.setPrice(resultSet.getInt("price"));
+                event.setDate(resultSet.getDate("event_date"));
+                event.setuRL(resultSet.getString("url"));
+                event.setType(resultSet.getString("type"));
+                event.setCompanyID(resultSet.getInt("org_id"));
+                event.setDescription(resultSet.getString("description"));
+                event.setImagePath(resultSet.getString("image_url"));
+
+                events.add(event);
+            }
+
+            statement.close();
+        } catch (SQLException throwables){
+            throwables.printStackTrace();
+        }
+        this.events = events;
+
+        return events;
+    }
+
+    public List<Event> edit() {
+
+        if(userLogin == null) {
+            this.setUserInfo();
+        }
+
+        List<Event> events = new ArrayList<>();
 
         try{
             Statement statement = connection.createStatement();
@@ -132,7 +181,7 @@ public class EventDAO {
         } catch (SQLException throwables){
             throwables.printStackTrace();
         }
-        this.events = events;
+        this.userEvents = events;
 
         return events;
     }
@@ -147,6 +196,10 @@ public class EventDAO {
         return events.stream().filter(event -> event.getEventID() == id).findAny().orElse(null);
     }
 
+    public Event showUserEvent(int id) {
+        return userEvents.stream().filter(event -> event.getEventID() == id).findAny().orElse(null);
+    }
+
     /**
      * Saves a new event in a db.
      * @param event
@@ -154,7 +207,9 @@ public class EventDAO {
 
     public void save(Event event) {
 
-        this.setUserInfo();
+        if(userLogin == null) {
+            this.setUserInfo();
+        }
 
         event.setEventID(events.size() + 1);
         event.setCompanyID(orgId); //temp
@@ -163,8 +218,7 @@ public class EventDAO {
         String dateStr = new SimpleDateFormat("yyyy/MM/dd").format(date);
         try{
             Statement statement = connection.createStatement();
-            String SQL = "INSERT INTO events (event_id, org_id, name, type, description, event_date, image_url, url, price, admin_id) values (" +
-                    event.getEventID()+ ", " +
+            String SQL = "INSERT INTO events (org_id, name, type, description, event_date, image_url, url, price, admin_id) values (" +
                     event.getCompanyID()+ ", " + // Correlated with userID in table Users
                     "'" + event.getName() + "', " +
                     "'" + event.getType() + "', " +
@@ -184,26 +238,53 @@ public class EventDAO {
         }
 
     }
-    //Need to be done
-/*
-    public void update(int id, Event updatedEvent) {
-        Event eventToBeUpdated = show(id);
+
+    public void update(Event updatedEvent) {
+
+        if(userLogin == null) {
+            this.setUserInfo();
+        }
+
+        Event eventToBeUpdated = showUserEvent(updatedEvent.getEventID());
 
         eventToBeUpdated.setName(updatedEvent.getName());
         eventToBeUpdated.setDescription(updatedEvent.getDescription());
         eventToBeUpdated.setType(updatedEvent.getType());
         eventToBeUpdated.setuRL(updatedEvent.getuRL());
-        eventToBeUpdated.setCompanyID(updatedEvent.getCompanyID());
         eventToBeUpdated.setDate(updatedEvent.getDate());
-        eventToBeUpdated.setPaid(updatedEvent.getIsPaid());
         eventToBeUpdated.setPrice(updatedEvent.getPrice());
+        eventToBeUpdated.setImagePath(updatedEvent.getImagePath());
 
+        try{
+            Statement statement = connection.createStatement();
+            String SQL = "UPDATE events " +
+                    "SET name = '" + updatedEvent.getName() + "', " +
+                    "description = '" + updatedEvent.getDescription() + "', " +
+                    "type = '" + updatedEvent.getType() + "', " +
+                    "url = '" + updatedEvent.getuRL() + "', " +
+                    "event_date = '" + updatedEvent.getDate() + "', " +
+                    "price = " + updatedEvent.getPrice() + ", " +
+                    "image_url = '" + updatedEvent.getImagePath() + "' " +
+                    "WHERE event_id = " + updatedEvent.getEventID();
+            statement.execute(SQL);
+
+            statement.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     public void delete(int id) {
-        events.removeIf(p -> p.getCompanyID() == id);
+        try{
+            Statement statement = connection.createStatement();
+
+            String SQL = "DELETE FROM events WHERE event_id = " + id ;
+
+            statement.execute(SQL);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
-*/
 
 }

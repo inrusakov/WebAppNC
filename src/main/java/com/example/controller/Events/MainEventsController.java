@@ -62,7 +62,7 @@ public class MainEventsController {
     /**
      * Post query from user to server with information about new event
      * @param event
-     * @param bindingResult - Checks if there was errors with binding Event fields with inserted values.
+     * @param bindingResult - Checks if there were errors with binding Event fields with inserted values.
      * @return
      */
 
@@ -75,4 +75,5 @@ public class MainEventsController {
 
         return "redirect:/events";
     }
+
 }
