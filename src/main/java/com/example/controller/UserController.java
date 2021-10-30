@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.model.CustomUserDetails;
 import com.example.model.Role;
 import com.example.model.User;
 import com.example.repos.CommentRepository;
@@ -8,11 +9,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import java.io.File;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/registration")
     public String registration() {
@@ -41,21 +47,24 @@ public class UserController {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
+
+        user.setPassword_encoded(bCryptPasswordEncoder.encode(password));
+
         user.setRole(Collections.singleton(Role.USER));
         user.setActive(true);
         userRepository.save(user);
         int id = user.getId();
-        //User user = userRepository.findById(1).get();
-        //user.setFirstName("qwe");
-        //userRepository.save(user);
         return "redirect:/login";
     }
 
     @GetMapping("/profile")
     public String profile(Model model){
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("user", userRepository.findByEmail(user.getUsername()));
-        return "profile";
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal instanceof CustomUserDetails){
+            model.addAttribute("user", ((CustomUserDetails) principal).getUser());
+            return "profile";
+        }
+        return "redirect:";
     }
 
 /*
