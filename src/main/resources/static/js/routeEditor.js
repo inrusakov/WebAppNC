@@ -22,49 +22,90 @@ function printMap() {
     mymap.on('click', onMapClick);
 }
 
-function addMarker(lat, lng){
-    let newMarker = L.marker([lat,lng]).addTo(mymap);
-}
-
 function deleteMarkers(){
     markers.forEach(element => mymap.removeLayer(element));
     markerCounter = 0;
     markers = [];
-    clearList();
 }
 
 function onMapClick(e) {
     marker = new L.Marker(e.latlng, {draggable:true});
     mymap.addLayer(marker);
+    popup = L.popup().openPopup();
+    popup.setContent("");
+    marker.bindPopup(popup);
     marker.bindTooltip(markerCounter.toString(),
         {
             permanent: true,
             direction: 'right'
         }
     );
-    markers.forEach(marker => {
-        marker.addEventListener('click',()=>
-        {});
-    });
-    markers.push(marker);
-    createListItem(markerCounter);
     markerCounter++;
+    markers.push(marker);
+    markers.forEach(marker => {
+        marker.addEventListener('popupopen',()=>{
+            setMarkerEvents();
+        });
+        marker.addEventListener('click',()=>
+        {
+            if (marker.getPopup().getContent().toString() == "") {
+                marker._popup.setContent(
+                    "<label for=\"name\">Enter marker name:</label>\n" +
+                    "<input type=\"text\" id=\"name\">\n" +
+                    "<br>" +
+                    "<label for=\"desc\">Enter marker description:</label>\n" +
+                    "<input type=\"text\" id=\"desc\">\n" +
+                    "<br>" +
+                    "<button id='saveButton'>Save</button>" +
+                    "<br>" +
+                    "<button id='editButton'>Edit</button>");
+            }
+            const saveButton = document.getElementById('saveButton')
+            if (saveButton)
+                saveButton.addEventListener('click', () => save(marker))
+            // const editButton = document.getElementById('editButton')
+            // if (editButton)
+            //     editButton.addEventListener('click', () => edit(marker))
+        });
+    });
 };
 
-function deleteMarker(index){
-    markers[index].removeFrom(mymap);
-    markers.splice(index,1);
-    markerCounter--;
+function setMarkerEvents(){
+    markers.forEach(marker => {
+
+    })
 }
 
-function changeTooltip(index,tooltip){
-    markers[index].unbindTooltip();
-    markers[index].bindTooltip(tooltip,
-        {
-            permanent: true,
-            direction: 'right'
-        }
-    );
+function save(save){
+    const popup = save._popup;
+    let name;
+    let desc;
+    try{
+        name = document.getElementById('name').value;
+        desc = document.getElementById('desc').value;
+    } catch (err) {
+    }
+    popup.setContent("<h3>Name: </h3>" +
+        "<h4 id='name'>"+name+"</h4>" +
+        "<h3>Description: </h3>" +
+        "<h4>"+desc+"</h4>"+
+        "<br>"+
+        "<button id='editButton'>Edit</button>");
+}
+
+function edit(edit){
+    const popup = edit._popup;
+    popup.setContent(
+        "<label for=\"name\">Enter marker name:</label>\n" +
+        "<input type=\"text\" id=\"name\">\n" +
+        "<br>"+
+        "<label for=\"desc\">Enter marker description:</label>\n" +
+        "<input type=\"text\" id=\"desc\">\n" +
+        "<br>"+
+        "<button id='saveButton'>Save</button>"+
+        "<br>"+
+        "<button id='editButton'>Edit</button>");
+    setMarkerEvents();
 }
 
 function sendRoute(){
