@@ -24,7 +24,7 @@ public interface JourneyService {
     }
     static boolean isValidJourneyId(String journey_id) {
         try{
-            Integer.parseInt(journey_id.strip());
+            Integer.parseInt(journey_id.trim());
         }catch (NumberFormatException e){
             return false;
         }
