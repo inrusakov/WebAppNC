@@ -40,4 +40,13 @@ public interface JourneyService {
                 searchTitle.length() <= JourneyConst.title_length_max &&
                 searchTitle.matches(JourneyConst.title_search_validator_regEx);
     }
+    static Integer getIdFromString(String searchTitle){
+        Integer result;
+        if(isValidJourneyId(searchTitle)){
+            result = Integer.parseInt(searchTitle);
+        }else {
+            result = null;
+        }
+        return result;
+    }
 }

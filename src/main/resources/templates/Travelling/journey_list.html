@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="utf-8">
+</head>
 <body>
 
 <div th:if="${!#authorization.expression('isAuthenticated()')}">
@@ -35,7 +38,7 @@
             <td>
                 <div th:if="${#authorization.expression('isAuthenticated()')}">
                     <form method="get" th:action="@{/travel/journey/profile}">
-                        <input type="hidden" name="act" value="add"/>
+                        <input type="hidden" name="act" value="create"/>
                         <button type="submit">Create</button>
                     </form>
                 </div>
@@ -47,32 +50,26 @@
 <table border="1">
     <tr>
         <td>
-            <form method="get" th:action="@{/travel/journey/list}">
-                <button type="submit">
-                    <input name="req" type="hidden" value="opn"/>
-                    <b>Открытые</b>
-                </button>
-            </form>
-        </td>
-
-        <td th:if="${#authorization.expression('isAuthenticated()')}">
-            <form method="get" th:action="@{/travel/journey/list}">
-                <button type="submit">
-                    <input name="req" type="hidden" value="prt"/>
-                    <b>Участвую</b>
-                </button>
-            </form>
-        </td>
-
-        <td>
-            <form method="get" th:action="@{/travel/journey/list}">
+            <form th:action="@{/travel/journey/list}" method="get" th:object="${journeyRequestForm}">
+                <input type="text" th:field="*{title}" value placeholder="Поиск:">
+                <button type="submit"> 🔎 </button>
                 <div>
-                    <input name="req" type="hidden" value="ttl"/>
-                    <input name="ttl" type="text" value placeholder="Поиск:"
-                           minlength="1"/>
-<!--                    th:attr="maxlength=${T(com.example.util.constants.JourneyConst).title_length_max}"-->
-<!--                    th:pattern="${T(com.example.util.constants.JourneyConst).title_search_validator_regEx}"-->
-                    <button type="submit"> 🔎 </button>
+                    <b>Доступность:</b>
+                    <div th:each="access : ${journeyRequestForm.journeyAccessMap.entrySet()}">
+                        <input type="checkbox" th:field="*{journeyAccessMap['__${access.key}__']}" th:text="${access.key.getTitle()}" />
+                    </div>
+                </div>
+                <div>
+                    <b>Статус путешествия:</b>
+                    <div th:each="status : ${journeyRequestForm.journeyStatusMap.entrySet()}">
+                        <input type="checkbox" th:field="*{journeyStatusMap['__${status.key}__']}" th:text="${status.key.getTitle()}" />
+                    </div>
+                </div>
+                <div th:if="${#authorization.expression('isAuthenticated()')}">
+                    <b>Мои роли:</b>
+                    <div th:each="role : ${journeyRequestForm.journeyRoleMap.entrySet()}">
+                        <input type="checkbox" th:field="*{journeyRoleMap['__${role.key}__']}" th:text="${role.key.getTitle()}" />
+                    </div>
                 </div>
             </form>
         </td>

@@ -1,6 +1,7 @@
 package com.example.service.traveling;
 
 import com.example.model.Traveling.Journey;
+import com.example.model.Traveling.JourneyRequestForm;
 import com.example.model.Traveling.JourneyRole;
 import com.example.model.User;
 import com.example.repos.TravelRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -111,5 +113,13 @@ public class JourneyServiceImpl implements JourneyService{
     public boolean isJourneyParticipant(Journey journey) {
         User user = AuthenticationService.getCurrentUser();
         return isJourneyParticipant(journey, user);
+    }
+
+    public java.util.List<Journey>JourneyForm_SQLQuery(JourneyRequestForm form){
+        try{
+            return travelRepository.JourneyForm_SQLQuery(form);
+        }catch (Exception e){
+            return new ArrayList<>();
+        }
     }
 }

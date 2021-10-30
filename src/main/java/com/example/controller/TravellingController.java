@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.model.Traveling.Journey;
+import com.example.model.Traveling.JourneyRequestForm;
 import com.example.model.Traveling.JourneyRole;
 import com.example.model.User;
 import com.example.repos.TravelRepository;
@@ -14,12 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.service.traveling.JourneyService.isValidJourneyId;
-import static com.example.service.traveling.JourneyService.isValidJourneySearchTitle;
 
 // TODO: [TRAVELING] Добавить выпадающее меню поиска с возможностью выбора параметров запроса к БД.
 // TODO: [TRAVELING] Реализовать зависимость функционала от статуса путешествия ( планируется / проходит / закончилось ) (визуальное изменение стиля оформления)
@@ -33,26 +29,32 @@ public class TravellingController {
     @Autowired
     private TravelRepository travelRepository;
 
+    @Autowired
+    private JourneyRequestForm journeyRequestForm;
+
     @GetMapping("/travel/journey/list")
     String journey_list(
             Model model,
-            @RequestParam(name = "req", defaultValue = "opn", required = false) String req,
-            @RequestParam(name = "ttl", defaultValue = "", required = false) String title
+            JourneyRequestForm journeyRequestForm,
+            @RequestParam(name = "req", defaultValue = "", required = false) String req
     ) {
         String response = "Travelling/journey_list.html";
+        journeyRequestForm.setApplicant(AuthenticationService.getCurrentUser());
+        this.journeyRequestForm = journeyRequestForm;
 
         switch (req){
-            default:
             case "opn":
                 model.addAttribute("journey_list", travelRepository.findByIsPrivateFalse());
                 break;
             case "prt":
                 journey_list_option_prt(model);
                 break;
-            case "ttl":
-                journey_list_option_ttl(model,title);
+            default:
+                List<Journey> journeyList = journeyService.JourneyForm_SQLQuery(this.journeyRequestForm);
+                model.addAttribute("journey_list", journeyList);
                 break;
             }
+        model.addAttribute("journeyRequestForm", this.journeyRequestForm);
         return response;
     }
 
@@ -150,20 +152,5 @@ public class TravellingController {
             return;
         }
         model.addAttribute("journey_list", travelRepository.findByIsPrivateFalse());
-    }
-
-    private void journey_list_option_ttl(Model model,@NotNull String title){
-        if(isValidJourneySearchTitle(title)) {
-            if (isValidJourneyId(title)) {
-                Journey ret = journeyService.findById(Integer.parseInt(title));
-                if (ret != null) {
-                    model.addAttribute("journey_list", List.of(ret));
-                    return;
-                }
-            }
-            model.addAttribute("journey_list", travelRepository.findByTitleContaining(title));
-            return;
-        }
-        model.addAttribute("journey_list", new ArrayList<Journey>());
     }
 }
