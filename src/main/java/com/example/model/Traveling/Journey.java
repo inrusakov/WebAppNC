@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -77,7 +78,7 @@ public class Journey {
         this.participants.addAll(users);
     }
     public void addParticipants(User... users){
-        this.participants.addAll(Set.of(users));
+        this.participants.addAll(Arrays.asList(users));
     }
 
     public boolean optimize(){
