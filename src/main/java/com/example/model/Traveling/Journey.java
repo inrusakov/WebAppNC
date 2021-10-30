@@ -73,7 +73,7 @@ public class Journey {
 
     //Types?
 
-    public void addParticipants(java.util.Set<User> users){
+    public void addParticipants(Set<User> users){
         this.participants.addAll(users);
     }
     public void addParticipants(User... users){

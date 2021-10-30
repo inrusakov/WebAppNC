@@ -20,7 +20,7 @@ public interface JourneyService {
     boolean hasJourneyRole(Journey journey, JourneyRole role);
 
     static String journeyTitleCorrector(String title) {
-        return title.strip().replaceAll("[\\s]{2,}"," ");
+        return title.trim().replaceAll("[\\s]{2,}"," ");
     }
     static boolean isValidJourneyId(String journey_id) {
         try{
