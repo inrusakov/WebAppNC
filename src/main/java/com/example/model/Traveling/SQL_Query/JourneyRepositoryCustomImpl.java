@@ -160,7 +160,7 @@ public class JourneyRepositoryCustomImpl implements JourneyRepositoryCustom{
         Predicate predicate;
         String title = form.getTitle();
         if(isValidJourneySearchTitle(title)) {
-            Integer journeyId = JourneyService.getIdFromString(title);
+            Integer journeyId = JourneyService.getJourneyIdFromString(title);
             if (journeyId == null) {
                 predicate=cb.like(journeyRoot.get("title"), "%"+title+"%");
             }else{

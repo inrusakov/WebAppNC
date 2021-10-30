@@ -17,6 +17,11 @@ public class AuthenticationService {
         return (principal instanceof CustomUserDetails);
     }
 
+    /**
+     * Возвращает информацию о текущем пользователе в виде класса User.
+     * @return User.class - если авторизован,
+     *         null - если не авторизован.
+     */
     public static User getCurrentUser(){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(principal instanceof CustomUserDetails){
