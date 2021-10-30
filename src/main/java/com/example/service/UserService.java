@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.controller.UserController;
 import com.example.model.CustomUserDetails;
 import com.example.model.User;
 import com.example.repos.UserRepository;
@@ -18,9 +17,6 @@ import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
-
-    @Autowired
-    private UserController userController;
 
     @Autowired
     UserRepository userRepository;
