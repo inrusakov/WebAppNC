@@ -1,33 +1,25 @@
 package com.example.service;
 
-import com.example.controller.CommentController;
-import com.example.controller.UserController;
+import com.example.model.CustomUserDetails;
 import com.example.model.User;
 import com.example.repos.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@NoArgsConstructor
 
 @Service
-public class UserService{/*} implements UserDetailsService {
-
-    @Autowired
-    private UserController userController;
+public class UserService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) {
@@ -35,7 +27,7 @@ public class UserService{/*} implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(email);
         }
-        return (UserDetails) user;
+        return new CustomUserDetails(user);
     }
 
     public User findUserById(int userId) {
@@ -47,17 +39,21 @@ public class UserService{/*} implements UserDetailsService {
         return userRepository.findAll();
     }
 
+//    Этот блок преднозначен для перезаписи колонки паролей пользователей на закодированную версию
 
-    public boolean saveUser(User user) {
-        User userFromDB = userRepository.findByEmail(user.getEmail());
-        if (userFromDB != null) {
-            return false;
-        }
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        System.out.println("email "+"\""+user.toString()+"\"");
-        return true;
-    }
+//    @Autowired
+//    BCryptPasswordEncoder bCryptPasswordEncoder;
+//
+//    public boolean saveUser(User user) {
+//        User userFromDB = userRepository.findByEmail(user.getEmail());
+//        if (userFromDB != null) {
+//            return false;
+//        }
+//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//        userRepository.save(user);
+//        System.out.println("email "+"\""+user.toString()+"\"");
+//        return true;
+//    }
 
     public boolean deleteUser(int userId) {
         if (userRepository.findById(userId).isPresent()) {
@@ -65,5 +61,5 @@ public class UserService{/*} implements UserDetailsService {
             return true;
         }
         return false;
-    }*/
+    }
 }
