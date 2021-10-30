@@ -39,6 +39,10 @@ public class User {
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Blog blog;
 
+    @Size(min=8, message = "At least 8 characters")
+    @Column(name = "password_BCrypt")
+    private String password_encoded;
+
 
     public User(){}
 
@@ -131,6 +135,13 @@ public class User {
         this.userAddress = userAddress;
     }
 
+    public String getPassword_encoded() {
+        return password_encoded;
+    }
+
+    public void setPassword_encoded(String password_encoded) {
+        this.password_encoded = password_encoded;
+    }
 
     @Override
     public String toString() {
@@ -143,6 +154,11 @@ public class User {
                 ", roles=" + roles +
                 ", address=" + userAddress.toString() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User && ((User) obj).getId().equals(this.id);
     }
 }
 
