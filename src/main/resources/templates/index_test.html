@@ -2,8 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 Working!
-<br>
-<a th:href="@{/events}">Click to see events</a>
-<a th:href="@{/travel/journey/list}">Пререход к путешествиям</a>
+<table border="1">
+<tr>
+    <td>
+        <a th:href="@{/events}">Click to see events</a>
+    </td>
+</tr>
+<tr>
+    <td>
+        <a th:href="@{/travel/journey/list}">Пререход к путешествиям</a>
+    </td>
+</tr>
+</table>
 </body>
 </html>
