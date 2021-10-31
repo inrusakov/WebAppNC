@@ -1,8 +1,8 @@
 package com.example.model;
 
-//import com.example.model.Address;
 
 import com.example.model.blog.Blog;
+import com.example.model.community.Group;
 import com.example.model.geoposition.Address;
 import com.example.model.org.Organisation;
 
@@ -31,6 +31,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
     private boolean active;
+    private boolean wasBanned;
     private File pic;
     @OneToMany(targetEntity=Tag.class,  fetch=FetchType.EAGER)
     private List<Tag> tag;
@@ -38,6 +39,8 @@ public class User {
     private Address userAddress;
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Blog blog;
+    @ManyToMany(mappedBy = "users")
+    private List<Group> groups;
 
 
     public User(){}
@@ -106,6 +109,14 @@ public class User {
         return active;
     }
 
+    public void setWasBanned(boolean wasBanned) {
+        this.wasBanned = wasBanned;
+    }
+
+    public boolean isWasBanned() {
+        return wasBanned;
+    }
+
     public List<Tag> getTag() {
         return tag;
     }
@@ -131,6 +142,13 @@ public class User {
         this.userAddress = userAddress;
     }
 
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
 
     @Override
     public String toString() {
