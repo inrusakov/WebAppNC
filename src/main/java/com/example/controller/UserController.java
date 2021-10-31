@@ -18,6 +18,7 @@ import java.io.File;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 
@@ -40,20 +41,25 @@ public class UserController {
         // @ResponseBody means the returned String is the response, not a view name
         // @RequestParam means it is a parameter from the GET or POST request
         User userFromDB = userRepository.findByEmail(email);
-        if (userFromDB != null){
+        if (userFromDB != null && (userFromDB.isActive() || userFromDB.isWasBanned())){
             model.addAttribute("message", "User exists!");
             return "registration";
         }
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
-
-        user.setPassword_encoded(bCryptPasswordEncoder.encode(password));
-
-        user.setRole(Collections.singleton(Role.USER));
-        user.setActive(true);
-        userRepository.save(user);
-        int id = user.getId();
+        if (userFromDB != null && !userFromDB.isActive()){
+            userFromDB.setPassword(password);
+            userFromDB.setPassword_encoded(bCryptPasswordEncoder.encode(password));
+            userFromDB.setActive(true);
+            userRepository.save(userFromDB);
+        } else {
+            User user = new User();
+            user.setEmail(email);
+            user.setPassword(password);
+            user.setPassword_encoded(bCryptPasswordEncoder.encode(password));
+            user.setRole(Collections.singleton(Role.USER));
+            user.setActive(true);
+            user.setWasBanned(false);
+            userRepository.save(user);
+        }
         return "redirect:/login";
     }
 
@@ -95,13 +101,26 @@ public class UserController {
     */
 
     @PostMapping("/profile")
-    public RedirectView profile(@RequestParam String firstName, @RequestParam String lastName){
+    public RedirectView profile(@RequestParam String firstName, @RequestParam String lastName, @RequestParam File pic){
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User u = userRepository.findByEmail(user.getUsername());
         u.setFirstName(firstName);
         u.setLastName(lastName);
+        u.setPic(pic);
         userRepository.save(u);
         return new RedirectView("/profile");
+    }
+
+    @GetMapping(value = "/deleteUser/{userId}")
+    public String deleteUser(@PathVariable("userId") Integer userId) {
+        //org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User u = userOptional.get();
+            u.setActive(false);
+            userRepository.save(u);
+        }
+        return "registration";
     }
 
    /* @PostMapping("/profile")
@@ -122,6 +141,30 @@ public class UserController {
     public String userList(Model model){
         model.addAttribute("user", userRepository.findAll());
         return "userList";
+    }
+
+    @GetMapping(value = "/banUser/{userId}")
+    public RedirectView deleteUserForAdmin(@PathVariable("userId") Integer userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User u = userOptional.get();
+            u.setActive(false);
+            u.setWasBanned(true);
+            userRepository.save(u);
+        }
+        return new RedirectView("/userList");
+    }
+
+    @GetMapping(value = "/unbanUser/{userId}")
+    public RedirectView resurrectUserForAdmin(@PathVariable("userId") Integer userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User u = userOptional.get();
+            u.setActive(true);
+            u.setWasBanned(false);
+            userRepository.save(u);
+        }
+        return new RedirectView("/userList");
     }
 
 }
