@@ -3,7 +3,10 @@ package com.example.model.community;
 import com.example.model.User;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "app_group")
 public class Group {
@@ -11,7 +14,7 @@ public class Group {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer groupId;
     private String groupName;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(name = "users_groups",
         joinColumns = {
             @JoinColumn(name ="group_id", referencedColumnName = "groupId")
@@ -43,6 +46,33 @@ public class Group {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public void addUser(User user){
+        if (this.users == null) {
+            this.users = new LinkedList<>();
+        }
+        this.users.add(user);
+    }
+
+    public String getUsernames(){
+        String s = "";
+        for(User u: users){
+            if(u.getFirstName() != null && !Objects.equals(u.getFirstName(), "")){
+                if(s.equals("")){
+                    s = u.getFirstName();
+                }else {
+                    s = s + ", " + u.getFirstName();
+                }
+            } else {
+                if(s.equals("")){
+                    s = u.getEmail();
+                } else {
+                    s = s + ", " + u.getEmail();
+                }
+            }
+        }
+        return s;
     }
 
     @Override

@@ -1,7 +1,10 @@
 package com.example.repos;
 
 import com.example.model.User;
+import com.example.model.community.Group;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,5 +20,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     Optional<User> findById(Integer id);
 
     List<User> findAll();
+
 
 }

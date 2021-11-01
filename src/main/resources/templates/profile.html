@@ -80,30 +80,15 @@
   </style>
 </head>
 <body bgcolor="#ccffcc">
-<h1>Edit your profile, [[${#httpServletRequest.remoteUser}]]</h1>
-<!--<img th:src = "${user.pic}">
-<img th:src="data:image/jpg;base64,${user.pic}" width="240" height="300"/>
-<td><img  th:attr="src=@{${user.pic}} , title=#{background}, alt=#{background}" style="width: 150px; height: 150px;" />-->
-<form th:action="@{/profile}" method="post">
-  <div><label> First name: <br><input type="text" name="firstName" th:value="${user.firstName}"/> </label></div>
-  <div><label> Last name: <br><input type="text" name="lastName" th:value="${user.lastName}"/> </label></div>
-  <div><label> Photo: <br><input type="file" accept="image/*" name="pic" th:value="${user.pic}"/> </label></div><br>
-  <div><input type="submit" name="send" value="Add"/></div>
-</form><br>
-
-
-
-    <div id="zatemnenie">
-      <div id="okno">
-        Are you sure you want to delete your account?<br><br>
-        <a th:href="@{/deleteUser/{userId}(userId=${user.getId()})}">Delete</a>
-        <a href="#" class="close">Cancel</a>
-    </div>
-  </div>
-<a href="#zatemnenie">Delete account</a>
-</form>
+<h1>[[${#httpServletRequest.remoteUser}]]</h1>
+<div>
+  <p> <a th:href="@{/editProfile}">Edit profile</a>
+</div>
 <div>
   <p> <a th:href="@{/travel/journey/list?req=prt}">Мои путешествия</a>
+</div>
+<div>
+  <p> <a th:href="@{/userGroups}">My groups</a>
 </div>
 </body>
 </html>
