@@ -17,7 +17,6 @@ import java.util.Set;
 
 @Entity(name = "app_User")
 // This tells Hibernate to make a table out of this class
-
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -42,6 +41,10 @@ public class User {
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Blog blog;
 
+    @Size(min=8, message = "At least 8 characters")
+    @Column(name = "password_BCrypt")
+    private String password_encoded;
+
     @ManyToMany(mappedBy = "likes", cascade = CascadeType.ALL)
     private Set<PostComment> postLikes;
 
@@ -50,6 +53,8 @@ public class User {
 
     @ManyToMany(mappedBy = "downVoters", cascade = CascadeType.ALL)
     private Set<PostComment> postDownvoters;
+
+
 
     public User(){}
 
@@ -142,6 +147,14 @@ public class User {
         this.userAddress = userAddress;
     }
 
+    public String getPassword_encoded() {
+        return password_encoded;
+    }
+
+    public void setPassword_encoded(String password_encoded) {
+        this.password_encoded = password_encoded;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -153,6 +166,11 @@ public class User {
                 ", roles=" + roles +
                 ", address=" + userAddress.toString() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User && ((User) obj).getId().equals(this.id);
     }
 }
 
