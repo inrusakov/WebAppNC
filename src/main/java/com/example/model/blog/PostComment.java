@@ -1,12 +1,13 @@
 package com.example.model.blog;
 
+import com.example.model.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 
 @Getter
@@ -21,13 +22,6 @@ public class PostComment extends Comment{
     )
     private Post post;
 
-    @ManyToOne(
-           // cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
-    @JoinColumn(name = "parent_comment_id")
-    private PostComment parentComment;
-
 
     //    // Bidirectional link, из-за реализации функции обновления рейтинга комментария
 //    @OneToMany(
@@ -35,13 +29,60 @@ public class PostComment extends Comment{
 //            //cascade = CascadeType.ALL,
 //           // orphanRemoval = true
 //    )
-    @OneToMany(targetEntity=PostComment.class, fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @Column(
+            name = "like_amount",
+            nullable = false
+    )
+    private Integer likeAmount = 0;
+
+    //@OneToMany(targetEntity=User.class,  fetch=FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "post_comment_likes",
+            joinColumns = @JoinColumn(name = "post_comment_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> likes;
+
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "post_comment_upvoters",
+            joinColumns = @JoinColumn(name = "post_comment_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> upVoters;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "post_comment_downvoters",
+            joinColumns = @JoinColumn(name = "post_comment_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> downVoters;
+
+
+
+    @ManyToOne(
+            // cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(name = "parent_comment_id")
+    private PostComment parentComment;
+
+    //@OneToMany(targetEntity=PostComment.class, fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "sub_comment_id")
 //    @OnDelete(action = OnDeleteAction.CASCADE)
 //    @ElementCollection(targetClass=PostComment.class)
 //    @Column(name="subComment", nullable=false)
 //    @CollectionTable(name="subcomments", joinColumns= {@JoinColumn(name="comment_id")})
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
     private List<PostComment> subComments;
+
+    public List<PostComment> getSortedSubcomments(){
+        subComments.sort(Comparator.comparing(PostComment::getTotalRating));
+        Collections.reverse(subComments);
+        return subComments;
+    }
 
     public void addSubComment(PostComment pc){
         subComments.add(pc);
@@ -57,4 +98,15 @@ public class PostComment extends Comment{
             total += comment.getTotalRating();
         return total;
     }
+
+    public void putLike(User user){
+        likeAmount++;
+        likes.add(user);
+    }
+
+    public void removeLike(User user){
+        likeAmount--;
+        likes.remove(user);
+    }
+
 }

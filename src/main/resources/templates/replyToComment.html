@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<form  th:id="${commUser.id + '_' + user.id}" th:action="@{/addReplyComment/{userId}/{postId}/{commUserId}/{commentId}(postId=${post.postId}, userId=${user.id}, commUserId=${commUser.id}, commentId=${rootComment.id})}" method="get" th:object = "${comment}">
+<form  th:id="${commUser.id + '_' + user.id + 'N' + commentCount + 'layer' + commentLayer}" th:action="@{/addReplyComment/{userId}/{postId}/{commUserId}/{commentId}(postId=${post.postId}, userId=${user.id}, commUserId=${commUser.id}, commentId=${rootComment.id})}" method="get" th:object = "${comment}">
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>

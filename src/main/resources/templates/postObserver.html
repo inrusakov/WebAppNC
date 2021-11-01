@@ -21,6 +21,7 @@
             <div class="post-header">
                 <h2><span th:text="${post.header}"> Content </span></h2>
             </div>
+            <p><span th:text="${addressUrl}"> </span></p>
             <div class="post-content" id="post_content">
             </div>
             <p class="editor" id="p-content">
@@ -34,10 +35,11 @@
                 <ul id="myUL">
                     <li>
                         <div th:insert="comment.html :: div.fragment(comment=${comment}, user=${comment.user}, post=${comment.post}, mainUser=${mainUser})"></div>
-                        <span th:if="${not #lists.isEmpty(comment.subComments)}" class="caret">...</span>
+                        <span th:if="${not #lists.isEmpty(comment.subComments)}" class="caret"></span>
                         <ul class="nested">
                             <div th:fragment="fragment_node(comment)" th:unless="${#lists.isEmpty(comment.subComments)}" >
-                                <div th:each="childComm : ${comment.subComments}">
+                                <hr class="hr-shadow">
+                                <div th:each="childComm : ${comment.getSortedSubcomments()}">
                                     <li>
                                         <div th:insert="comment.html :: div.fragment(comment=${childComm}, user=${childComm.user}, post=${childComm.post}, mainUser=${mainUser})"></div>
                                         <span th:if="${not #lists.isEmpty(childComm.subComments)}" class="caret">...</span>
@@ -46,6 +48,7 @@
                                         </ul>
                                     </li>
                                 </div>
+                                <hr class="hr-shadow">
                             </div>
                         </ul>
                     </li>

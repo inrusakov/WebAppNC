@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,7 +21,7 @@ import java.util.Map;
 //@Table(name = "Comment")
 public class Comment {
 // === CONSTANTS ===
-    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
+    public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
 // === ATTRIBUTES ===
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -57,15 +58,9 @@ public class Comment {
            nullable = false
    )
     private Integer edit = 0;
-// TODO: Добавить комментирование комментариев. Ниже написана основа этого функционала
-
-//    @Column(name = "isRootComment", columnDefinition = "boolean default true")
-//    private boolean isRootComment;
 
     @Column(name = "layer", columnDefinition = "integer default 0")
     private Integer layer;
-
-// TODO: Добавить систему рейтинга для комментариев. Ниже написана основа этого функционала
 
     @Column(
             name = "rating",
@@ -73,20 +68,17 @@ public class Comment {
     )
     private Integer rating = 0;
 
-    @OneToMany(targetEntity=User.class, fetch=FetchType.LAZY)
-    private List<User> upVoters;
+    public void increaseRating(User user){
+        rating++;
+    }
 
-    @OneToMany(targetEntity=User.class, fetch=FetchType.LAZY)
-    private List<User> downVoters;
+    public void decreaseRating(User user){
+        rating--;
+    }
 
-    @Column(
-            name = "like_amount",
-            nullable = false
-    )
-    private Integer likeAmount = 0;
-
-    @OneToMany(targetEntity=User.class,  fetch=FetchType.EAGER)
-    private List<User> likes;
+    public String getFormattedCreationTime(){
+        return new SimpleDateFormat(DATE_FORMAT).format(creationTime);
+    }
 
 // === CONSTRUCTORS ===
 
@@ -103,28 +95,6 @@ public class Comment {
     }
 
 // === METHODS ===
-
-    // TODO: Реализовать функционал в CommentService
-
-    public void putLike(User user){
-        likeAmount++;
-        likes.add(user);
-    }
-
-    public void removeLike(User user){
-        likeAmount--;
-        likes.remove(user);
-    }
-
-    public void increaseRating(User user){
-        rating++;
-       // upVoters.add(user);
-    }
-
-    public void decreaseRating(User user){
-        rating--;
-        //downVoters.add(user);
-    }
 
     //public Comment getRootComment(){return null;}
     //public Comment getParentComment(){return null;}

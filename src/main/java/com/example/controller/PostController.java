@@ -6,11 +6,15 @@ import com.example.model.blog.PostComment;
 import com.example.repos.PostCommentRepository;
 import com.example.repos.PostRepository;
 import com.example.repos.UserRepository;
+import com.example.util.EnvUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +40,9 @@ public class PostController{
     private PostCommentRepository postCommentRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EnvUtil envUtil;
 
     // ADDING NEW POST
     @GetMapping("/addPost")
@@ -57,8 +66,11 @@ public class PostController{
 
     // OBSERVING POST
     @GetMapping("/postObserver/{postId}")
-    public String observePost(@PathVariable("postId") Integer postId, Model model){
-        User mainUser = (User)userRepository.findById(2).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + postId));
+    public String observePost(@PathVariable("postId") Integer postId, Model model) throws UnknownHostException {
+        User mainUser = (User)userRepository.findById(1).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + postId));
+        //org.springframework.security.core.userdetails.User mainUser = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("addressUrl", envUtil.getServerUrlPrefi());
+
         model.addAttribute("mainUser", mainUser);
 
         PostComment c = new PostComment();

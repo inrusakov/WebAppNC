@@ -3,6 +3,8 @@ package com.example.model;
 //import com.example.model.Address;
 
 import com.example.model.blog.Blog;
+import com.example.model.blog.Comment;
+import com.example.model.blog.PostComment;
 import com.example.model.geoposition.Address;
 import com.example.model.org.Organisation;
 
@@ -40,6 +42,14 @@ public class User {
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     private Blog blog;
 
+    @ManyToMany(mappedBy = "likes", cascade = CascadeType.ALL)
+    private Set<PostComment> postLikes;
+
+    @ManyToMany(mappedBy = "upVoters", cascade = CascadeType.ALL)
+    private Set<PostComment> postUpvoters;
+
+    @ManyToMany(mappedBy = "downVoters", cascade = CascadeType.ALL)
+    private Set<PostComment> postDownvoters;
 
     public User(){}
 
@@ -131,7 +141,6 @@ public class User {
     public void setUserAddress(Address userAddress){
         this.userAddress = userAddress;
     }
-
 
     @Override
     public String toString() {

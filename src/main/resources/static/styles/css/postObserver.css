@@ -106,24 +106,38 @@ ul, #myUL {
 
 /* Создайте курсор/стрелку с юникодом, и стиль его */
 .caret::before {
-  content: "\25B6";
+  content: "..."; /* \25B6 */
   color: black;
   display: inline-block;
   margin-right: 6px;
+  margin-left: 500px;
 }
 
 /* Поверните значок курсора/стрелки при нажатии (с помощью JavaScript) */
 .caret-down::before {
-  transform: rotate(90deg);
+  /*transform: rotate(90deg);*/
+  content: "HIDE";
 }
 
 /* Скрыть вложенный список */
 .nested {
+  margin-left: 25px;
   display: none;
 }
 
 /* Показать вложенный список, когда пользователь нажимает на курсор стрелку (с JavaScript) */
 .active {
   display: block;
+}
+
+.hr-shadow{
+    position: relative;
+    text-align: right;
+	margin: 20px 0;
+	padding: 0;
+	height: 10px;
+	border: none;
+	border-top: 1px solid rgb(97, 163, 124);
+	box-shadow: 0 10px 10px -10px #8c8b8b inset;
 }
 /* ---------------------------------------------------------------------------------------------- */

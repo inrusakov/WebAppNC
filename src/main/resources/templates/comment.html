@@ -12,13 +12,65 @@
 </head>
 <body>
 
-    <div class="fragment">
+    <div class="fragment" th:id="${comment.id}">
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script>
-                function replyToComment(userId, postId, commUserId, commentId, listSize, layer){
-                    var url = 'http://localhost:8080/reply/' + userId + '/' + postId + '/' + commUserId + '/' + commentId;
-                    alert(url);
+                function replyToComment(userId, postId, commUserId, commentId, listSize, layer, addressUrl){
+                    var url = addressUrl + '/reply/' + userId + '/' + postId + '/' + commUserId + '/' + commentId;
+                    //alert(url);
                     var resultBlock = 'replySec' + commUserId + 'for' + userId + 'N' + listSize + 'layer' + layer;
+                    console.log(resultBlock);
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.onload = () => {
+                        console.log(xhr.status);
+                        console.log(xhr);
+                        console.log(xhr.responseText);
+                        if (xhr.status === 200) {
+                            // this is callback data: url
+                            //alert(xhr.responseText);
+                            console.log(url);
+                            document.getElementById(resultBlock).innerHTML = xhr.responseText;
+                            var focusStr = 'replySec' + commUserId + 'for' + userId + 'N' + listSize + 'layer' + layer;
+                            console.log(focusStr);
+                            document.getElementById(focusStr).focus();
+                        }
+                    };
+                    xhr.send();
+                }
+
+        </script>
+
+        <script>
+                function likeComment(postId, commUserId, commentId, addressUrl){
+                    var url = addressUrl + '/likeComment/' + postId + '/' + commentId + '/' + commUserId;
+                    //alert(url);
+                    var resultBlock = commentId;
+                    console.log(resultBlock);
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.onload = () => {
+                        console.log(xhr.status);
+                        console.log(xhr);
+                        console.log(xhr.responseText);
+                        if (xhr.status === 200) {
+                            // this is callback data: url
+                            //alert(xhr.responseText);
+                            console.log(url);
+                            document.getElementById(resultBlock).innerHTML = xhr.responseText;
+                            resultBlock = 'container ' + resultBlock;
+                            document.getElementById(resultBlock).focus();
+                        }
+                    };
+                    xhr.send();
+                }
+
+                function editComment(postId, commUserId, commentId, addressUrl){
+                    var url = addressUrl + '/editComment/' + postId + '/' + commentId + '/' + commUserId;
+                    alert(url);
+                    var resultBlock = commentId;
                     console.log(resultBlock);
 
                     const xhr = new XMLHttpRequest();
@@ -32,6 +84,8 @@
                             alert(xhr.responseText);
                             console.log(url);
                             document.getElementById(resultBlock).innerHTML = xhr.responseText;
+                            resultBlock = 'container ' + resultBlock;
+                            document.getElementById(resultBlock).focus();
                         }
                     };
                     xhr.send();
@@ -39,7 +93,59 @@
 
         </script>
 
-        <div class="container d-flex justify-content-center mt-100 mb-100">
+        <script>
+                function upVoteComment(postId, commUserId, commentId, addressUrl){
+                    var url = addressUrl + '/levelUpComment/' + postId + '/' + commentId + '/' + commUserId;
+                    //alert(url);
+                    var resultBlock = commentId;
+                    console.log(resultBlock);
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.onload = () => {
+                        console.log(xhr.status);
+                        console.log(xhr);
+                        console.log(xhr.responseText);
+                        if (xhr.status === 200) {
+                            // this is callback data: url
+                            //alert(xhr.responseText);
+                            console.log(url);
+                            document.getElementById(resultBlock).innerHTML = xhr.responseText;
+                            resultBlock = 'container ' + resultBlock;
+                            document.getElementById(resultBlock).focus();
+                        }
+                    };
+                    xhr.send();
+                }
+
+                function downVoteComment(postId, commUserId, commentId, addressUrl){
+                    var url = addressUrl + '/lowerComment/' + postId + '/' + commentId + '/' + commUserId;
+                    //alert(url);
+                    var resultBlock = commentId;
+                    console.log(resultBlock);
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.onload = () => {
+                        console.log(xhr.status);
+                        console.log(xhr);
+                        console.log(xhr.responseText);
+                        if (xhr.status === 200) {
+                            // this is callback data: url
+                            //alert(xhr.responseText);
+                            console.log(url);
+                            document.getElementById(resultBlock).innerHTML = xhr.responseText;
+                            resultBlock = 'container ' + resultBlock;
+                            document.getElementById(resultBlock).focus();
+                        }
+                    };
+                    xhr.send();
+                }
+        </script>
+
+
+
+        <div class="container d-flex justify-content-center mt-100 mb-100" th:id="'container ' + ${comment.id}" tabindex="0">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -54,21 +160,22 @@
                                         <span class="label label-info">Pending</span>
                                         <span class="action-icons">
 
-                                            <a th:if="${mainUser.id == user.id}" th:href="@{/editComment/{postId}/{id}(id=${comment.id}, postId = ${post.postId})}" data-abc="true">
+                                            <!--th:href="@{/editComment/{postId}/{id}(id=${comment.id}, postId = ${post.postId})}"-->
+                                            <a th:if="${mainUser.id == user.id}" href="#" th:attr="onclick=|editComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
                                                 <i class="fa fa-pencil"></i></a>
 
                                             <a href="#" data-abc="true"><i class="fa fa-rotate-right"></i></a>
-
-                                            <a th:unless="${mainUser.id == user.id}" th:href="@{/likeComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}" data-abc="true">
+                                            <!--th:href="@{/likeComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}"-->
+                                            <a th:unless="${mainUser.id == user.id}" href="#" th:attr="onclick=|likeComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|"  data-abc="true">
                                                 <i class="fa fa-heart"><label th:text="${comment.likeAmount}"/></i></a>
 
 
                                         </span>
                                     </div>
 
-                                    <p th:unless="${comment.edit}" class="m-b-5 m-t-10"><label th:text="${comment.commentBody}"/></p>
+                                    <p th:unless="${comment.edit}" class="m-b-5 m-t-10 w-100"><label th:text="${comment.commentBody}"/></p>
 
-                                    <form th:if="${comment.edit}" class="edit_comm_form" th:action="@{/editComment/{postId}/{id}(postId=${post.postId}, id=${comment.id})}" method="get" th:object = "${comment}">
+                                    <form th:if="${comment.edit}" class="edit_comm_form" th:action="@{/editComment/{postId}/{id}/{userId}(postId=${post.postId}, id=${comment.id}, userId=${mainUser.id})}" method="get" th:object = "${comment}">
                                         <p class="m-b-5 m-t-10"><textarea th:text="${comment.commentBody}" class="comment_area" name="edit_comment_body" cols="90" rows="7"/></p>
                                         <button class="edit-delete" type="submit" value="Edit" name="editComment">Edit</button>
                                         <button class="edit-delete" type="submit" value="Delete" name="editComment">Delete</button>
@@ -82,15 +189,20 @@
                                                 <i class="fa fa-sort-down fa-2x mb-3 hit-voting"></i>
                                             </span>
                                             <span th:unless="${mainUser.id == user.id}">
-                                                <a th:href="@{/levelUpComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}" data-abc="true">
+                                                <!--th:href="@{/levelUpComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}"-->
+                                                <a href="#" th:attr="onclick=|upVoteComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
                                                     <i class="fa fa-sort-up fa-2x mt-3 hit-voting"></i></a>
+
                                                 <span class="ml-1"><label th:text="${comment.rating}"/></span>
-                                                <a th:href="@{/lowerComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}" data-abc="true"><i class="fa fa-sort-down fa-2x mb-3 hit-voting"></i></a>
+                                                <!--th:href="@{/lowerComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}"-->
+                                                <a href="#" th:attr="onclick=|downVoteComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
+                                                    <i class="fa fa-sort-down fa-2x mb-3 hit-voting"></i></a>
+
                                             </span>
 
                                             <span class="dot ml-2"></span>
-                                            <a id="myLink" title="Click to reply" href="#" th:attr="onclick=|replyToComment('${mainUser.id}', '${post.postId}', '${user.id}', '${comment.id}', ${#lists.size(comment.subComments)}, ${comment.layer})|" > <h6 class="ml-2 mt-1">Reply</h6> </a>
-                                            <span class="date ml-5 mt-1"><label th:text="${comment.creationTime}" /></span>
+                                            <a id="myLink" title="Click to reply" href="#" th:attr="onclick=|replyToComment('${mainUser.id}', '${post.postId}', '${user.id}', '${comment.id}', ${#lists.size(comment.subComments)}, ${comment.layer}, '${addressUrl}')|" > <h6 class="ml-2 mt-1">Reply</h6> </a>
+                                            <span class="date ml-5 mt-1"><label th:text="${comment.getFormattedCreationTime()}" /></span>
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +214,8 @@
 
         </div>
         </div>
-        <div th:id="'replySec' + ${user.id} + 'for' + ${mainUser.id} + 'N' + ${#lists.size(comment.subComments)} + 'layer' + ${comment.layer}">
+        <div th:id="'replySec' + ${user.id} + 'for' + ${mainUser.id} + 'N' + ${#lists.size(comment.subComments)} + 'layer' + ${comment.layer}" tabindex="0">
+
         </div>
     </div>
 </body>
