@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -50,13 +51,21 @@ public class RouteController {
     @GetMapping("/routeObserver/{routeId}")
     public String observePost(@PathVariable("routeId") Integer routeId, String submit, Model model){
         Optional<Route> optionalRoute = routeRepository.findById(routeId);
-        //Route route = ;
-//        Map<Integer, Marker> routeMap = new HashMap<>();
-//        for (int i = 0; i < route.getMarkers().size(); i++){
-//            routeMap.put(i,route.getMarkers().get(i));
-//        }
         model.addAttribute("route",optionalRoute.get().getMarkers());
         return "routeObserver";
+    }
+
+    @GetMapping("/editRoute/{routeId}")
+    public String editPost(@PathVariable("routeId") Integer routeId, Model model){
+        model.addAttribute("post", (Route)routeRepository.findById(routeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + routeId)));
+        return "editRoute";
+    }
+
+    @PostMapping("/editRoute/{routeId}")
+    public RedirectView editPost(@PathVariable("routeId") Integer routeId, @ModelAttribute Route route){
+        routeRepository.save(route);
+        return new RedirectView("/routeObserver/{routeId}");
     }
 }
 

@@ -3,14 +3,10 @@ package com.example.controller;
 import com.example.model.response.Response;
 import com.example.model.response.Views;
 import com.example.model.geoposition.GeoRequest;
-import com.example.model.geoposition.Route;
-import com.example.repos.RouteRepository;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 
 @RestController
 public class GeopositionController {
