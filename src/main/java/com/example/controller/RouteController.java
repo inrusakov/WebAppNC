@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.model.blog.Post;
 import com.example.model.response.Response;
 import com.example.model.response.Views;
 import com.example.model.geoposition.Route;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
