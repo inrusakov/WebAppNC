@@ -1,3 +1,14 @@
 package com.example.model;
 
-public enum Role {USER, COMPANY, ADMIN}
+import org.springframework.security.core.GrantedAuthority;
+
+//public enum Role implements GrantedAuthority {
+public enum Role {
+    USER, COMPANY, ADMIN;
+/*
+    @Override
+    public String getAuthority() {
+        return name();
+    }
+*/
+}
