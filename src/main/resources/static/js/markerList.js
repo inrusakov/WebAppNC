@@ -1,5 +1,5 @@
 let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-let counter = 0;
+let counter = 1;
 // ELEMENT SELECTORS
 let input = document.querySelector('#userinput');
 let ul = document.querySelector('ul');
@@ -7,11 +7,23 @@ let body = document.querySelector('body');
 
 // HELPER FUNCTIONS
 function deleteListItem(event) {
-    deleteMarker(event.target.parentNode.classList[3]);
+    let deleted = event.target.parentNode.classList[3] - 1;
+    if (deleted<0)
+        deleted = 0;
+    deleteMarker(deleted);
     counter--;
-    event.srcElement.parentNode.remove();
-
+    event.target.parentNode.remove();
     refactor();
+}
+
+function drag(){
+    const swappable = new Draggable.Swappable(document.querySelectorAll('ul'), {
+        draggable: 'li'
+    });
+
+    swappable.on('swappable:start', () => console.log('swappable:start'));
+    swappable.on('swappable:swapped', () => console.log('swappable:swapped'));
+    swappable.on('swappable:stop', () => console.log('swappable:stopped'));
 }
 
 function refactor(){
@@ -21,32 +33,29 @@ function refactor(){
     obj_list.childNodes.forEach((node, i) =>
     {
         try {
-            let number = i-1;
-            let content = node.innerHTML.split("<h")[0].split("</")[0].split(">")[1];
+            let number = i;
+            let content = node.innerHTML.split(">")[1].split("<")[0];
 
-            let num = document.createElement('h4');
-            num.innerHTML = '.'+number;
-            num.classList.add('num');
-
-            let itemDiv = document.createElement('div');
+            let itemDiv = document.createElement('li');
             itemDiv.classList.add('itemdiv', 'width', 'margin', number);
 
             let deleteButton = document.createElement('button');
             deleteButton.innerHTML = 'x';
             deleteButton.classList.add('btn', 'btn-outline-secondary', 'bg-light', 'deletebutton');
 
-            let li = document.createElement('li');
-            li.addEventListener('dblclick', editItem);
-            li.textContent = content;
+            let text = document.createElement('div');
+            text.classList.add("marker-text");
+            text.addEventListener('dblclick', editItem);
+            text.textContent = content;
 
-            itemDiv.append(li, num, deleteButton);
+            itemDiv.append(text, deleteButton);
 
             deleteButton.addEventListener('click', event => {
-                    li.removeEventListener('dblclick', editItem);
+                    text.removeEventListener('dblclick', editItem);
 
                     deleteListItem(event);
 
-                    li = null;
+                    text = null;
                     deleteButton = null;
                     itemDiv = null;
                 },
@@ -61,11 +70,7 @@ function refactor(){
 }
 
 function createDivAndButton(li) {
-    let num = document.createElement('h4');
-    num.innerHTML = '.'+counter;
-    num.classList.add('num');
-
-    let itemDiv = document.createElement('div');
+    let itemDiv = document.createElement('li');
     itemDiv.classList.add('itemdiv', 'width', 'margin', counter);
 
     let deleteButton = document.createElement('button');
@@ -74,7 +79,6 @@ function createDivAndButton(li) {
 
     counter++;
     return {
-        num,
         itemDiv,
         deleteButton
     };
@@ -82,17 +86,20 @@ function createDivAndButton(li) {
 
 function saveItem(event) {
     if (event.target.value.length > 0 && (event.keyCode === 13 || event.type === 'click')) {
-        let li = document.createElement('li');
-        li.addEventListener('dblclick', editItem);
-        li.textContent = event.target.value;
-        changeTooltip(event.target.parentNode.classList[3],event.target.value);
-        event.target.parentNode.prepend(li);
+        let text = document.createElement('div');
+        text.classList.add("marker-text");
+        text.addEventListener('dblclick', editItem);
+        text.textContent = event.target.value;
+        let num = event.target.parentNode.classList[3]-1;
+        changeTooltip(num,event.target.value);
+        event.target.parentNode.prepend(text);
         event.target.remove();
     } else if (event.target.value.length === 0 && (event.keyCode === 13 || event.type === 'click')) {
-        let li = document.createElement('li');
-        li.addEventListener('dblclick', editItem);
-        li.textContent = initialValue;
-        event.target.parentNode.prepend(li);
+        let text = document.createElement('div');
+        text.classList.add("marker-text");
+        text.addEventListener('dblclick', editItem);
+        text.textContent = initialValue;
+        event.target.parentNode.prepend(text);
         event.target.remove();
     }
 }
@@ -103,7 +110,9 @@ let initialValue;
 function editItem(event) {
     let item = event.target.innerHTML;
     let itemInput = document.createElement('input');
+    //itemInput.style.width = (item.length+1)*8+'px';
     itemInput.type = 'text';
+    itemInput.id = 'text';
     itemInput.value = item;
     itemInput.classList.add('edit');
     initialValue = item;
@@ -112,33 +121,35 @@ function editItem(event) {
     event.target.parentNode.prepend(itemInput);
     event.target.remove();
     itemInput.select();
+
 }
 
 function createListItem(marker) {
-    let li = document.createElement('li');
-    li.addEventListener('dblclick', editItem);
-    li.textContent = marker;
+    let text = document.createElement('div');
+    text.classList.add("marker-text");
+    text.addEventListener('dblclick', editItem);
+    text.textContent = marker;
 
-    let {num, itemDiv, deleteButton} = createDivAndButton();
+    let {itemDiv, deleteButton} = createDivAndButton();
 
-    itemDiv.append(li, num, deleteButton);
+    itemDiv.append(text, deleteButton);
     ul.append(itemDiv);
 
     deleteButton.addEventListener('click', event => {
-            li.removeEventListener('dblclick', editItem);
+            text.removeEventListener('dblclick', editItem);
 
             deleteListItem(event);
 
-            li = null;
+            text = null;
             deleteButton = null;
             itemDiv = null;
         },
         {once: true}
     );
+
 }
 
 function clearList(event) {
     ul.innerHTML = '';
-    counter = 0;
-    event.target.remove();
+    counter = 1;
 }

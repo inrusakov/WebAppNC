@@ -1,8 +1,12 @@
 input {
     box-sizing: border-box;
-    width: 50%;
-    margin-right: 5px;
+    margin-right: 6px;
     border-radius: .25rem !important;
+}
+
+.marker-text {
+    margin-left: 5px;
+    word-break: break-all;
 }
 
 h1 {
@@ -34,7 +38,6 @@ ul {
     padding: 0;
     height: 25px;
     width: 25px;
-    visibility: hidden;
 }
 
 .deletebutton:hover {
@@ -44,6 +47,7 @@ ul {
 .edit {
     border-color: transparent;
     height: 40px;
+    width: 100%;
 }
 
 .edit:focus-visible {
@@ -71,6 +75,8 @@ ul {
     justify-content: space-between;
     align-items: center;
     font-size: 1.5em;
+    border: 1px solid #333;
+    border-radius: 5px;
 }
 
 .itemdiv:hover > .deletebutton {
