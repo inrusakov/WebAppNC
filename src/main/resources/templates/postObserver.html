@@ -10,7 +10,7 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body>
-    <div class="edit-delete">
+    <div class="edit-delete" th:if="${mainUser != null ? mainUser?.id == author.id : false}">
         <div class="position">
             <a th:href="@{/editPost/{postId}(postId=${post.postId})}">Edit</a>
             <a th:href="@{/deletePost/{postId}(postId=${post.postId})}">Delete</a>
@@ -21,7 +21,6 @@
             <div class="post-header">
                 <h2><span th:text="${post.header}"> Content </span></h2>
             </div>
-            <p><span th:text="${addressUrl}"> </span></p>
             <div class="post-content" id="post_content">
             </div>
             <p class="editor" id="p-content">
@@ -56,7 +55,7 @@
             </div>
 
 
-            <div th:insert="addComment.html :: form.new_comm_form(comment=${newComment}, user=${mainUser}, post=${post})"></div>
+            <div th:if="${mainUser != null}" th:insert="addComment.html :: form.new_comm_form(comment=${newComment}, user=${mainUser}, post=${post})"></div>
 
 
         </div>

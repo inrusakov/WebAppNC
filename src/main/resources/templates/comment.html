@@ -69,7 +69,7 @@
 
                 function editComment(postId, commUserId, commentId, addressUrl){
                     var url = addressUrl + '/editComment/' + postId + '/' + commentId + '/' + commUserId;
-                    alert(url);
+                    //alert(url);
                     var resultBlock = commentId;
                     console.log(resultBlock);
 
@@ -81,7 +81,7 @@
                         console.log(xhr.responseText);
                         if (xhr.status === 200) {
                             // this is callback data: url
-                            alert(xhr.responseText);
+                            //alert(xhr.responseText);
                             console.log(url);
                             document.getElementById(resultBlock).innerHTML = xhr.responseText;
                             resultBlock = 'container ' + resultBlock;
@@ -161,47 +161,47 @@
                                         <span class="action-icons">
 
                                             <!--th:href="@{/editComment/{postId}/{id}(id=${comment.id}, postId = ${post.postId})}"-->
-                                            <a th:if="${mainUser.id == user.id}" href="#" th:attr="onclick=|editComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
+                                            <a th:if="${mainUser != null ? mainUser?.id == user.id : false}" href="#" th:attr="onclick=|editComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
                                                 <i class="fa fa-pencil"></i></a>
 
                                             <a href="#" data-abc="true"><i class="fa fa-rotate-right"></i></a>
                                             <!--th:href="@{/likeComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}"-->
-                                            <a th:unless="${mainUser.id == user.id}" href="#" th:attr="onclick=|likeComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|"  data-abc="true">
+                                            <a th:unless="${mainUser != null ? mainUser?.id == user.id : true}" href="#" th:attr="onclick=|likeComment('${post.postId}', '${mainUser?.id}', '${comment.id}', '${addressUrl}')|"  data-abc="true">
                                                 <i class="fa fa-heart"><label th:text="${comment.likeAmount}"/></i></a>
-
+                                            <a th:if="${mainUser == null}" href="#" data-abc="true">
+                                                <i class="fa fa-heart"><label th:text="${comment.likeAmount}"/></i></a>
 
                                         </span>
                                     </div>
 
                                     <p th:unless="${comment.edit}" class="m-b-5 m-t-10 w-100"><label th:text="${comment.commentBody}"/></p>
 
-                                    <form th:if="${comment.edit}" class="edit_comm_form" th:action="@{/editComment/{postId}/{id}/{userId}(postId=${post.postId}, id=${comment.id}, userId=${mainUser.id})}" method="get" th:object = "${comment}">
+                                    <form th:if="${mainUser != null}? ${comment.edit} : false" class="edit_comm_form" th:action="@{/updateComment/{postId}/{id}/{userId}(postId=${post.postId}, id=${comment.id}, userId=${mainUser.id})}" method="get" th:object = "${comment}">
                                         <p class="m-b-5 m-t-10"><textarea th:text="${comment.commentBody}" class="comment_area" name="edit_comment_body" cols="90" rows="7"/></p>
-                                        <button class="edit-delete" type="submit" value="Edit" name="editComment">Edit</button>
+                                        <button class="edit-delete" type="submit" value="Edit" name="editComment" >Edit</button>
                                         <button class="edit-delete" type="submit" value="Delete" name="editComment">Delete</button>
                                     </form>
 
                                     <div th:unless="${comment.edit}" class="reply-section">
                                         <div class="d-flex flex-row align-items-center voting-icons">
-                                            <span th:if="${mainUser.id == user.id}">
+                                            <span  th:if="${mainUser != null ? mainUser?.id == user.id : true}">
                                                 <i class="fa fa-sort-up fa-2x mt-3 hit-voting"></i>
                                                 <span class="ml-1"><label th:text="${comment.rating}"/></span>
                                                 <i class="fa fa-sort-down fa-2x mb-3 hit-voting"></i>
                                             </span>
-                                            <span th:unless="${mainUser.id == user.id}">
+                                            <span th:unless="${mainUser != null ? mainUser?.id == user.id : true}">
                                                 <!--th:href="@{/levelUpComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}"-->
-                                                <a href="#" th:attr="onclick=|upVoteComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
+                                                <a href="#" th:attr="onclick=|upVoteComment('${post.postId}', '${mainUser?.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
                                                     <i class="fa fa-sort-up fa-2x mt-3 hit-voting"></i></a>
 
                                                 <span class="ml-1"><label th:text="${comment.rating}"/></span>
                                                 <!--th:href="@{/lowerComment/{postId}/{id}/{userId}(id=${comment.id}, postId = ${post.postId}, userId = ${mainUser.id})}"-->
-                                                <a href="#" th:attr="onclick=|downVoteComment('${post.postId}', '${mainUser.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
+                                                <a href="#" th:attr="onclick=|downVoteComment('${post.postId}', '${mainUser?.id}', '${comment.id}', '${addressUrl}')|" data-abc="true">
                                                     <i class="fa fa-sort-down fa-2x mb-3 hit-voting"></i></a>
-
                                             </span>
 
                                             <span class="dot ml-2"></span>
-                                            <a id="myLink" title="Click to reply" href="#" th:attr="onclick=|replyToComment('${mainUser.id}', '${post.postId}', '${user.id}', '${comment.id}', ${#lists.size(comment.subComments)}, ${comment.layer}, '${addressUrl}')|" > <h6 class="ml-2 mt-1">Reply</h6> </a>
+                                            <a th:if = "${mainUser != null}" id="myLink" title="Click to reply" href="#" th:attr="onclick=|replyToComment('${mainUser?.id}', '${post.postId}', '${user.id}', '${comment.id}', ${#lists.size(comment.subComments)}, ${comment.layer}, '${addressUrl}')|" > <h6 class="ml-2 mt-1">Reply</h6> </a>
                                             <span class="date ml-5 mt-1"><label th:text="${comment.getFormattedCreationTime()}" /></span>
                                         </div>
                                     </div>
@@ -214,7 +214,7 @@
 
         </div>
         </div>
-        <div th:id="'replySec' + ${user.id} + 'for' + ${mainUser.id} + 'N' + ${#lists.size(comment.subComments)} + 'layer' + ${comment.layer}" tabindex="0">
+        <div th:if = "${mainUser != null}" th:id="'replySec' + ${user.id} + 'for' + ${mainUser?.id} + 'N' + ${#lists.size(comment.subComments)} + 'layer' + ${comment.layer}" tabindex="0">
 
         </div>
     </div>

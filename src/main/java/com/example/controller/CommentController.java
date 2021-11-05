@@ -51,9 +51,10 @@ public class CommentController {
         return "comment";
     }
 
+    @CrossOrigin("http://localhost:5000")
     @GetMapping("/likeComment/{postId}/{id}/{userId}")
     public ModelAndView likeComment(@PathVariable("id") Integer id, @PathVariable("postId") Integer postId, @PathVariable("userId") Integer userId, Model model) throws UnknownHostException {
-        PostComment comment = postCommentRepository.getById(id);
+        PostComment comment = postCommentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         Set<User> likes = comment.getLikes();
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
 
@@ -71,9 +72,10 @@ public class CommentController {
         return new ModelAndView("comment.html :: div.fragment");
     }
 
+    @CrossOrigin("http://localhost:5000")
     @GetMapping("/levelUpComment/{postId}/{id}/{userId}")
     public ModelAndView levelUpComment(@PathVariable("id") Integer id, @PathVariable("postId") Integer postId, @PathVariable("userId") Integer userId, Model model) throws UnknownHostException {
-        PostComment comment = postCommentRepository.getById(id);
+        PostComment comment = postCommentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
 
         Set<User> up = comment.getUpVoters();
@@ -98,11 +100,11 @@ public class CommentController {
     }
 
 
-
+    @CrossOrigin("http://localhost:5000")
     @GetMapping("/lowerComment/{postId}/{id}/{userId}")
     public ModelAndView lowerComment (@PathVariable("id") Integer id, @PathVariable("postId") Integer
             postId, @PathVariable("userId") Integer userId, Model model) throws UnknownHostException {
-        PostComment comment = postCommentRepository.getById(id);
+        PostComment comment = postCommentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
 
         Set<User> up = comment.getUpVoters();
@@ -135,6 +137,7 @@ public class CommentController {
         Post p = (Post) postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId));
         User u = (User) userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
 
+        comment.setId(comment.getId());
         comment.setCommentBody(comm_body);
         comment.setCreationTime(new Timestamp(Calendar.getInstance().getTime().getTime()));
         comment.setUser(u);
@@ -145,11 +148,12 @@ public class CommentController {
         return new RedirectView("/postObserver/{postId}");
     }
 
+    @CrossOrigin("http://localhost:5000")
     @GetMapping("/editComment/{postId}/{id}/{userId}")
     public ModelAndView editComment (@PathVariable("id") Integer id, @PathVariable("postId") Integer
             postId, @PathVariable("userId") Integer userId, @RequestParam(required = false) String edit_comment_body, @RequestParam(required = false) String
                                              editComment, RedirectAttributes attributes, Model model) throws UnknownHostException {
-        PostComment comment = postCommentRepository.getById(id);
+        PostComment comment = postCommentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
         Integer edit = comment.getEdit();
         if (edit == 1) {
@@ -173,8 +177,36 @@ public class CommentController {
         return new ModelAndView("comment.html :: div.fragment");
     }
 
-    @GetMapping(value = "/reply/{userId}/{postId}/{commUserId}/{commentId}")
+    @GetMapping("/updateComment/{postId}/{id}/{userId}")
+    public RedirectView updateComment (@PathVariable("id") Integer id, @PathVariable("postId") Integer
+            postId, @PathVariable("userId") Integer userId, @RequestParam(required = false) String edit_comment_body, @RequestParam(required = false) String
+                                             editComment, RedirectAttributes attributes, Model model) throws UnknownHostException {
+        PostComment comment = postCommentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+        Integer edit = comment.getEdit();
+        if (edit == 1) {
+            if (editComment.equals("Delete")) {
+                postCommentRepository.deleteById(id);
+            } else {
+                comment.setCommentBody(edit_comment_body);
+                comment.setEdit(0);
+                postCommentRepository.save(comment);
+            }
+        } else {
+            comment.setEdit(1);
+            postCommentRepository.save(comment);
+        }
+        //return new RedirectView("/postObserver/{postId}");
+        model.addAttribute("comment", comment);
+        model.addAttribute("user", comment.getUser());
+        model.addAttribute("post", comment.getPost());
+        model.addAttribute("mainUser", user);
+        model.addAttribute("addressUrl", envUtil.getServerUrlPrefi());
+        return new RedirectView("/postObserver/{postId}");
+    }
 
+    @CrossOrigin("http://localhost:5000")
+    @GetMapping(value = "/reply/{userId}/{postId}/{commUserId}/{commentId}")
     public String replyToComment(Model model, @PathVariable("userId") Integer userId, @PathVariable("postId") Integer postId,
                                  @PathVariable("commUserId") Integer commUserId, @PathVariable("commentId") Integer commentId) throws UnknownHostException {
         model.addAttribute("user", userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId)));

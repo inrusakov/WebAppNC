@@ -3,7 +3,8 @@ package com.example.controller;
 import com.example.model.CustomUserDetails;
 import com.example.model.Role;
 import com.example.model.User;
-import com.example.repos.CommentRepository;
+import com.example.model.blog.Blog;
+import com.example.repos.BlogRepository;
 import com.example.repos.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private BlogRepository blogRepository;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -52,7 +56,14 @@ public class UserController {
 
         user.setRole(Collections.singleton(Role.USER));
         user.setActive(true);
+
+        Blog blog = new Blog();
+        blog.setUser(user);
+
+        user.setBlog(blog);
+
         userRepository.save(user);
+        blogRepository.save(blog);
         int id = user.getId();
         return "redirect:/login";
     }

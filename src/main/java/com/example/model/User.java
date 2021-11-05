@@ -9,6 +9,7 @@ import com.example.model.geoposition.Address;
 import com.example.model.org.Organisation;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.File;
 import java.util.List;
@@ -53,8 +54,6 @@ public class User {
 
     @ManyToMany(mappedBy = "downVoters", cascade = CascadeType.ALL)
     private Set<PostComment> postDownvoters;
-
-
 
     public User(){}
 

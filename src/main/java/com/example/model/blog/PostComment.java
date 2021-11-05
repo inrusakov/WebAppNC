@@ -15,7 +15,12 @@ import java.util.*;
 @Entity
 @Table(name = "post_comment")
 public class PostComment extends Comment{
-    @OneToOne
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "comment_id")
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "post_id",
             nullable = false
@@ -108,5 +113,4 @@ public class PostComment extends Comment{
         likeAmount--;
         likes.remove(user);
     }
-
 }

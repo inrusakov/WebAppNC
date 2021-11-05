@@ -17,16 +17,12 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @MappedSuperclass
-//@Entity
-//@Table(name = "Comment")
+
 public class Comment {
 // === CONSTANTS ===
     public static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
 // === ATTRIBUTES ===
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "comment_id")
-    private Integer id;
+
 
     // Unidirectional link, т.к. у пользователя нет необходимости в просмотре всех своих комментраиев
     // Hibernate создаст таблицу соединений между user и comment
@@ -80,14 +76,11 @@ public class Comment {
         return new SimpleDateFormat(DATE_FORMAT).format(creationTime);
     }
 
-// === CONSTRUCTORS ===
-
 // === @OVERRIDE METHODS ===
     @Override
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
         return "Comment{" +
-                "comment_id=" + id +
                 ", user_id=" + user.getId() +
                 ", creation_time=" + dateFormat.format(creationTime.toLocalDateTime()) +
                 ", commentBody=" + commentBody +
