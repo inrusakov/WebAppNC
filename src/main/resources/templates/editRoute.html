@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Route Observer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+<div id="mapid" style="width: 800px; height: 500px;"></div>
+<script th:inline="javascript" >
+    /*<![CDATA[*/
+    let route = [];
+    route = /*[[${route}]]*/ 'default';
+    /*]]>*/
+</script>
+<script type="text/javascript" th:src="@{/js/routeObserver.js}"></script>
+<script type="text/javascript" th:src="@{/js/routeEditor.js}"></script>
+</body>
+</html>

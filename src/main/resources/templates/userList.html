@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Profile</title>
+    <title>List of users</title>
     <style>
     h1 {
     color: black;
@@ -22,13 +22,18 @@
 </head>
 <body bgcolor="#ccffcc">
 <h1 align="center">List of users</h1>
-<table>
+<div class="form-group">
+    <input type="text" class="form-control pull-right" id="search" placeholder="Find">
+</div>
+<table class="table table-striped" id="mytable" cellspacing="0" style="width: 100%;">
     <thead>
     <tr>
         <td>Email</td>
         <td>First Name</td>
         <td>Last Name</td>
         <td>Is Active</td>
+        <td>Was Banned</td>
+        <td>Ban Options</td>
     </tr>
     </thead>
     <tbody>
@@ -37,8 +42,26 @@
         <td th:text="${user.firstName}">First Name</td>
         <td th:text="${user.lastName}">Last Name</td>
         <td th:text="${user.active}">Is Active</td>
+        <td th:text="${user.wasBanned}">Was Banned</td>
+        <td><a th:href="@{/banUser/{userId}(userId=${user.getId()})}">Ban</a></td>
+        <td><a th:href="@{/unbanUser/{userId}(userId=${user.getId()})}">Unban</a></td>
     </tr>
     </tbody>
 </table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#search").keyup(function(){
+            _this = this;
+            $.each($("#mytable tbody tr"), function() {
+                if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 let mymap;
 let markerCounter = 0;
 let markers = [];
-let markerName, markerDesc;
+let lines = L.polyline([0,0]);
 
 const deleteM = document.querySelector('#deleteMarkers')
 const sendRouteM = document.querySelector('#sendRoute')
@@ -22,61 +22,83 @@ function printMap() {
     mymap.on('click', onMapClick);
 }
 
-function addMarker(lat, lng){
-    let newMarker = L.marker([lat,lng]).addTo(mymap);
+function connectTheDots(data){
+    let c = [];
+    data.forEach(marker => {
+        let x = marker._latlng.lat;
+        let y = marker._latlng.lng;
+        c.push([x, y]);
+    })
+    return c;
 }
 
 function deleteMarkers(){
     markers.forEach(element => mymap.removeLayer(element));
     markerCounter = 0;
     markers = [];
-}
-
-function save(popup){
-    popup.setContent("" +
-        "<h3>Name: </h3>" +
-        "<h4>"+document.getElementById('name').value+"</h4>" +
-        "<h3>Description: </h3>" +
-        "<h4>"+document.getElementById('desc').value+"</h4>");
-}
-
-function addContentToMarker(popup){
-    popup.setContent(
-        "<label for=\"name\">Enter marker name:</label>\n" +
-        "<input type=\"text\" id=\"name\">\n" +
-        "<br>"+
-        "<label for=\"desc\">Enter marker description:</label>\n" +
-        "<input type=\"text\" id=\"desc\">\n" +
-        "<br>"+
-        "<button onclick=\"save(popup)\">Save</button>");
+    clearList();
+    updateLines([0,0]);
 }
 
 function onMapClick(e) {
     marker = new L.Marker(e.latlng, {draggable:true});
     mymap.addLayer(marker);
-    popup = L.popup().openPopup();
-    addContentToMarker(popup);
-    marker.bindPopup(popup);
     marker.bindTooltip(markerCounter.toString(),
         {
             permanent: true,
             direction: 'right'
         }
     );
-    markerCounter++;
     markers.push(marker);
+    markers.forEach(marker => {
+        marker.addEventListener('click',()=>
+        {});
+        marker.on('drag', ()=>{
+            updateLines();
+        });
+    });
+    createListItem(markerCounter);
+    markerCounter++;
+
+    updateLines();
 };
+
+function updateLines(dat){
+    if (dat!=null){
+        mymap.removeLayer(lines);
+        lines = L.polyline(connectTheDots(dat));
+        lines.addTo(mymap)
+    } else {
+        mymap.removeLayer(lines);
+        lines = L.polyline(connectTheDots(markers));
+        lines.addTo(mymap)
+    }
+}
+
+function deleteMarker(index){
+    markers[index].removeFrom(mymap);
+    markers.splice(index,1);
+    markerCounter--;
+    updateLines();
+}
+
+function changeTooltip(index,tooltip){
+    markers[index].unbindTooltip();
+    markers[index].bindTooltip(tooltip,
+        {
+            permanent: true,
+            direction: 'right'
+        }
+    );
+}
 
 function sendRoute(){
     let route = [];
     markers.forEach(element =>
     {
-        if (element._popup._content.toString().includes("Enter marker name:")) {
-            element._popup._content = "<h3>Name: </h3><h4>null</h4><h3>Description: </h3><h4>null</h4>"
-        }
         route.push(element._latlng.toString().split("(")[1].split(")")[0]
             + ','
-            + element._popup._content);
+            + element._tooltip._content);
     });
 
     $.ajax({

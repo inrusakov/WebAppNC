@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+
+    <style>
+        h1 {
+            color: black;
+            font-family: "Times New Roman", Georgia, Serif;
+            line-height: 1.3em;
+        }
+        label {
+            margin:0 auto;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c87c9;
+        }
+        input {
+            margin:0 auto;
+            width: 50%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+        a {
+            margin:0 auto;
+            width: 50%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+        #zatemnenie {
+            background: rgba(102, 102, 102, 0.5);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+        #okno {
+            width: 300px;
+            height: 50px;
+            text-align: center;
+            padding: 15px;
+            border: 3px solid #0000cc;
+            border-radius: 10px;
+            color: #1c87c9;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+            background: #ccffcc;
+        }
+        #zatemnenie:target {display: block;}
+        .close {
+            margin:0 auto;
+            width: 50%;
+            height: 28px;
+            padding: 4px 10px;
+            border: 1px solid #666;
+            background: #cce6ff;
+            color: #1c87c9;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+        .close:hover {background: #e6e6ff;}
+    </style>
+</head>
+<body bgcolor="#ccffcc">
+<h1>Edit your profile, [[${#httpServletRequest.remoteUser}]]</h1>
+<!--<img th:src = "${user.pic}">
+<img th:src="data:image/jpg;base64,${user.pic}" width="240" height="300"/>
+<td><img  th:attr="src=@{${user.pic}} , title=#{background}, alt=#{background}" style="width: 150px; height: 150px;" />-->
+<form th:action="@{/editProfile}" method="post">
+    <div><label> First name: <br><input type="text" name="firstName" th:value="${user.firstName}"/> </label></div>
+    <div><label> Last name: <br><input type="text" name="lastName" th:value="${user.lastName}"/> </label></div>
+    <div><label> Photo: <br><input type="file" accept="image/*" name="pic" th:value="${user.pic}"/> </label></div><br>
+    <div><input type="submit" name="send" value="Add"/></div>
+</form><br>
+<div id="zatemnenie">
+    <div id="okno">
+        Are you sure you want to delete your account?<br><br>
+        <a th:href="@{/deleteUser/{userId}(userId=${user.getId()})}">Delete</a>
+        <a href="#" class="close">Cancel</a>
+    </div>
+</div>
+<a href="#zatemnenie">Delete account</a>
+<div>
+    <p> <a th:href="@{/profile}">Back to profile</a>
+</div>
+</body>
+</html>
