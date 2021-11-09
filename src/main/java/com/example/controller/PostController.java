@@ -1,8 +1,10 @@
 package com.example.controller;
 
 import com.example.model.User;
+import com.example.model.blog.Blog;
 import com.example.model.blog.Post;
 import com.example.model.blog.PostComment;
+import com.example.repos.BlogRepository;
 import com.example.repos.PostCommentRepository;
 import com.example.repos.PostRepository;
 import com.example.service.AuthenticationService;
@@ -23,6 +25,8 @@ import java.util.List;
 
 @Controller
 public class PostController{
+    @Autowired
+    private BlogRepository blogRepository;
     @Autowired
     private PostRepository postRepository;
     @Autowired
@@ -49,7 +53,7 @@ public class PostController{
         MultipartFile f = file;
 
         postRepository.save(post);
-        return new RedirectView("/allPosts");
+        return new RedirectView("/allBlogs");
     }
 
     // OBSERVING POST
@@ -98,7 +102,9 @@ public class PostController{
 
     @PostMapping("/editPost/{postId}")
     public RedirectView editPost(@PathVariable("postId") Integer postId, @ModelAttribute Post post){
+        User author = AuthenticationService.getCurrentUser();
         post.setPublicationDate(LocalDateTime.now());
+        post.setBlog(author.getBlog());
         postRepository.save(post);
         return new RedirectView("/postObserver/{postId}");
     }
