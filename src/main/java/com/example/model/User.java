@@ -3,10 +3,14 @@ package com.example.model;
 
 import com.example.model.blog.Blog;
 import com.example.model.community.Group;
+import com.example.model.blog.Comment;
+import com.example.model.blog.PostComment;
 import com.example.model.geoposition.Address;
 import com.example.model.org.Organisation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.File;
 import java.util.List;
@@ -37,7 +41,8 @@ public class User {
     private List<Tag> tag;
     @ManyToOne(fetch = FetchType.LAZY)
     private Address userAddress;
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @OneToOne(optional = true, mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Blog blog;
     @ManyToMany(mappedBy = "users")
     private List<Group> groups;
@@ -46,6 +51,14 @@ public class User {
     @Column(name = "password_BCrypt")
     private String password_encoded;
 
+    @ManyToMany(mappedBy = "likes", cascade = CascadeType.ALL)
+    private Set<PostComment> postLikes;
+
+    @ManyToMany(mappedBy = "upVoters", cascade = CascadeType.ALL)
+    private Set<PostComment> postUpvoters;
+
+    @ManyToMany(mappedBy = "downVoters", cascade = CascadeType.ALL)
+    private Set<PostComment> postDownvoters;
 
     public User(){}
 
