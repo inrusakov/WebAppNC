@@ -5,6 +5,8 @@ import com.example.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -26,11 +28,12 @@ public class Comment {
 
     // Unidirectional link, т.к. у пользователя нет необходимости в просмотре всех своих комментраиев
     // Hibernate создаст таблицу соединений между user и comment
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "user_id",
             nullable = false
     )
+    //@OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @Getter

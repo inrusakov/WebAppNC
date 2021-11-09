@@ -25,6 +25,7 @@ public class PostComment extends Comment{
             name = "post_id",
             nullable = false
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 
 

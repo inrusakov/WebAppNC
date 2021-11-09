@@ -19,7 +19,7 @@ public class Post {
     private Integer postId;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "blogid", nullable=false, insertable=false, updatable=false)
+    @JoinColumn(name = "blogid")
     private Blog blog;
 //    private Tag tag;
 
@@ -33,6 +33,8 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<PostComment> postComments = new ArrayList<>();
+
+    private boolean archived = false;
 
     public User getAuthor(){
         return blog.getUser();

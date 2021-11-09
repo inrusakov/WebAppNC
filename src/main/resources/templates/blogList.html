@@ -58,7 +58,7 @@
                             <button type="submit" name="submit" value="value" class="link-button"><span th:text="${blog.user.firstName}"></span></button>
                         </form>
                     </td>
-                    <td><span th:text="${#lists.size(blog.posts)}"></span></td>
+                    <td><span th:text="${#lists.size(blog.getNotArchivedPosts())}"></span></td>
                 </tr>
                 </tbody>
             </table>

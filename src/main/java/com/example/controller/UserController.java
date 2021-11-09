@@ -8,6 +8,7 @@ import com.example.model.community.Group;
 import com.example.repos.GroupRepository;
 import com.example.repos.BlogRepository;
 import com.example.repos.UserRepository;
+import com.example.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,6 +67,7 @@ public class UserController {
             user.setActive(true);
             user.setWasBanned(false);
             Blog blog = new Blog();
+            user.setBlog(blog);
             blog.setUser(user);
             userRepository.save(user);
             blogRepository.save(blog);
