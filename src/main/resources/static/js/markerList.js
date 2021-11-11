@@ -1,4 +1,3 @@
-let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 let counter = 1;
 // ELEMENT SELECTORS
 let input = document.querySelector('#userinput');

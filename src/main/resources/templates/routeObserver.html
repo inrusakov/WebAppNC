@@ -10,9 +10,18 @@
 <script th:inline="javascript" >
     /*<![CDATA[*/
     let route = [];
+    let routeid;
     route = /*[[${route}]]*/ 'default';
+    routeid = /*[[${id}]]*/ 'default';
     /*]]>*/
 </script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-auto">
+            <input id="editRoute" type="button" value="Edit Route"/>
+        </div>
+    </div>
+</div>
 <script type="text/javascript" th:src="@{/js/routeObserver.js}"></script>
 </body>
 </html>

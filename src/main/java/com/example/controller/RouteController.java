@@ -22,6 +22,7 @@ public class RouteController {
     private RouteRepository routeRepository;
 
     @JsonView(Views.Public.class)
+    @ResponseBody
     @RequestMapping(value="/sendRoute",method=RequestMethod.POST)
     public Response getUserRoute(@RequestBody ArrayList<String> list, HttpServletRequest request) {
         Response response = new Response();
@@ -41,6 +42,23 @@ public class RouteController {
         return response;
     }
 
+    @JsonView(Views.Public.class)
+    @ResponseBody
+    @RequestMapping(value="/updateRoute",method=RequestMethod.POST)
+    public Response editPost(@RequestBody Route route, HttpServletRequest request, Model model){
+        Response response = new Response();
+        if (route.getId() == null) {
+            response.setCode("400");
+            response.setMsg("Fields are not correct");
+        } else {
+            response.setCode("200");
+            response.setMsg("Correct");
+        }
+        routeRepository.save(route);
+        model.addAttribute("routeId", route.getId());
+        return response;
+    }
+
     @GetMapping(path="/getRoutes")
     public @ResponseBody Iterable<Route> getAllUsers() {
         // This returns a JSON or XML with the users
@@ -52,20 +70,15 @@ public class RouteController {
     public String observePost(@PathVariable("routeId") Integer routeId, String submit, Model model){
         Optional<Route> optionalRoute = routeRepository.findById(routeId);
         model.addAttribute("route",optionalRoute.get().getMarkers());
+        model.addAttribute("id",optionalRoute.get().getId());
         return "routeObserver";
     }
 
     @GetMapping("/editRoute/{routeId}")
     public String editPost(@PathVariable("routeId") Integer routeId, Model model){
-        model.addAttribute("post", (Route)routeRepository.findById(routeId)
+        model.addAttribute("route", (Route)routeRepository.findById(routeId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + routeId)));
         return "editRoute";
-    }
-
-    @PostMapping("/editRoute/{routeId}")
-    public RedirectView editPost(@PathVariable("routeId") Integer routeId, @ModelAttribute Route route){
-        routeRepository.save(route);
-        return new RedirectView("/routeObserver/{routeId}");
     }
 }
 

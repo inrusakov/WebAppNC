@@ -2,18 +2,51 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Route Observer</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200&display=swap" rel="stylesheet">
+    <link th:href="@{/styles/css/map.css}" rel="stylesheet" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_parameter_name" th:content="${_csrf.parameterName}"/>
 </head>
 <body>
-<div id="mapid" style="width: 800px; height: 500px;"></div>
-<script th:inline="javascript" >
-    /*<![CDATA[*/
-    let route = [];
-    route = /*[[${route}]]*/ 'default';
-    /*]]>*/
-</script>
-<script type="text/javascript" th:src="@{/js/routeObserver.js}"></script>
-<script type="text/javascript" th:src="@{/js/routeEditor.js}"></script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-auto">
+            <input id="deleteMarkers" type="button" value="Clear map"/>
+        </div>
+        <div class="col-md-auto">
+            <input id="updateRoute" type="button" value="Update Route"/>
+            <input id="sendRoute" style="display: none;"/>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-9">
+            <div id="mapid" style="width: 100%; height: 500px;"></div>
+            <script type="text/javascript" th:src="@{/js/map.js}"></script>
+            <script th:inline="javascript" >
+                /*<![CDATA[*/
+                route = [];
+                route = /*[[${route}]]*/ 'default';
+                /*]]>*/
+            </script>
+        </div>
+
+        <div class="col-3">
+
+            <ul id="list">
+            </ul>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+            <script type="text/javascript" th:src="@{/js/markerList.js}"></script>
+        </div>
+    </div>
+</div>
+<script>importMarkers();</script>
 </body>
 </html>
