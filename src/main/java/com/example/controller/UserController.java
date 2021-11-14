@@ -3,10 +3,9 @@ package com.example.controller;
 import com.example.model.CustomUserDetails;
 import com.example.model.Role;
 import com.example.model.User;
-import com.example.repos.GroupRepository;
+import com.example.model.blog.Blog;
 import com.example.repos.BlogRepository;
 import com.example.repos.UserRepository;
-import com.example.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +31,7 @@ public class UserController {
     private final UserRepository userRepository;
 
 	@Autowired
-    private BlogRepository blogRepository;
+    private final BlogRepository blogRepository;
 
     @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
