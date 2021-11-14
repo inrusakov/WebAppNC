@@ -38,7 +38,7 @@
             <td>
                 <div th:if="${#authorization.expression('isAuthenticated()')}">
                     <form method="get" th:action="@{/travel/journey/profile}">
-                        <input type="hidden" name="act" value="create"/>
+                        <input type="hidden" name="act" value="add"/>
                         <button type="submit">Create</button>
                     </form>
                 </div>
@@ -50,27 +50,9 @@
 <table border="1">
     <tr>
         <td>
-            <form th:action="@{/travel/journey/list}" method="get" th:object="${journeyRequestForm}">
-                <input type="text" th:field="*{title}" value placeholder="Поиск:">
+            <form th:action="@{/travel/journey/list}" method="get">
+                <input type="text" name="ttl" th:value = "${param.ttl}" placeholder="Поиск:">
                 <button type="submit"> 🔎 </button>
-                <div>
-                    <b>Доступность:</b>
-                    <div th:each="access : ${journeyRequestForm.journeyAccessMap.entrySet()}">
-                        <input type="checkbox" th:field="*{journeyAccessMap['__${access.key}__']}" th:text="${access.key.getTitle()}" />
-                    </div>
-                </div>
-                <div>
-                    <b>Статус путешествия:</b>
-                    <div th:each="status : ${journeyRequestForm.journeyStatusMap.entrySet()}">
-                        <input type="checkbox" th:field="*{journeyStatusMap['__${status.key}__']}" th:text="${status.key.getTitle()}" />
-                    </div>
-                </div>
-                <div th:if="${#authorization.expression('isAuthenticated()')}">
-                    <b>Мои роли:</b>
-                    <div th:each="role : ${journeyRequestForm.journeyRoleMap.entrySet()}">
-                        <input type="checkbox" th:field="*{journeyRoleMap['__${role.key}__']}" th:text="${role.key.getTitle()}" />
-                    </div>
-                </div>
             </form>
         </td>
     </tr>
@@ -85,6 +67,15 @@
                         <p th:text="${journey.title}"/>
                         <p th:text="${journey.description}"/>
                     </div>
+                    <div th:if="${#authorization.expression('isAuthenticated()')}">
+                        <p th:text="'role : ' + ${@JourneyServiceImpl.getRoles(journey)}"></p>
+                    </div>
+                    <div>
+                        <p th:text="'status : ' + ${journey.status}"></p>
+                    </div>
+                    <div th:if="${journey.isPrivate}">
+                        <p>🔒</p>
+                    </div>
                 </button>
                 <input type="hidden" name="id" th:value="${journey.id}">
                 <input type="hidden" name="act" value="obs">
@@ -92,6 +83,5 @@
         </td>
     </tr>
 </table>
-
 </body>
 </html>
