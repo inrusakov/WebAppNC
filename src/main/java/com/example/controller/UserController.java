@@ -4,7 +4,9 @@ import com.example.model.CustomUserDetails;
 import com.example.model.Role;
 import com.example.model.User;
 import com.example.repos.GroupRepository;
+import com.example.repos.BlogRepository;
 import com.example.repos.UserRepository;
+import com.example.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,8 +31,8 @@ public class UserController {
     @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
-    private final GroupRepository groupRepository;
+	@Autowired
+    private BlogRepository blogRepository;
 
     @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -62,7 +64,11 @@ public class UserController {
             user.setRole(Collections.singleton(Role.USER));
             user.setActive(true);
             user.setWasBanned(false);
+            Blog blog = new Blog();
+            user.setBlog(blog);
+            blog.setUser(user);
             userRepository.save(user);
+            blogRepository.save(blog);
         }
         return "redirect:/login";
     }
