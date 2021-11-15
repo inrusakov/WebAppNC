@@ -35,12 +35,11 @@ public class JourneyServiceImpl implements JourneyService{
 
     @Override
     public boolean hasJourneyRole(Journey journey, User user, JourneyRole role){
-        if( journey == null || user == null || role == null) {return false;}
+        if (role == null) return false;
+        if (role == JourneyRole.creator) return AuthenticationService.isAuthenticated();
+        if( journey == null || user == null) return false;
         boolean response = false;
         switch (role){
-            case creator:
-                response = AuthenticationService.isAuthenticated();
-                break;
             case admin:
             case editor:
             case participant:
