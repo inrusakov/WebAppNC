@@ -77,7 +77,7 @@ public class RouteController {
     @GetMapping("/editRoute/{routeId}")
     public String editPost(@PathVariable("routeId") Integer routeId, Model model){
         model.addAttribute("route", (Route)routeRepository.findById(routeId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + routeId)));
+                .orElseThrow(() -> new IllegalArgumentException("Invalid route Id:" + routeId)));
         return "editRoute";
     }
 }
