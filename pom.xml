@@ -100,6 +100,14 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Spring HATEOAS -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+            <version>2.3.12.RELEASE</version>
+        </dependency>
+
+
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>

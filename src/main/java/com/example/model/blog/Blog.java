@@ -1,6 +1,7 @@
 package com.example.model.blog;
 
 import com.example.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +19,7 @@ public class Blog {
     @Column(name = "blogid")
     private int blogID;
 
+   // @JsonIgnore
     @OneToOne(optional = false)
     @MapsId
     @JoinColumn(name = "blogid")
@@ -26,6 +28,7 @@ public class Blog {
     @OneToMany(mappedBy = "blog", fetch = FetchType.LAZY)
     private List<Post> posts;
 
+    @JsonIgnore
     public List<Post> getNotArchivedPosts(){
         return posts.stream().filter(post -> !post.isArchived()).collect(Collectors.toList());
     }

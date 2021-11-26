@@ -10,6 +10,10 @@ import com.example.repos.UserRepository;
 import com.example.util.EnvUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +23,16 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 
 @AllArgsConstructor
 
-@Controller // Веб-логика
+@RestController // Веб-логика
+@RequestMapping("/postcomments")
 public class CommentController {
 
     @Autowired
@@ -37,6 +43,101 @@ public class CommentController {
     private UserRepository userRepository;
     @Autowired
     private EnvUtil envUtil;
+
+    @GetMapping
+    public CollectionModel<EntityModel<PostComment>> getComments(){
+        List<EntityModel<PostComment>> postComments = postCommentRepository.findAll().stream()
+                .map(pc -> EntityModel.of(
+                        pc,
+                        linkTo(methodOn(CommentController.class).getOne(pc.getId())).withSelfRel(),
+                        linkTo(methodOn(CommentController.class).getComments()).withRel("postcomments")
+                )).collect(Collectors.toList());
+        return CollectionModel.of(postComments,
+                linkTo(methodOn(CommentController.class).getComments()).withSelfRel());
+    }
+
+    @GetMapping("{id}")
+    public EntityModel<PostComment> getOne(@PathVariable("id") Integer id){
+        PostComment comment = postCommentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid comment Id:" + id));
+        Post post = postRepository.findAllByPostId(comment.getPost().getPostId()).get(0);
+        return EntityModel.of(comment,
+                linkTo(methodOn(CommentController.class).getOne(id)).withSelfRel(),
+                linkTo(methodOn(CommentController.class).getComments()).withRel("postcomments"),
+                linkTo(methodOn(CommentController.class).getOne((comment.getParentComment() == null) ?
+                     comment.getId() : comment.getParentComment().getId())).withRel("parentComment"),
+                linkTo(methodOn(CommentController.class).getSubComments(id)).withRel("subcomments"));
+    }
+
+    @GetMapping("{id}/subcomments")
+    public CollectionModel<EntityModel<PostComment>> getSubComments(@PathVariable("id") Integer id){
+        PostComment comment = postCommentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid comment Id:" + id));
+        List<EntityModel<PostComment>> subComments = postCommentRepository.findAllByParentComment(comment).stream()
+                .map(spc -> EntityModel.of(
+                        spc,
+                        linkTo(methodOn(CommentController.class).getOne(spc.getId())).withSelfRel(),
+                        linkTo(methodOn(CommentController.class).getOne(comment.getId())).withRel("root")
+                )).collect(Collectors.toList());
+        return CollectionModel.of(
+                subComments,
+                linkTo(methodOn(CommentController.class).getSubComments(id)).withSelfRel(),
+                linkTo(methodOn(CommentController.class).getComments()).withRel("postcomments"));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> addComment(@RequestBody PostComment newComment){
+        int postId = 11;
+        int userId = 41;
+
+        Post p = (Post) postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId));
+        User u = (User) userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + userId));
+
+        newComment.setCreationTime(new Timestamp(Calendar.getInstance().getTime().getTime()));
+        newComment.setUser(u);
+        newComment.setPost(p);
+        newComment.setLayer(0);
+
+        PostComment comment = postCommentRepository.save(newComment);
+        newComment = postCommentRepository.findById(comment.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid comment id:" + comment.getId()));
+
+        EntityModel<PostComment> entityModel = EntityModel.of(newComment,
+                linkTo(methodOn(CommentController.class).getOne(newComment.getId())).withSelfRel(),
+                linkTo(methodOn(CommentController.class).getComments()).withRel("postcomments"),
+                linkTo(methodOn(CommentController.class).getOne((newComment.getParentComment() == null) ?
+                        newComment.getId() : newComment.getParentComment().getId())).withRel("parentComment"),
+                linkTo(methodOn(CommentController.class).getSubComments(newComment.getId())).withRel("subcomments"));
+        return ResponseEntity
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
+                .body(entityModel);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> updateComment(@RequestBody PostComment newComment){
+        PostComment comment = postCommentRepository.findById(newComment.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid comment id:" + newComment.getId()));
+
+        comment.setCommentBody(newComment.getCommentBody());
+
+        postCommentRepository.save(comment);
+
+        EntityModel<PostComment> entityModel = EntityModel.of(comment,
+                linkTo(methodOn(CommentController.class).getOne(comment.getId())).withSelfRel(),
+                linkTo(methodOn(CommentController.class).getComments()).withRel("postcomments"),
+                linkTo(methodOn(CommentController.class).getOne((comment.getParentComment() == null) ?
+                        comment.getId() : comment.getParentComment().getId())).withRel("parentComment"),
+                linkTo(methodOn(CommentController.class).getSubComments(comment.getId())).withRel("subcomments"));
+        return ResponseEntity
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
+                .body(entityModel);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> removeComment(@PathVariable Integer id) {
+        postCommentRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
     // OBSERVING COMMENTS
     @GetMapping("/showComment/{id}")

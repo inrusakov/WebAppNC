@@ -26,4 +26,8 @@ public interface PostCommentRepository extends CrudRepository<PostComment, Integ
         List<PostComment> findAllRootComments(Integer postId);
 
         Optional<PostComment> findById(Integer integer);
+
+        List<PostComment> findAll();
+
+        List<PostComment> findAllByParentComment(PostComment parentComment);
 }

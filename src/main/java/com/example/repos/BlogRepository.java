@@ -11,5 +11,6 @@ import java.util.Optional;
 
 public interface BlogRepository extends CrudRepository<Blog, Integer> {
     Page<Blog> findAll(Pageable pageable);
+    List<Blog> findAll();
     Optional<Blog> findByBlogID(Integer blogID);
 }

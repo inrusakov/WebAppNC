@@ -1,6 +1,7 @@
 package com.example.model.blog;
 
 import com.example.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -26,6 +27,7 @@ public class PostComment extends Comment{
             nullable = false
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Post post;
 
 
@@ -48,6 +50,7 @@ public class PostComment extends Comment{
             name = "post_comment_likes",
             joinColumns = @JoinColumn(name = "post_comment_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> likes;
 
 
@@ -57,6 +60,7 @@ public class PostComment extends Comment{
             name = "post_comment_upvoters",
             joinColumns = @JoinColumn(name = "post_comment_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> upVoters;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -64,6 +68,7 @@ public class PostComment extends Comment{
             name = "post_comment_downvoters",
             joinColumns = @JoinColumn(name = "post_comment_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JsonIgnore
     private Set<User> downVoters;
 
 
@@ -73,6 +78,7 @@ public class PostComment extends Comment{
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "parent_comment_id")
+    @JsonIgnore
     private PostComment parentComment;
 
     //@OneToMany(targetEntity=PostComment.class, fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -82,8 +88,10 @@ public class PostComment extends Comment{
 //    @Column(name="subComment", nullable=false)
 //    @CollectionTable(name="subcomments", joinColumns= {@JoinColumn(name="comment_id")})
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<PostComment> subComments;
 
+    @JsonIgnore
     public List<PostComment> getSortedSubcomments(){
         subComments.sort(Comparator.comparing(PostComment::getTotalRating));
         Collections.reverse(subComments);
@@ -98,6 +106,7 @@ public class PostComment extends Comment{
         subComments.remove(pc);
     }
 
+    @JsonIgnore
     public int getTotalRating(){
         int total = getRating();
         for(PostComment comment : subComments)

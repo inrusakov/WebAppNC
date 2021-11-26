@@ -29,7 +29,14 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/reply").setViewName("reply");
         registry.addViewController("/replyToComment").setViewName("replyToComment");
         registry.addViewController("/userList").setViewName("userList");
-        registry.addViewController("/blogList").setViewName("blogList");
+        //registry.addViewController("/blogList").setViewName("blogList");
+
+        //for rest blog part
+        //registry.addViewController("/index").setViewName("index");
+        //registry.addViewController("/blog/blogList").setViewName("blog/blogList");
+       // registry.addViewController("/blog/blogPage/*").setViewName("blog/blogPage");
+        //registry.addViewController("/blog/postObserver").setViewName("/blogpage/*/post/*");
+        //registry.addViewController("/blog/addPost").setViewName("/blogpage/*/addpost");
     }
 
     @Override
