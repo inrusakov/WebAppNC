@@ -1,6 +1,8 @@
 package com.example.model.community;
 
 import com.example.model.User;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +12,10 @@ import java.util.Set;
 @NoArgsConstructor
 
 @Entity(name = "app_group")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Group {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

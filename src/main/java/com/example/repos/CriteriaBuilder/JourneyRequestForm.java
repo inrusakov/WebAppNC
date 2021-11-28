@@ -1,8 +1,8 @@
 package com.example.repos.CriteriaBuilder;
 
-import com.example.model.Traveling.JourneyAccess;
-import com.example.model.Traveling.JourneyRole;
-import com.example.model.Traveling.JourneyStatus;
+import com.example.model.Traveling.Journey.JourneyAccess;
+import com.example.model.Traveling.Journey.JourneyRole;
+import com.example.model.Traveling.Journey.JourneyStatus;
 import com.example.model.User;
 import lombok.Getter;
 import lombok.Setter;

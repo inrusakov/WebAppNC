@@ -1,7 +1,7 @@
 package com.example.service.traveling;
 
-import com.example.model.Traveling.Journey;
-import com.example.model.Traveling.JourneyRole;
+import com.example.model.Traveling.Journey.Journey;
+import com.example.model.Traveling.Journey.JourneyRole;
 import com.example.model.User;
 import com.example.model.community.Group;
 import com.example.model.community.GroupRole;
@@ -58,17 +58,22 @@ public class JourneyServiceImpl implements JourneyService{
     }
 
     @Override
-    public List<Journey> getJourney_isParticipant(User user, String ttl) {
+    public List<Journey> getJourney_isParticipant(String title){
+        return getJourney_isParticipant(AuthenticationService.getCurrentUser(), title);
+    }
+
+    @Override
+    public List<Journey> getJourney_isParticipant(User user, String title) {
         List<Journey> response;
         if (user == null){
-            if(JourneyService.isValidJourneySearchTitle(ttl)){
-                response = travelRepository.findByIsPrivateFalse(ttl);
+            if(JourneyService.isValidJourneySearchTitle(title)){
+                response = travelRepository.findByIsPrivateFalse(title);
             }else{
                 response = travelRepository.findByIsPrivateFalse();
             }
         }else{
-            if (JourneyService.isValidJourneySearchTitle(ttl)){
-                response = travelRepository.findByIsParticipant(user.getId(), ttl);
+            if (JourneyService.isValidJourneySearchTitle(title)){
+                response = travelRepository.findByIsParticipant(user.getId(), title);
             }else{
                 response = travelRepository.findByIsParticipant(user.getId());
             }
@@ -109,18 +114,18 @@ public class JourneyServiceImpl implements JourneyService{
     }
 
     @Override
-    public boolean create(Journey journey, Group group) {
+    public Journey create(Journey journey, Group group) {
         if(hasJourneyRole(journey, JourneyRole.creator)){
             journey.setGroup(group);
             journey.setCreation_time(new Timestamp(Calendar.getInstance().getTime().getTime()));
             travelRepository.save(journey);
-            return true;
+            return journey;
         }
-        return false;
+        return null;
     }
 
     @Override
-    public boolean create(Journey journey) {
+    public Journey create(Journey journey) {
         if(hasJourneyRole(journey, JourneyRole.creator)){
             User user = AuthenticationService.getCurrentUser();
 
@@ -131,18 +136,18 @@ public class JourneyServiceImpl implements JourneyService{
             journey.setGroup(group);
             journey.setCreation_time(new Timestamp(Calendar.getInstance().getTime().getTime()));
             travelRepository.save(journey);
-            return true;
+            return journey;
         }
-        return false;
+        return null;
     }
 
     @Override
-    public boolean edit(Journey journey) {
+    public Journey edit(Journey journey) {
         if(isJourneyExist(journey) && hasJourneyRole(journey, JourneyRole.editor)) {
             travelRepository.save(journey);
-            return true;
+            return journey;
         }
-        return false;
+        return null;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.example.repos;
 
-import com.example.model.Traveling.Journey;
+import com.example.model.Traveling.Journey.Journey;
 import com.example.repos.CriteriaBuilder.JourneyRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

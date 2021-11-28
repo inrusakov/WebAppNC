@@ -1,7 +1,7 @@
 package com.example.service.traveling;
 
-import com.example.model.Traveling.Journey;
-import com.example.model.Traveling.JourneyRole;
+import com.example.model.Traveling.Journey.Journey;
+import com.example.model.Traveling.Journey.JourneyRole;
 import com.example.model.User;
 import com.example.model.community.Group;
 import com.example.util.constants.JourneyConst;
@@ -16,14 +16,15 @@ public interface JourneyService {
     boolean isJourneyParticipant(Journey journey, User user);
 
     Journey findById(Integer id);
-    boolean create(Journey journey);
-    boolean create(Journey journey, Group group);
+    Journey create(Journey journey);
+    Journey create(Journey journey, Group group);
     boolean delete(Journey journey);
-    boolean edit(Journey journey);
+    Journey edit(Journey journey);
 
     boolean hasJourneyRole(Journey journey, User user, JourneyRole role);
     boolean hasJourneyRole(Journey journey, JourneyRole role);
 
+    List<Journey> getJourney_isParticipant(String ttl);
     List<Journey> getJourney_isParticipant(User user, String ttl);
     Set<JourneyRole> getRoles(Journey journey, User user);
     Set<JourneyRole> getRoles(Journey journey);

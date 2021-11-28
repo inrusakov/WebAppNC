@@ -1,9 +1,8 @@
-package com.example.controller;
+package com.example.controller.Travelling;
 
-import com.example.model.Traveling.Journey;
-import com.example.model.Traveling.JourneyRole;
+import com.example.model.Traveling.Journey.Journey;
+import com.example.model.Traveling.Journey.JourneyRole;
 import com.example.model.User;
-import com.example.repos.TravelRepository;
 import com.example.service.AuthenticationService;
 import com.example.service.traveling.JourneyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,6 @@ public class TravellingController {
     @Autowired
     private JourneyServiceImpl journeyService;
 
-    @Autowired
-    private TravelRepository travelRepository;
-
     @GetMapping("/travel/journey/list")
     String journey_list(
             Model model,
@@ -36,7 +32,7 @@ public class TravellingController {
         String response = "Travelling/journey_list.html";
 
         User user = AuthenticationService.getCurrentUser();
-        List<Journey> journeyList_prt = journeyService.getJourney_isParticipant(user, ttl);
+        List<Journey> journeyList_prt = journeyService.getJourney_isParticipant(ttl);
         model.addAttribute("journey_list", journeyList_prt);
         return response;
     }
@@ -54,7 +50,7 @@ public class TravellingController {
         }
         switch (action) {
             case "add":
-                if(journeyService.create(journey)) {
+                if(journeyService.create(journey) != null) {
                     response = "redirect:/travel/journey/profile?id=" + journey.getId() + "&act=obs";
                 }
                 break;
@@ -64,7 +60,7 @@ public class TravellingController {
                 journey_fromDB.setDescription(journey.getDescription());
                 journey_fromDB.setIsPrivate(journey.getIsPrivate());
 
-                if(journeyService.edit(journey_fromDB)){
+                if(journeyService.edit(journey_fromDB) != null){
                     response = "redirect:/travel/journey/profile?id="+ journey.getId() + "&act=obs";
                 }
                 break;
