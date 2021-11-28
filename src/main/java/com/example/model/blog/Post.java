@@ -1,6 +1,8 @@
 package com.example.model.blog;
 
 import com.example.model.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +20,8 @@ public class Post {
     @GeneratedValue(strategy= GenerationType.IDENTITY) //GenerationType.AUTO)
     private Integer postId;
 
+    //@JsonIgnore
+    @JsonBackReference
     @ManyToOne(optional = false)
     @JoinColumn(name = "blogid")
     private Blog blog;

@@ -8,6 +8,7 @@ import com.example.model.blog.Comment;
 import com.example.model.blog.PostComment;
 import com.example.model.geoposition.Address;
 import com.example.model.org.Organisation;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -44,6 +45,8 @@ public class User {
     private List<Tag> tag;
     @ManyToOne(fetch = FetchType.LAZY)
     private Address userAddress;
+
+    @JsonIgnore
     @OneToOne(optional = true, mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Blog blog;

@@ -2,6 +2,7 @@ package com.example.model.blog;
 
 import com.example.model.Tag;
 import com.example.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,7 @@ public class Comment {
             name = "user_id",
             nullable = false
     )
+    @JsonIgnore
     //@OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
