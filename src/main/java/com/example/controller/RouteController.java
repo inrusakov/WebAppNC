@@ -6,6 +6,8 @@ import com.example.model.geoposition.Route;
 import com.example.repos.RouteRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +15,19 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@Controller
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@RestController
 public class RouteController {
 
     @Autowired
     private RouteRepository routeRepository;
 
-    @JsonView(Views.Public.class)
-    @ResponseBody
     @RequestMapping(value="/sendRoute",method=RequestMethod.POST)
     public Response getUserRoute(@RequestBody ArrayList<String> list, HttpServletRequest request) {
         Response response = new Response();
@@ -42,8 +47,6 @@ public class RouteController {
         return response;
     }
 
-    @JsonView(Views.Public.class)
-    @ResponseBody
     @RequestMapping(value="/updateRoute",method=RequestMethod.POST)
     public Response editPost(@RequestBody Route route, HttpServletRequest request, Model model){
         Response response = new Response();
@@ -60,9 +63,26 @@ public class RouteController {
     }
 
     @GetMapping(path="/getRoutes")
-    public @ResponseBody Iterable<Route> getAllUsers() {
-        // This returns a JSON or XML with the users
-        return routeRepository.findAll();
+    CollectionModel<EntityModel<Route>> all() {
+
+        List<EntityModel<Route>> employees = routeRepository.findAll().stream()
+                .map(route -> EntityModel.of(route,
+                        linkTo(methodOn(RouteController.class).one(route.getId())).withSelfRel(),
+                        linkTo(methodOn(RouteController.class).all()).withRel("routes")))
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(employees, linkTo(methodOn(RouteController.class).all()).withSelfRel());
+    }
+
+    @GetMapping("/routes/{routeId}")
+    EntityModel<Route> one(@PathVariable Integer routeId) {
+
+        Route employee = routeRepository.findById(routeId) //
+                .orElseThrow(() -> new IllegalArgumentException("Invalid route Id:" + routeId));
+
+        return EntityModel.of(employee, //
+                linkTo(methodOn(RouteController.class).one(routeId)).withSelfRel(),
+                linkTo(methodOn(RouteController.class).all()).withRel("routes"));
     }
 
     @JsonView(Views.Public.class)
