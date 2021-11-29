@@ -1,6 +1,6 @@
 package com.example.repos.CriteriaBuilder;
 
-import com.example.model.Traveling.Journey;
+import com.example.model.Traveling.Journey.Journey;
 
 public interface JourneyRepositoryCustom{
     java.util.List<Journey>JourneyForm_SQLQuery(JourneyRequestForm form);

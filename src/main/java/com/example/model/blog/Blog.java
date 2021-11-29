@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -13,36 +14,19 @@ import java.util.ArrayList;
 @Entity
 public class Blog {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    //@GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name = "blogid")
     private int blogID;
 
-    @OneToOne(optional = false, mappedBy = "blog")
+    @OneToOne(optional = false)
+    @MapsId
+    @JoinColumn(name = "blogid")
     private User user;
 
-//    @OneToMany(mappedBy = "post_id", fetch = FetchType.EAGER)
-//    private ArrayList<Post> posts;
+    @OneToMany(mappedBy = "blog", fetch = FetchType.LAZY)
+    private List<Post> posts;
 
-    public int getBlogID() {
-        return blogID;
+    public List<Post> getNotArchivedPosts(){
+        return posts.stream().filter(post -> !post.isArchived()).collect(Collectors.toList());
     }
-
-    public void setBlogID(int blogID) {
-        this.blogID = blogID;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-//    public ArrayList<Post> getPosts() {
-//        return posts;
-//    }
-//
-//    public void setPosts(ArrayList<Post> posts) {
-//        this.posts = posts;
-//    }
 }

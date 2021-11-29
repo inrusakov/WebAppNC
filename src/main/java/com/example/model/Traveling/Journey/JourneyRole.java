@@ -1,4 +1,4 @@
-package com.example.model.Traveling;
+package com.example.model.Traveling.Journey;
 
 public enum JourneyRole {
     participant("Участник", true),

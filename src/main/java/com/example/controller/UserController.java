@@ -4,8 +4,7 @@ import com.example.model.CustomUserDetails;
 import com.example.model.Role;
 import com.example.model.User;
 import com.example.model.blog.Blog;
-import com.example.model.community.Group;
-import com.example.repos.GroupRepository;
+import com.example.repos.BlogRepository;
 import com.example.repos.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.view.RedirectView;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.Optional;
@@ -25,14 +28,13 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+	@Autowired
+    private final BlogRepository blogRepository;
 
     @Autowired
-    private GroupRepository groupRepository;
-
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/registration")
     public String registration() {
@@ -61,7 +63,11 @@ public class UserController {
             user.setRole(Collections.singleton(Role.USER));
             user.setActive(true);
             user.setWasBanned(false);
+            Blog blog = new Blog();
+            user.setBlog(blog);
+            blog.setUser(user);
             userRepository.save(user);
+            blogRepository.save(blog);
         }
         return "redirect:/login";
     }
@@ -139,37 +145,4 @@ public class UserController {
         }
         return new RedirectView("/userList");
     }
-
-    @GetMapping(value = "/userGroups")
-    public String getGroups(Model model) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof CustomUserDetails) {
-            model.addAttribute("user", ((CustomUserDetails) principal).getUser())
-                    .addAttribute("group", groupRepository.findByUserId(((CustomUserDetails) principal).getUser().getId()));
-            return "userGroups";
-        }
-        return "redirect:";
-    }
-
-    @PostMapping(value = "/userGroups")
-    public RedirectView addGroup(@RequestParam String name) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof CustomUserDetails) {
-            User u = ((CustomUserDetails) principal).getUser();
-            Group group = new Group();
-            group.setGroupName(name);
-            group.addUser(u);
-            groupRepository.save(group);
-        }
-        return new RedirectView("/userGroups");
-    }
-/*
-    @GetMapping(value = "/Group/{groupId}")
-    public String currentGroup(Model model, @PathVariable("groupId") Integer groupId) {
-        Group group = groupRepository.findByGroupId(groupId);
-        model.addAttribute("group", group);
-        return"Group";
-    }
-
- */
 }

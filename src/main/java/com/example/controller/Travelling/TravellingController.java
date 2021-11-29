@@ -1,10 +1,8 @@
-package com.example.controller;
+package com.example.controller.Travelling;
 
-import com.example.model.Traveling.Journey;
-import com.example.model.Traveling.JourneyRole;
+import com.example.model.Traveling.Journey.Journey;
+import com.example.model.Traveling.Journey.JourneyRole;
 import com.example.model.User;
-import com.example.repos.CriteriaBuilder.JourneyRequestForm;
-import com.example.repos.TravelRepository;
 import com.example.service.AuthenticationService;
 import com.example.service.traveling.JourneyServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,42 +24,23 @@ public class TravellingController {
     @Autowired
     private JourneyServiceImpl journeyService;
 
-    @Autowired
-    private TravelRepository travelRepository;
-
-    @Autowired
-    private JourneyRequestForm journeyRequestForm;
-
     @GetMapping("/travel/journey/list")
     String journey_list(
             Model model,
-            JourneyRequestForm journeyRequestForm,
-            @RequestParam(name = "req", defaultValue = "", required = false) String req
+            @RequestParam(name = "ttl", required = false) String ttl
     ) {
         String response = "Travelling/journey_list.html";
-        journeyRequestForm.setApplicant(AuthenticationService.getCurrentUser());
-        this.journeyRequestForm = journeyRequestForm;
 
-        switch (req){
-            case "opn":
-                model.addAttribute("journey_list", travelRepository.findByIsPrivateFalse());
-                break;
-            case "prt":
-                journey_list_option_prt(model);
-                break;
-            default:
-                List<Journey> journeyList = journeyService.JourneyForm_SQLQuery(this.journeyRequestForm);
-                model.addAttribute("journey_list", journeyList);
-                break;
-            }
-        model.addAttribute("journeyRequestForm", this.journeyRequestForm);
+        User user = AuthenticationService.getCurrentUser();
+        List<Journey> journeyList_prt = journeyService.getJourney_isParticipant(ttl);
+        model.addAttribute("journey_list", journeyList_prt);
         return response;
     }
 
     @PostMapping("/travel/journey/profile")
     String journey_save(
             @ModelAttribute(name = "journey_form") Journey journey,
-            @RequestParam(name = "id", defaultValue = "", required = false) Journey journey_fromDB,
+            @RequestParam(name = "id", required = false) Journey journey_fromDB,
             @RequestParam(name = "act", defaultValue = "", required = false) String action)
     {
         String response = "redirect:/travel/journey/list";
@@ -71,7 +50,7 @@ public class TravellingController {
         }
         switch (action) {
             case "add":
-                if(journeyService.create(journey)) {
+                if(journeyService.create(journey) != null) {
                     response = "redirect:/travel/journey/profile?id=" + journey.getId() + "&act=obs";
                 }
                 break;
@@ -81,7 +60,7 @@ public class TravellingController {
                 journey_fromDB.setDescription(journey.getDescription());
                 journey_fromDB.setIsPrivate(journey.getIsPrivate());
 
-                if(journeyService.edit(journey_fromDB)){
+                if(journeyService.edit(journey_fromDB) != null){
                     response = "redirect:/travel/journey/profile?id="+ journey.getId() + "&act=obs";
                 }
                 break;
@@ -100,7 +79,7 @@ public class TravellingController {
     String journey_create(
             Model model,
             @RequestParam(name = "id", required = false) Journey journey,
-            @RequestParam(name = "act", required = false) String action
+            @RequestParam(name = "act", defaultValue = "", required = false) String action
     ){
         String response = "redirect:/travel/journey/list";
 
@@ -119,7 +98,7 @@ public class TravellingController {
                 response = "Travelling/journey_profile.html";
                 break;
             case "add":
-                if(AuthenticationService.isAuthenticated()){
+                if(journeyService.hasJourneyRole(null, JourneyRole.creator)){
                     model.addAttribute("isNew", true);
                     model.addAttribute("journey_form", new Journey());
                     response = "Travelling/journey_profile_editor.html";
@@ -142,15 +121,5 @@ public class TravellingController {
                 break;
         }
         return response;
-    }
-
-    private void journey_list_option_prt(Model model){
-        User user = AuthenticationService.getCurrentUser();
-        if (user != null) {
-            Integer id = user.getId();
-            model.addAttribute("journey_list", travelRepository.findWhereUserIsParticipant(id));
-            return;
-        }
-        model.addAttribute("journey_list", travelRepository.findByIsPrivateFalse());
     }
 }

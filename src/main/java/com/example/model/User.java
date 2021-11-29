@@ -3,13 +3,20 @@ package com.example.model;
 
 import com.example.model.blog.Blog;
 import com.example.model.community.Group;
+import com.example.model.community.Users_Groups;
+import com.example.model.blog.Comment;
+import com.example.model.blog.PostComment;
 import com.example.model.geoposition.Address;
 import com.example.model.org.Organisation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -37,15 +44,25 @@ public class User {
     private List<Tag> tag;
     @ManyToOne(fetch = FetchType.LAZY)
     private Address userAddress;
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
+    @OneToOne(optional = true, mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
     private Blog blog;
-    @ManyToMany(mappedBy = "users")
-    private List<Group> groups;
 
     @Size(min=8, message = "At least 8 characters")
     @Column(name = "password_BCrypt")
     private String password_encoded;
 
+    @OneToMany(mappedBy="user")
+    private Set<Users_Groups> userGroups = new HashSet<>();
+
+    @ManyToMany(mappedBy = "likes", cascade = CascadeType.ALL)
+    private Set<PostComment> postLikes;
+
+    @ManyToMany(mappedBy = "upVoters", cascade = CascadeType.ALL)
+    private Set<PostComment> postUpvoters;
+
+    @ManyToMany(mappedBy = "downVoters", cascade = CascadeType.ALL)
+    private Set<PostComment> postDownvoters;
 
     public User(){}
 
@@ -137,7 +154,6 @@ public class User {
         this.blog = blog;
     }
 
-
     public Address getUserAddress(){
         return userAddress;
     }
@@ -153,12 +169,29 @@ public class User {
     public void setPassword_encoded(String password_encoded) {
         this.password_encoded = password_encoded;
     }
-    public List<Group> getGroups() {
-        return groups;
+
+//    public List<Group> getGroups() {
+//        List<Group> ret = new ArrayList<>();
+//        for(Users_Groups groupUser : this.groups){
+//            ret.add(groupUser.getGroup());
+//        }
+//        return ret;
+//    }
+
+    public Set<Users_Groups> getUserGroups() {
+        return userGroups;
     }
 
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
+    public void setUserGroups(Set<Users_Groups> userGroups) {
+        this.userGroups = userGroups;
+    }
+
+    public HashSet<Group> getGroups(){
+        HashSet<Group> ret = new HashSet<>();
+        for(Users_Groups u : this.userGroups){
+            ret.add(u.getGroup());
+        }
+        return ret;
     }
 
     @Override
@@ -176,7 +209,15 @@ public class User {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof User && ((User) obj).getId().equals(this.id);
+        if (! (obj instanceof User)){
+            return false;
+        }
+        return ((User) obj).getId().equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
 

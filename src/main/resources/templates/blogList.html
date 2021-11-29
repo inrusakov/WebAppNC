@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog List</title>
+    <link th:href="@{/styles/css/blogPage.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="position">
+</div>
+
+<div class="container">
+    <div class="post">
+        <div class="post-header">
+            <h2> Blogs </h2>
+        </div>
+
+
+        <div th:if="${page.totalPages > 0}" class="pagination">
+            <li> <a th:text="Count"
+                    th:class="disabled"></a> </li>
+            <ul th:each="elemNumber : ${elemNumbers}">
+                <li>
+                    <a th:href="@{/allBlogs(size=${elemNumber}, page=${num})}"
+                       th:text=${elemNumber}
+                       th:class="${num==page.number + 1} ? active"></a>
+                </li>
+            </ul>
+        </div>
+
+        <hr color="#124f0c">
+
+        <div th:if="${page.totalPages > 0}" class="pagination">
+            <li><a th:text="Pages "
+                   th:class="disabled"></a> </li>
+            <ul th:each="pageNumber : ${pageNumbers}">
+                <li>
+                    <a th:href="@{/allBlogs(size=${page.size}, page=${pageNumber-1})}"
+                       th:text=${pageNumber}
+                       th:class="${pageNumber==page.number + 1} ? active"></a>
+                </li>
+            </ul>
+        </div>
+        <br>
+        <div class="post-content">
+            <table class="table">
+                <thead>
+                <tr class="tr-head">
+                    <td><span> Author </span></td>
+                    <td><span> Number of publications </span></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="blog, iBlog : ${page.content}">
+                    <td>
+                        <form method="get" th:action="@{/blog/{blogId}(blogId=${blog.blogID})}">
+                            <input type="hidden" name="blogId" id="blogId" th:value="${blog.blogID}" />
+                            <button type="submit" name="submit" value="value" class="link-button"><span th:text="${blog.user.firstName}"></span></button>
+                        </form>
+                    </td>
+                    <td><span th:text="${#lists.size(blog.getNotArchivedPosts())}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,86 +1,81 @@
 package com.example.model.community;
 
 import com.example.model.User;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
+
+@NoArgsConstructor
 
 @Entity(name = "app_group")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Group {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer groupId;
-    private String groupName;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(name = "users_groups",
-        joinColumns = {
-            @JoinColumn(name ="group_id", referencedColumnName = "groupId")
-        },
-        inverseJoinColumns = {
-            @JoinColumn(name = "user_id", referencedColumnName = "id")
-        })
-    private List<User> users;
+    @Column(name = "group_id")
+    private Integer id;
 
-    public Integer getGroupId() {
-        return groupId;
+    private String name = "";
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private Set<Users_Groups> usersGroups = new HashSet<>();
+
+    public Group(String name, HashSet<Users_Groups> usersGroups) {
+        this.name = name;
+        this.usersGroups = usersGroups;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public Integer getId() {
+        return id;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public String getName() {
+        return name;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public Set<Users_Groups> getUsersGroups() {
+        return usersGroups;
     }
 
-    public void addUser(User user){
-        if (this.users == null) {
-            this.users = new LinkedList<>();
+    public void setUsersGroups(Set<Users_Groups> usersGroups) {
+        this.usersGroups = usersGroups;
+    }
+
+    public Set<User> getParticipants(){
+        Set<User> ret = new HashSet<>();
+        for(Users_Groups u : this.usersGroups){
+            ret.add(u.getUser());
         }
-        this.users.add(user);
+        return ret;
     }
 
-    public String getUsernames(){
-        String s = "";
-        for(User u: users){
-            if(u.getFirstName() != null && !Objects.equals(u.getFirstName(), "")){
-                if(s.equals("")){
-                    s = u.getFirstName();
-                }else {
-                    s = s + ", " + u.getFirstName();
-                }
-            } else {
-                if(s.equals("")){
-                    s = u.getEmail();
-                } else {
-                    s = s + ", " + u.getEmail();
-                }
-            }
+    public void addParticipants(User ... users){
+        for (User u : users){
+            this.usersGroups.add(new Users_Groups(this, u, GroupRole.participant));
         }
-        return s;
     }
-
-    @Override
-    public String toString() {
-        return "Group{" +
-                "groupId=" + groupId +
-                ", groupName='" + groupName + '\'' +
-                ", users=" + users +
-                '}';
+    public boolean containsUser(User user){
+        if(user == null){
+            return false;
+        }
+        return getParticipants().contains(user);
+    }
+    public void addUser(User user, GroupRole role){
+        this.usersGroups.add(new Users_Groups(this, user, role));
     }
 }

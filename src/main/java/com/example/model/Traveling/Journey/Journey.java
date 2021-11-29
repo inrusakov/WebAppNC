@@ -1,67 +1,62 @@
-package com.example.model.Traveling;
+package com.example.model.Traveling.Journey;
 
 import com.example.model.User;
+import com.example.model.community.Group;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import static com.example.service.traveling.JourneyService.isValidJourneyTitle;
 import static com.example.service.traveling.JourneyService.journeyTitleCorrector;
 
-@ToString(onlyExplicitlyIncluded = true)
 @Setter
 @Getter
 @NoArgsConstructor  // POJO class
 
 @Entity
 @Table(name = "journey")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Journey {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "journey_id")
-    @ToString.Include
+    @Column(name = "journey_id", nullable = false)
+    @JsonView(JourneyViews.list.class)
     Integer id;
 
     @Column(name = "title", nullable = false)
-    @ToString.Include
+    @JsonView(JourneyViews.list.class)
     String title = "";
 
     @Column(name = "description", nullable = false)
-    @ToString.Include
+    @JsonView(JourneyViews.all.class)
     String description = "";
 
-    @Column(name = "isPrivate", nullable = false,columnDefinition = "BOOL default TRUE")
-    @ToString.Include
+    @Column(name = "isPrivate", nullable = false, columnDefinition = "BOOL default TRUE")
+    @JsonIgnore
     Boolean isPrivate = true;
 
-    // FIXME: Unidirectional MANY-TO-MANY how to delete ???
-    @ManyToMany(
-            cascade = {CascadeType.MERGE},
-            fetch = FetchType.EAGER
-    )
-    @JoinTable(
-            name = "journey_participants",
-            joinColumns = @JoinColumn(name = "journey_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> participants = new HashSet<>();
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="group_id")
+    @JsonIgnore
+    private Group group = new Group();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "journey_status", nullable = false, columnDefinition = "VARCHAR default 'NONE'")
-    @ToString.Include
+    @JsonView(JourneyViews.list.class)
     private JourneyStatus status = JourneyStatus.NONE;
 
     // Инициализируется в момент отправки в БД ( не в момент сохранения в БД )
     @Column(name = "creation_time", nullable = false, columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
-    @ToString.Include
+    @JsonIgnore
     private Timestamp creation_time;
 
     //Route? Geolocation
@@ -74,11 +69,11 @@ public class Journey {
 
     //Types?
 
-    public void addParticipants(Set<User> users){
-        this.participants.addAll(users);
+    public Set<User> getParticipants(){
+        return group.getParticipants();
     }
-    public void addParticipants(User... users){
-        this.participants.addAll(Arrays.asList(users));
+    public void addParticipants(User ... users){
+        group.addParticipants(users);
     }
 
     public boolean optimize(){

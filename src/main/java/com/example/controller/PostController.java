@@ -1,27 +1,38 @@
 package com.example.controller;
 
+import com.example.model.User;
+import com.example.model.blog.Blog;
 import com.example.model.blog.Post;
+import com.example.model.blog.PostComment;
+import com.example.repos.BlogRepository;
+import com.example.repos.PostCommentRepository;
 import com.example.repos.PostRepository;
+import com.example.service.AuthenticationService;
+import com.example.util.EnvUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
-public class PostController {
+public class PostController{
+    @Autowired
+    private BlogRepository blogRepository;
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private PostCommentRepository postCommentRepository;
+    @Autowired
+    private EnvUtil envUtil;
 
     // ADDING NEW POST
     @GetMapping("/addPost")
@@ -30,29 +41,55 @@ public class PostController {
     }
 
     @PostMapping("/addPost")
-    public RedirectView addPost(@RequestParam String header, @RequestParam String content){
+    public RedirectView addPost(@RequestParam String header, @RequestParam String content, @RequestParam(name = "file", required = false) MultipartFile file,
+                                RedirectAttributes attributes){
+        User author = AuthenticationService.getCurrentUser();
         Post post = new Post();
         post.setHeader(header);
         post.setContent(content);
         post.setPublicationDate(LocalDateTime.now());
+        post.setBlog(author.getBlog());
+
+        MultipartFile f = file;
 
         postRepository.save(post);
-        return new RedirectView("/allPosts");
+        return new RedirectView("/allBlogs");
     }
 
     // OBSERVING POST
     @GetMapping("/postObserver/{postId}")
-    public String observePost(@PathVariable("postId") Integer postId, String submit, Model model){
-        model.addAttribute("post", (Post)postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId)));
+    public String observePost(@PathVariable("postId") Integer postId, Model model) throws UnknownHostException {
+        User mainUser = AuthenticationService.getCurrentUser();
+
+        model.addAttribute("addressUrl", envUtil.getServerUrlPrefi());
+
+        model.addAttribute("mainUser", mainUser);
+
+        PostComment c = new PostComment();
+        c.setId(0);
+        model.addAttribute("newComment", c);
+
+        List<PostComment> comments = postCommentRepository.findAllRootComments(postId); // найти все комментарии 0-го уровня
+        comments.sort(Comparator.comparing(PostComment::getTotalRating));
+        Collections.reverse(comments);
+        model.addAttribute("comments", comments);
+
+        Post post = (Post)postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId));
+        model.addAttribute("post", post);
+        model.addAttribute("author", post.getAuthor());
         return "postObserver";
     }
 
     // DELETING POST
     @GetMapping("/deletePost/{postId}")
     public RedirectView deletePost(@PathVariable("postId") Integer postId){
-        postRepository.deleteById(postId);
-        return new RedirectView("/allPosts");
+        Post post = (Post)postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid post Id:" + postId));
+        post.setArchived(true);
+        postRepository.save(post);
+        //postRepository.deleteById(postId);    // архивируем вместо удаления
+        return new RedirectView("/allBlogs");
     }
 
     // EDITING POST
@@ -65,29 +102,10 @@ public class PostController {
 
     @PostMapping("/editPost/{postId}")
     public RedirectView editPost(@PathVariable("postId") Integer postId, @ModelAttribute Post post){
+        User author = AuthenticationService.getCurrentUser();
         post.setPublicationDate(LocalDateTime.now());
+        post.setBlog(author.getBlog());
         postRepository.save(post);
         return new RedirectView("/postObserver/{postId}");
-    }
-
-    // SHOWING ALL POSTS
-    @GetMapping("/allPosts")
-    public String getAllPosts(Model model, @PageableDefault(sort = {"postId"}, direction = Sort.Direction.DESC) Pageable pageable){
-        //List<Post> posts = new ArrayList<>();
-        Page<Post> page = postRepository.findAll(pageable);
-        //it.forEach(posts::add);
-        model.addAttribute("page", page);
-
-        int totalPages = page.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-            List<Integer> elemNumbers = Arrays.asList(5, 10, 15, 20);
-            model.addAttribute("elemNumbers", elemNumbers);
-            model.addAttribute("num", pageable.getPageNumber());
-        }
-        return "blogPage";
     }
 }
