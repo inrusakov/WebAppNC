@@ -1,38 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <title>Journey Profile</title>
+    <meta charset="utf-8">
+    <script th:inline="javascript">
+        var frontendData = [[${frontendData}]];
+    </script>
+</head>
 <body>
-<table border="1">
-    <tr>
-        <td>
-            <form method="get" th:action="@{/travel/journey/profile}">
-                <button type="submit">
-                    Edit
-                </button>
-                <input type="hidden" name="id" th:value="${journey_form.id}">
-                <input type="hidden" name="act" value="edt">
-            </form>
-        </td>
-        <td>
-            <form method="get" th:action="@{/travel/journey/profile}">
-                <button type="submit">
-                    Delete
-                </button>
-                <input type="hidden" name="id" th:value="${journey_form.id}">
-                <input type="hidden" name="act" value="dlt">
-            </form>
-        </td>
-    </tr>
-</table>
 
-<div>
-    <table border="1">
-        <tr>
-            <td><dic th:text="${journey_form.title}"/></td>
-        </tr>
-        <tr>
-            <td><div th:text="${journey_form.description}"/></td>
-        </tr>
-    </table>
+<div id="JorProfile">
 </div>
+<script src='http://localhost:8000/journey.js'> </script>
+
 </body>
 </html>

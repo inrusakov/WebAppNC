@@ -58,3 +58,4 @@ new Vue({
   vuetify: new Vuetify(),
   render: a => a(AddPost)
 })
+

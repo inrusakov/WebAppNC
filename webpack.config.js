@@ -4,7 +4,12 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
   mode: 'development',
   devtool: 'source-map',
-  entry: path.join(__dirname, 'src', 'main', 'resources', 'static', 'js', 'main.js'),
+  entry: {
+    path: path.join(__dirname, 'src', 'main', 'resources', 'static', 'js', 'main.js'),
+    journey: {
+      import: path.join(__dirname, 'src', 'main', 'resources', 'static', 'js', 'journey.js')
+    },
+  },
   devServer: {
     static: './dist',
     compress: true,

@@ -5,26 +5,23 @@ import com.example.model.Traveling.Journey.JourneyRole;
 import com.example.model.User;
 import com.example.service.AuthenticationService;
 import com.example.service.traveling.JourneyServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// TODO: [TRAVELING] Добавить выпадающее меню поиска с возможностью выбора параметров запроса к БД.
 // TODO: [TRAVELING] Реализовать зависимость функционала от статуса путешествия ( планируется / проходит / закончилось ) (визуальное изменение стиля оформления)
-// TODO: [TRAVELING] Убрать возможность находить в поиске путешествия, недоступные пользователю.
 @Controller
+@RequestMapping("/travel/journey")
 public class TravellingController {
 
     @Autowired
     private JourneyServiceImpl journeyService;
 
-    @GetMapping("/travel/journey/list")
+    @GetMapping("")
     String journey_list(
             Model model,
             @RequestParam(name = "ttl", required = false) String ttl
@@ -37,7 +34,7 @@ public class TravellingController {
         return response;
     }
 
-    @PostMapping("/travel/journey/profile")
+    @PostMapping("/profile")
     String journey_save(
             @ModelAttribute(name = "journey_form") Journey journey,
             @RequestParam(name = "id", required = false) Journey journey_fromDB,
@@ -55,11 +52,7 @@ public class TravellingController {
                 }
                 break;
             case "upd":
-               // FIXME: [SHITCODE] нужно получать из формы Journey.class-объект с полями, инициализированными с помощью передаваемого Journey.class-объекта через get-контроллер
-                journey_fromDB.setTitle(journey.getTitle());
-                journey_fromDB.setDescription(journey.getDescription());
-                journey_fromDB.setIsPrivate(journey.getIsPrivate());
-
+                BeanUtils.copyProperties(journey, journey_fromDB,"id");
                 if(journeyService.edit(journey_fromDB) != null){
                     response = "redirect:/travel/journey/profile?id="+ journey.getId() + "&act=obs";
                 }
@@ -68,14 +61,9 @@ public class TravellingController {
                 break;
         }
         return response;
-
-        /* TODO: [TRAVELING] функционал кода сверху сводится к сохранению в бд путешествия
-            если его название содержит больше букв/цифр, чем title_length_min
-            Возможно эту проверку и ErrorHandle можно вынести на HTML страницу используя JS (в backend не должны поступать не валидные формы)
-         */
     }
 
-    @GetMapping("/travel/journey/profile")
+    @GetMapping("/profile")
     String journey_create(
             Model model,
             @RequestParam(name = "id", required = false) Journey journey,
