@@ -40,6 +40,11 @@ export default {
   },
   watch:{
     search_title: function (){
+      if(this.search_title.length > 0){
+        this.$router.push({path: '/journey/', query:{q: this.search_title}}).catch(()=>{});
+      }else{
+        this.$router.push({path: '/journey/'}).catch(()=>{});
+      }
       this.searchByTitle();
     }
   },
@@ -75,6 +80,7 @@ export default {
     }
   },
   mounted() {
+    this.search_title = this.$route.query.q
     this.refreshList();
   }
 }
