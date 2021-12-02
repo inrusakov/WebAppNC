@@ -11,7 +11,7 @@
                   v-if="search_title.length>0"
           >
           </button>
-          <button class="btn btn-outline-secondary" type="button"
+          <button class="btn btn-secondary" type="button"
                   @click="searchByTitle"
           >Search</button>
         </div>
@@ -26,9 +26,15 @@
             v-for="(journey, index) in journey_list"
             :key="index">
             <router-link :to="'/journey/profile/' + journey.id">
-              <h5>{{ journey.title }}</h5>
+              <button type="button" class="btn btn-outline-secondary btn-router">
+                <div>
+                    <h5>{{ journey.title }}</h5>
+                    <div>{{ journey.description }}</div>
+                </div>
+              </button>
             </router-link>
         </li>
+
       </ul>
     </div>
     <div v-else class="col-md-6">
@@ -69,7 +75,7 @@ export default {
             this.journey_list = response.data;
           })
           .catch(e => {
-            console.log(e);
+            console.log(e.responses);
           });
     },
 
@@ -79,7 +85,7 @@ export default {
             this.journey_list = response.data;
           })
           .catch(e => {
-            console.log(e);
+            console.log(e.responses);
           });
     }
   },
@@ -124,6 +130,22 @@ export default {
   border-top-left-radius: 0px ;
 }
 #input__text button.btn-outline-secondary:focus{
+  box-shadow: none;
+  border: none;
+  outline:none;
+}
+ul li {
+  border: none;
+  padding: 0px 0px;
+  margin: 0px 0px;
+}
+.btn-router{
+  width:100%;
+  margin: 0px 0px;
+  border: none;
+  text-align: left;
+}
+.btn-router:focus{
   box-shadow: none;
   border: none;
   outline:none;

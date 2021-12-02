@@ -7,4 +7,5 @@ export default [
     {path: '/journey', name: "journey-list", component: JourneyList},
     {path: '/journey/profile/:id', name: "journey-details", component: JourneyProfile},
     {path: '/journey/add', name: "journey-form", component: JourneyEditor},
+    {path: '/journey/profile/:id', name: "journey-edit", component: JourneyEditor},
 ]
