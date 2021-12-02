@@ -1,10 +1,10 @@
 <template>
   <div class="list row">
     <div class="col-md-8">
-      <div class="input-group mb-3">
+      <div id="input__text"class="input-group mb-3">
         <input type="text" class="form-control" v-model="search_title" placeholder="Journey search:"/>
         <div class="input-group-append">
-          <button type="button" class="btn-close" @click="clean_input" aria-label="Close"></button>
+          <button type="button" class="btn-close align-middle" @click="clean_input" aria-label="Close"></button>
           <button class="btn btn-outline-secondary" type="button" @click="searchByTitle">Search</button>
         </div>
       </div>
@@ -40,7 +40,7 @@ export default {
   },
   watch:{
     search_title: function (){
-      if(this.search_title.length > 0){
+      if(this.search_title?.length > 0){
         this.$router.push({path: '/journey/', query:{q: this.search_title}}).catch(()=>{});
       }else{
         this.$router.push({path: '/journey/'}).catch(()=>{});
@@ -63,12 +63,6 @@ export default {
           });
     },
 
-    refreshList() {
-      this.getJourneyList();
-      this.currentJourney = null;
-      this.currentIndex = -1;
-    },
-
     searchByTitle() {
       JourneyService.findByTitle(this.search_title)
           .then(response => {
@@ -80,8 +74,7 @@ export default {
     }
   },
   mounted() {
-    this.search_title = this.$route.query.q
-    this.refreshList();
+    this.getJourneyList()
   }
 }
 </script>
@@ -91,5 +84,37 @@ export default {
   text-align: left;
   max-width: 750px;
   margin: auto;
+}
+
+#input__text {
+  display:flex;
+  flex-direction:row;
+  border:1px solid grey;
+  border-radius: 5px;
+}
+#input__text input{
+  flex-grow:2;
+  border: none;
+}
+#input__text input:focus {
+  box-shadow: none;
+  border: none;
+  outline:none;
+}
+#input__text button.btn-close:focus {
+  box-shadow: none;
+  border: none;
+  outline:none;
+}
+#input__text button.btn-outline-secondary{
+  border: none;
+  border-left: 1px solid;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px ;
+}
+#input__text button.btn-outline-secondary:focus{
+  box-shadow: none;
+  border: none;
+  outline:none;
 }
 </style>
