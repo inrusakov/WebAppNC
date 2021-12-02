@@ -10,6 +10,8 @@ import com.example.repos.TravelRepository;
 import com.example.service.AuthenticationService;
 import com.example.service.community.GroupServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -33,6 +35,7 @@ public class JourneyServiceImpl implements JourneyService{
         return journeyOptional.isPresent();
     }
 
+    // TODO: Внедрить роли: роли пользователя взять из возврата метода: Set<JourneyRole> JourneyService.getRoles(Journey, User)
     @Override
     public boolean hasJourneyRole(Journey journey, User user, JourneyRole role){
         if (role == null) return false;
@@ -105,27 +108,31 @@ public class JourneyServiceImpl implements JourneyService{
     }
 
     @Override
-    public boolean delete(Journey journey) {
-        if(isJourneyExist(journey) && hasJourneyRole(journey, JourneyRole.admin)) {
-            travelRepository.delete(journey);
-            return true;
+    public ResponseEntity<HttpStatus> delete(Journey journey) {
+        if (!isJourneyExist(journey)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return false;
+        if(hasJourneyRole(journey, JourneyRole.admin)){
+            travelRepository.delete(journey);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     @Override
-    public Journey create(Journey journey, Group group) {
+    public ResponseEntity<Journey> create(Journey journey, Group group) {
         if(hasJourneyRole(journey, JourneyRole.creator)){
             journey.setGroup(group);
             journey.setCreation_time(new Timestamp(Calendar.getInstance().getTime().getTime()));
             travelRepository.save(journey);
-            return journey;
+            return new ResponseEntity<>(journey, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        return null;
     }
 
     @Override
-    public Journey create(Journey journey) {
+    public ResponseEntity<Journey> create(Journey journey) {
         if(hasJourneyRole(journey, JourneyRole.creator)){
             User user = AuthenticationService.getCurrentUser();
 
@@ -136,24 +143,34 @@ public class JourneyServiceImpl implements JourneyService{
             journey.setGroup(group);
             journey.setCreation_time(new Timestamp(Calendar.getInstance().getTime().getTime()));
             travelRepository.save(journey);
-            return journey;
+            return new ResponseEntity<>(journey, HttpStatus.CREATED);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
-        return null;
     }
 
     @Override
-    public Journey edit(Journey journey) {
-        if(isJourneyExist(journey) && hasJourneyRole(journey, JourneyRole.editor)) {
+    public ResponseEntity<Journey> edit(Journey journey) {
+        if(!isJourneyExist(journey)){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        if(hasJourneyRole(journey, JourneyRole.editor)) {
             travelRepository.save(journey);
-            return journey;
+            return new ResponseEntity<>(journey, HttpStatus.OK);
+        }else{
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-        return null;
     }
 
     @Override
-    public Journey findById(Integer id) {
+    public ResponseEntity<Journey> findById(Integer id) {
         Optional<Journey> journeyOptional = travelRepository.findById(id);
-        return journeyOptional.orElse(null);
+        Journey journey = journeyOptional.orElse(null);
+        if(journey == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<>(journey, HttpStatus.OK);
+        }
     }
 
     /**

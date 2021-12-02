@@ -16,7 +16,8 @@ module.exports = {
     port: 8000,
     allowedHosts: [
       'localhost:5000'
-    ]
+    ],
+    //proxy: 'https://localhost:8000'
   },
   module: {
     rules: [

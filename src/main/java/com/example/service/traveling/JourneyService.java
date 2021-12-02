@@ -5,6 +5,8 @@ import com.example.model.Traveling.Journey.JourneyRole;
 import com.example.model.User;
 import com.example.model.community.Group;
 import com.example.util.constants.JourneyConst;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -15,11 +17,11 @@ public interface JourneyService {
     boolean isJourneyParticipant(Journey journey);
     boolean isJourneyParticipant(Journey journey, User user);
 
-    Journey findById(Integer id);
-    Journey create(Journey journey);
-    Journey create(Journey journey, Group group);
-    boolean delete(Journey journey);
-    Journey edit(Journey journey);
+    ResponseEntity<Journey> findById(Integer id);
+    ResponseEntity<Journey> create(Journey journey);
+    ResponseEntity<Journey> create(Journey journey, Group group);
+    ResponseEntity<HttpStatus> delete(Journey journey);
+    ResponseEntity<Journey> edit(Journey journey);
 
     boolean hasJourneyRole(Journey journey, User user, JourneyRole role);
     boolean hasJourneyRole(Journey journey, JourneyRole role);

@@ -41,7 +41,7 @@ public class Journey {
     String description = "";
 
     @Column(name = "isPrivate", nullable = false, columnDefinition = "BOOL default TRUE")
-    @JsonIgnore
+    @JsonView(JourneyViews.all.class)
     Boolean isPrivate = true;
 
     @OneToOne(cascade=CascadeType.ALL)
@@ -56,7 +56,7 @@ public class Journey {
 
     // Инициализируется в момент отправки в БД ( не в момент сохранения в БД )
     @Column(name = "creation_time", nullable = false, columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP")
-    @JsonIgnore
+    @JsonView(JourneyViews.all.class)
     private Timestamp creation_time;
 
     //Route? Geolocation

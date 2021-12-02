@@ -1,25 +1,26 @@
 import Vue from 'vue'
 import '@babel/polyfill'
 import VueResource from 'vue-resource'
-import Vuetify from 'vuetify'
+import VueRouter from 'vue-router'
 import 'vuetify/dist/vuetify.min.css'
-
-import Vuex from 'vuex'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import JourneyMain from "pages/Journey/JourneyMain.vue";
-import JourneyProfile from "pages/Journey/JourneyProfile.vue";
+import JourneyRoutes from './JourneyRoutes'
 
-Vue.use(Vuex)
-Vue.use(Vuetify)
 Vue.use(VueResource);
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+    routes: JourneyRoutes,
+    mode: 'history'
+})
 
 new Vue({
     el: '#JorMain',
-    render: a => a(JourneyMain)
+    render: a => a(JourneyMain),
+    router: router
 })
 
-new Vue({
-    el: '#JorProfile',
-    render: a => a(JourneyProfile)
-})
+
 
