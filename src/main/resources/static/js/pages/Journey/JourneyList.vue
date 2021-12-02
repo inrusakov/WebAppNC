@@ -2,14 +2,24 @@
   <div class="list row">
     <div class="col-md-8">
       <div id="input__text"class="input-group mb-3">
-        <input type="text" class="form-control" v-model="search_title" placeholder="Journey search:"/>
+        <input type="text" class="form-control" placeholder="Journey search:"
+               v-model="search_title"
+        />
         <div class="input-group-append">
-          <button type="button" class="btn-close align-middle" @click="clean_input" aria-label="Close"></button>
-          <button class="btn btn-outline-secondary" type="button" @click="searchByTitle">Search</button>
+          <button type="button" class="btn-close align-middle" aria-label="Close"
+                  @click="clean_input"
+                  v-if="search_title.length>0"
+          >
+          </button>
+          <button class="btn btn-outline-secondary" type="button"
+                  @click="searchByTitle"
+          >Search</button>
         </div>
       </div>
     </div>
-    <div class="col-md-6" v-if="journey_list.length>0">
+    <div class="col-md-6"
+         v-if="journey_list.length>0"
+    >
       <h4>Journey List</h4>
       <ul class="list-group">
         <li class="list-group-item"
@@ -95,6 +105,7 @@ export default {
 #input__text input{
   flex-grow:2;
   border: none;
+  margin-right: 1px;
 }
 #input__text input:focus {
   box-shadow: none;
