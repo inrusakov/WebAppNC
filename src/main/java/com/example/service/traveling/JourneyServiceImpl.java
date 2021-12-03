@@ -127,7 +127,7 @@ public class JourneyServiceImpl implements JourneyService{
             travelRepository.save(journey);
             return new ResponseEntity<>(journey, HttpStatus.CREATED);
         }else{
-            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -167,8 +167,6 @@ public class JourneyServiceImpl implements JourneyService{
         HashMap<String, Object> response = new HashMap<>();
         Journey journey = travelRepository.findById(id).orElse(null);
         if(journey == null) {
-            response.put("Journey", null);
-            response.put("JourneyRole", null);
             response.put("HttpStatus", HttpStatus.NOT_FOUND);
         }else{
             response.put("Journey", journey);
