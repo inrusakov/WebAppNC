@@ -5,28 +5,30 @@
       <div class="form-group">
         <label for="title"><strong>Title</strong></label>
         <input type="text" class="form-control" id="title"
-               v-model="currentJourney.title"
+               v-model="journey.title"
         />
       </div>
       <div class="form-group">
         <label for="description"><strong>Description</strong></label>
         <input type="text" class="form-control" id="description"
-               v-model="currentJourney.description"
+               v-model="journey.description"
         />
       </div>
 
       <div class="form-group">
         <label><strong>Status:</strong></label>
-        {{ currentJourney.status}}
+        {{ journey.status}}
       </div>
     </form>
 
-    <button class="btn-danger btn_menu" @click="deleteJourney">
-      Delete
-    </button>
-
     <button type="submit" class="btn-success btn_menu" @click="updateJourney">
       Update
+    </button>
+
+    <button class="btn-danger btn_menu" @click="deleteJourney"
+            v-if="user_role.includes('admin')"
+    >
+      Delete
     </button>
   </div>
 </template>
@@ -36,14 +38,16 @@ import JourneyService from "store/journeyService.js"
 
 export default {
   name: "JourneyEditor",
+  props:{
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
-      id: this.$route.params.id,
-      currentJourney: {
-        title: '',
-        description: '',
-        status: '',
-      },
+      journey: {},
+      user_role: [],
     }
   },
   mounted() {
@@ -53,14 +57,15 @@ export default {
     refreshJourney() {
       JourneyService.get(this.id)
           .then(response => {
-            this.currentJourney = response.data;
+            this.journey = response.data.Journey;
+            this.user_role = response.data.JourneyRole;
           })
           .catch(e => {
             console.log(e.responses);
           });
     },
     updateJourney() {
-      JourneyService.update(this.id, this.currentJourney)
+      JourneyService.update(this.id, this.journey)
           .then(response => {
             this.$router.push({ name: 'journey-details', params: {id: this.id}});
           })

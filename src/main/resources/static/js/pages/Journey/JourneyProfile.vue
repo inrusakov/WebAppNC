@@ -5,15 +5,12 @@
           :to="{name: 'journey-edit', params:{ id: this.id }}"
           v-if="user_role.includes('editor') || user_role.includes('admin')"
       >
-        <button id="edit_button" type="submit" class="btn-success"
-                @click="editJourney"
-        >
+        <button id="edit_button" type="button" class="btn-success">
           Edit
         </button>
       </router-link>
       <div>
         <article><strong>Role: </strong><span v-for="role in user_role">{{role}}</span></article>
-
       </div>
     </div>
     <div id="journey_description">
@@ -28,9 +25,14 @@ import JourneyService from "store/journeyService.js"
 
 export default {
   name: "JourneyProfile",
+  props:{
+    id: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
-      id: this.$route.params.id,
       journey: {},
       user_role: {},
       no_role: true
@@ -51,9 +53,6 @@ export default {
           console.log(e.responses);
         })
     },
-    editJourney() {
-
-    }
   }
 }
 </script>
