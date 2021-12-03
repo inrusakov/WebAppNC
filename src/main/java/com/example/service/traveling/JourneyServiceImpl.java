@@ -86,7 +86,7 @@ public class JourneyServiceImpl implements JourneyService{
 
     @Override
     public Set<JourneyRole> getRoles(Journey journey, User user) {
-        if (journey == null) return null;
+        if (journey == null || user == null) return null;
         Set<GroupRole> roles = groupService.getRoles(journey.getGroup(), user);
         Set<JourneyRole> response = new HashSet<>();
         if(roles.contains(GroupRole.participant)){
@@ -163,14 +163,19 @@ public class JourneyServiceImpl implements JourneyService{
     }
 
     @Override
-    public ResponseEntity<Journey> findById(Integer id) {
-        Optional<Journey> journeyOptional = travelRepository.findById(id);
-        Journey journey = journeyOptional.orElse(null);
+    public Map<String, Object> findById(Integer id) {
+        HashMap<String, Object> response = new HashMap<>();
+        Journey journey = travelRepository.findById(id).orElse(null);
         if(journey == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            response.put("Journey", null);
+            response.put("JourneyRole", null);
+            response.put("HttpStatus", HttpStatus.NOT_FOUND);
         }else{
-            return new ResponseEntity<>(journey, HttpStatus.OK);
+            response.put("Journey", journey);
+            response.put("JourneyRole", getRoles(journey));
+            response.put("HttpStatus", HttpStatus.OK);
         }
+        return response;
     }
 
     /**

@@ -35,7 +35,7 @@
 import JourneyService from "store/journeyService.js"
 
 export default {
-  name: "JourneyProfile",
+  name: "JourneyEditor",
   data() {
     return {
       id: this.$route.params.id,

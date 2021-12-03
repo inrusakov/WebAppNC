@@ -1,13 +1,20 @@
 <template>
   <div id="journey_profile">
-    <div id="edit_block">
-      <router-link :to="{name: 'journey-edit', params:{ id: this.id }}">
+    <div id="edit_block" v-if="!no_role">
+      <router-link
+          :to="{name: 'journey-edit', params:{ id: this.id }}"
+          v-if="user_role.includes('editor') || user_role.includes('admin')"
+      >
         <button id="edit_button" type="submit" class="btn-success"
                 @click="editJourney"
         >
           Edit
         </button>
       </router-link>
+      <div>
+        <article><strong>Role: </strong><span v-for="role in user_role">{{role}}</span></article>
+
+      </div>
     </div>
     <div id="journey_description">
       <h1>{{this.journey.title}}</h1>
@@ -24,7 +31,9 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
-      journey: {}
+      journey: {},
+      user_role: {},
+      no_role: true
     }
   },
   mounted() {
@@ -34,8 +43,9 @@ export default {
     refreshJourney() {
       JourneyService.get(this.id)
         .then(response=>{
-          this.journey = response.data;
-          console.log(response.data);
+          this.journey = response.data.Journey;
+          this.user_role = response.data.JourneyRole;
+          this.no_role = (this.user_role === null);
         })
         .catch(e =>{
           console.log(e.responses);

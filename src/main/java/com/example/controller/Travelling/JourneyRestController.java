@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/journey")
@@ -37,8 +38,10 @@ public class JourneyRestController {
 
     @GetMapping("{id}")
     @JsonView(JourneyViews.all.class)
-    ResponseEntity<Journey> one(@PathVariable("id") Integer id) {
-        return journeyService.findById(id);
+    ResponseEntity<Map<String, Object>> one(@PathVariable("id") Integer id) {
+        Map<String, Object> frontendData = journeyService.findById(id);
+        return new ResponseEntity<>(frontendData, (HttpStatus)(frontendData.get("HttpStatus")));
+        //return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("")

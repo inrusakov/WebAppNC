@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface JourneyService {
@@ -17,7 +18,7 @@ public interface JourneyService {
     boolean isJourneyParticipant(Journey journey);
     boolean isJourneyParticipant(Journey journey, User user);
 
-    ResponseEntity<Journey> findById(Integer id);
+    Map<String, Object> findById(Integer id);
     ResponseEntity<Journey> create(Journey journey);
     ResponseEntity<Journey> create(Journey journey, Group group);
     ResponseEntity<HttpStatus> delete(Journey journey);
