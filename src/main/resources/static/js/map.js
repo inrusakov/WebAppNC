@@ -3,14 +3,18 @@ let markerCounter = 0;
 let markers = [];
 let route;
 let lines = L.polyline([0,0]);
+let id = document.querySelector("input[name='id']").value;
+if (document.querySelector("input[name='id']").value)
+    id = document.querySelector("input[name='id']").value;
 
-const deleteM = document.querySelector('#deleteMarkers')
-const sendRouteM = document.querySelector('#sendRoute')
-const updateM = document.querySelector('#updateRoute')
-deleteM.addEventListener('click', () => deleteMarkers())
-sendRouteM.addEventListener('click', () => sendRoute())
-if (updateM)
-    updateM.addEventListener('click', ()=> updateRoute())
+const sendRouteM = document.querySelector('#save')
+sendRouteM.addEventListener('click', () => updateRoute())
+
+// const deleteM = document.querySelector('#deleteMarkers')
+// const updateM = document.querySelector('#updateRoute')
+// deleteM.addEventListener('click', () => deleteMarkers())
+// if (updateM)
+//     updateM.addEventListener('click', ()=> updateRoute())
 
 function printMap() {
     mymap = L.map('mapid').setView([55.752, 37.617], 11);
@@ -27,30 +31,57 @@ function printMap() {
 }
 
 function importMarkers(){
-    route.markers.forEach(element => {
-        marker = new L.Marker([element.latitude, element.longtitude], {draggable:true});
-        mymap.addLayer(marker);
-        marker.bindTooltip(element.description,
-            {
-                permanent: true,
-                direction: 'right'
-            }
-        );
-        marker.addEventListener('click',()=>
-        {});
-        marker.on('drag', ()=>{
+    let imported;
+    let token = $("meta[name='_csrf']").attr("content");
+    $.ajax({
+        // Request type.
+        type: "GET",
+        contentType : 'application/json; charset=utf-8',
+        // Request data type.
+        dataType : 'json',
+        // Request link.
+        url: "/routes/"+id,
+        // Converting request object.
+        success : function(data) {
+            // Success log.
+            console.log("SUCCESS: ", data);
+            imported = data;
+            imported.markers.forEach(element => {
+                marker = new L.Marker([element.latitude, element.longtitude], {draggable:true});
+                mymap.addLayer(marker);
+                marker.bindTooltip(element.description,
+                    {
+                        permanent: true,
+                        direction: 'right'
+                    }
+                );
+                    marker.addEventListener('click',()=>
+                    {});
+                    marker.on('drag', ()=>{
+                        updateLines();
+                    });
+                markers.push(marker);
+                createListItem(element.description);
+            })
             updateLines();
-        });
-        markers.push(marker);
-        createListItem(element.description);
-    })
-
-    updateLines();
-    console.log(route);
+            console.log(route);
+        },
+        error : function(e) {
+            // Error log.
+            console.log("ERROR: ", e);
+        },
+        // Passing the csrf token.
+        headers: {'X-CSRF-TOKEN': token}
+    });
 }
 
 function updateRoute(){
-    route.markers = [];
+    class Route {
+        id;
+        markers = [];
+    }
+    let route = new Route;
+    route.id = id;
     class Marker {
         constructor(desc, lat, long) {
             this.description = desc;
@@ -62,7 +93,6 @@ function updateRoute(){
         route.markers.push(new Marker(elem._tooltip._content, elem._latlng.lat, elem._latlng.lng));
     })
     let token = $("meta[name='_csrf']").attr("content");
-    let paramName = $("meta[name='_csrf_parameter_name']").attr("content");
     $.ajax({
         // Request type.
         type: "POST",
@@ -76,7 +106,6 @@ function updateRoute(){
         success : function(data) {
             // Success log.
             console.log("SUCCESS: ", data);
-            window.location.href = "/routeObserver/"+route.id+"?routeId="+route.id+"&submit=value";
         },
         error : function(e) {
             // Error log.
@@ -116,6 +145,7 @@ function onMapClick(e) {
         }
     );
     markers.push(marker);
+    let markerString = "";
     markers.forEach(marker => {
         marker.addEventListener('click',()=>
         {});
@@ -125,7 +155,6 @@ function onMapClick(e) {
     });
     createListItem(markerCounter);
     markerCounter++;
-
     updateLines();
 };
 
@@ -191,6 +220,7 @@ function sendRoute(){
 }
 
 printMap();
+importMarkers();
 
 
 

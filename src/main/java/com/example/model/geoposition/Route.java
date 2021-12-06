@@ -7,7 +7,6 @@ import java.util.List;
 @Entity
 public class Route {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
     @OneToMany(cascade = {CascadeType.ALL})
